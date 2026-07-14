@@ -23,4 +23,6 @@ public class Tips {
 	private String title;
 	@Column(nullable = false, length = 200)
 	private String tips;
+	@Column(nullable = false, length = 50)
+	private String music;
 }
