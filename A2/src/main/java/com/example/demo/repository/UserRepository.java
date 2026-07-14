@@ -2,6 +2,6 @@ package com.example.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MealRepository extends JpaRepository<T, ID> {
+public interface UserRepository extends JpaRepository<T, ID> {
 
 }
