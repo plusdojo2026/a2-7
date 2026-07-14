@@ -2,10 +2,14 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,6 +30,13 @@ public class DailyItemStock {
 	private LocalDate guideExDate;
 	private LocalDate addDate;
 	private Boolean status;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@JsonIgnore
 	private User user;
+	@ManyToOne
+	@JoinColumn(name = "daily_item_master_id")
+	@JsonIgnore
 	private DailyItemMaster dailyItemMaster;
 }
