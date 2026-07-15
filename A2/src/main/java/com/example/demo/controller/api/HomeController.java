@@ -27,6 +27,11 @@ public class HomeController {
 		return garbageRepository.save(garbage);
 	}
 
+	@GetMapping("/garbage")
+	public List<Garbage> getGarbage() {
+		return garbageRepository.findAll();
+	}
+
 	@Autowired
 	private TipsRepository tipsRepository;
 
@@ -44,5 +49,5 @@ public class HomeController {
 
 		return tipsList.get(index);
 	}
-	
+
 }
