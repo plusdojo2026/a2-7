@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.demo.entity.Garbage;
 
 public interface GarbageRepository extends JpaRepository<Garbage, Integer> {
-	List<Garbage> findByUserIdAndGarbageday(Integer user_id,Integer garbage_day);
+	List<Garbage> findByUserIdAndGarbageDay(Integer user_id,Integer garbage_day);
 }

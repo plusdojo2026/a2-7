@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 public class Tips {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Integer tips_id;
+	private Integer tipsId;
 	@Column(nullable = false, length = 20)
 	private String title;
 	@Column(nullable = false, length = 200)

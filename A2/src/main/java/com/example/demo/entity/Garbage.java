@@ -28,7 +28,7 @@ public class Garbage {
 	private String cycle;
 
 	@Column(nullable = false)
-	private Integer garbage_day;
+	private Integer garbageDay;
 
 	private Integer userId;
 }
