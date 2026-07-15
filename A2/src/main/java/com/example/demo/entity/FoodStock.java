@@ -19,13 +19,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor  // 全ての項目を引数として持つコンストラクタを自動定義する。
 @NoArgsConstructor   // 引数なしのコンストラクタ自動で追加
 @Data                // getter、setter、toStringなどの基本的メソッドを自動定義する。
-@Table(name = "Stock_Food") // マッピングされるテーブルを指定する。
+@Table(name = "Food_Stock") // マッピングされるテーブルを指定する。
 public class FoodStock {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer stockFoodId;
-	private String stockFoodName;
+	private Integer foodStockId;
+	private String foodStockName;
 	private String category;
 	private LocalDate addDay;
 	private LocalDate expirationDate;
