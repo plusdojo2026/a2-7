@@ -30,6 +30,13 @@ public class MealController {
 		return meal;
 	}
 	
+	//食事内容の更新
+	@PostMapping("/meal/update/")
+	private Meal update(@RequestBody Meal meal) {
+		repository.save(meal);
+		return meal;
+	}
+	
 	//食事内容の一覧取得+記録日が新しい順古い順に切り替え
 	@GetMapping("/meal/") 
 	List<Meal> get(
