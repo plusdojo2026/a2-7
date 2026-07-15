@@ -10,17 +10,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "User")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-
+@Table(name = "ShopppingItem")
+public class ShoppingItem {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer user_id;
-	private String user_name;
-	private String password;
-	private String point;
+	private Integer ShoppingItemId;
 	
+	//どの買い物リストの商品か
+	private Integer ShoppingListId;
+	
+	//商品名
+	private String itemName;
+	
+	//購入状況
+	private Integer isBought;
+	
+
 }
