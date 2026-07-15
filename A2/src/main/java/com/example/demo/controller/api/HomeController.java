@@ -45,17 +45,4 @@ public class HomeController {
 		return tipsList.get(index);
 	}
 	
-	@GetMapping("/tips")
-	public String getRandomMusic() {
-
-		List<Tips> tipsList = tipsRepository.findAll();
-
-		if (tipsList.isEmpty()) {
-			return null;
-		}
-
-		Random random = new Random();
-		
-		return tipsList.get(random.nextInt(tipsList.size())).getMusic();
-	}
 }
