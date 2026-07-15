@@ -11,7 +11,7 @@ const MealComponent = () =>{
             </div>
 
             {/* 新規作成→クリックすると新規作成モーダルが展開*/}
-            <div className="create">
+            <div className="createBtn">
                 <button>新規登録</button>
             </div>
 
