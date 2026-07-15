@@ -1,5 +1,7 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,15 +15,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name="Shopping")
-public class Shopping {
+@Table(name="ShoppingList")
+public class ShoppingList {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer shopping_id;
-	private String shopping_name;
-	private Integer is_bought;
-	private Integer bought_day;
+	private Integer shoppingListid;
+	
+	//リスト作成日
+	private LocalDate createDate;
+	
+	//ユーザーID
 	private Integer user_id;
 
 }
