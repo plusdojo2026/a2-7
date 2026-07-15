@@ -19,17 +19,18 @@ import lombok.NoArgsConstructor;
 @Table(name="Meals") //Mealテーブルに対応するエンティティ
 public class Meal {
 	
+	//もしかしたら@columnが必要かも（→データベース名と違うから）
 	@Id  //主キー
 	@GeneratedValue(strategy=GenerationType.IDENTITY)  //オートインクリメント
-	private Integer meal_id; //食事ID
-	private LocalDate record_date; //記録日
-	private String meal_type; //区分
+	private Integer mealId; //食事ID
+	private LocalDate recordDate; //記録日
+	private String mealType; //区分
 	@Lob
-	private byte[] meal_image; //料理画像
+	private byte[] mealImage; //料理画像→画像じゃなくて、ファイル名にする？
 	private String url; //URL
-	private String recipe_memo; //レシピメモ
-	private String recipe_title; //レシピ名
-	private Integer user_id; //ユーザーID
+	private String recipeMemo; //レシピメモ
+	private String recipeTitle; //レシピ名
+	private Integer userId; //ユーザーID
 	
 	
 }
