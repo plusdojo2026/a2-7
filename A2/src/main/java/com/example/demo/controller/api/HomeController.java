@@ -58,5 +58,4 @@ public class HomeController {
 		
 		return tipsList.get(random.nextInt(tipsList.size())).getMusic();
 	}
-	
 }
