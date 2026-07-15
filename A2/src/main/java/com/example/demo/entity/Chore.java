@@ -8,86 +8,34 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "chores")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Chore {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "chores_id")
-    private Integer choresId;
 
-    @Column(name = "chores_name")
-    private String choresName;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer choresId;
 
-    @Column(name = "priority")
-    private String priority;
+	@Column(nullable = false, length = 40)
+	private String choresName;
 
-    @Column(name = "estimated_time")
-    private Integer estimatedTime;
+	@Column(nullable = false, length = 20)
+	private String priority;
 
-    @Column(name = "point")
-    private Integer point;
+	@Column(nullable = false)
+	private Integer estimatedTime;
 
-    @Column(name = "status")
-    private Boolean status;
+	@Column(nullable = false)
+	private Integer point;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+	private Boolean status;
 
-    public Integer getChoresId() {
-        return choresId;
-    }
-
-    public void setChoresId(Integer choresId) {
-        this.choresId = choresId;
-    }
-
-    public String getChoresName() {
-        return choresName;
-    }
-
-    public void setChoresName(String choresName) {
-        this.choresName = choresName;
-    }
-
-    public String getPriority() {
-        return priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public Integer getEstimatedTime() {
-        return estimatedTime;
-    }
-
-    public void setEstimatedTime(Integer estimatedTime) {
-        this.estimatedTime = estimatedTime;
-    }
-
-    public Integer getPoint() {
-        return point;
-    }
-
-    public void setPoint(Integer point) {
-        this.point = point;
-    }
-
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	private LocalDateTime createdAt;
 }
