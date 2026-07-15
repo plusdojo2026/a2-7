@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ChoreRepository extends JpaRepository<T, ID> {
+import com.example.demo.entity.Chore;
+
+public interface ChoreRepository extends JpaRepository<Chore, Integer> {
 
 }
