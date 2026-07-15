@@ -1,5 +1,7 @@
 package com.example.demo.controller.api;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,19 +22,43 @@ public class ChoreController {
 	@Autowired
 	private ChoreRepository choreRepository;
 
-	// 家事の全件取得(家事リスト・家事提案の選択肢に使う)
+	// 家事の全件取得(家事リスト・家事提案の選択肢)
 	@GetMapping("/")
 	public List<Chore> getChores() {
 		return choreRepository.findAll();
 	}
 
-	// 今日の家事を取得(status=true のもの)
+	// 今日の家事を取得(status=true)
 	@GetMapping("/today")
 	public List<Chore> getTodayChores() {
 		return choreRepository.findByStatus(true);
 	}
 
-	// 家事を今日の家事に追加する(status を true に更新)
+	// 家事提案:指定した所要時間内でできる家事をランダムで返す
+	@GetMapping("/suggest/{time}")
+	public List<Chore> getSuggestChores(@PathVariable Integer time) {
+		List<Chore> choreList = choreRepository.findAll();
+		if (choreList.isEmpty()) {
+			return null;
+		}
+
+		// 順番をシャッフルする
+		List<Chore> shuffled = new ArrayList<>(choreList);
+		Collections.shuffle(shuffled);
+
+		// 制限時間内に収まるものだけ順に詰める
+		List<Chore> suggestList = new ArrayList<>();
+		int total = 0;
+		for (Chore chore : shuffled) {
+			if (total + chore.getEstimatedTime() <= time) {
+				suggestList.add(chore);
+				total += chore.getEstimatedTime();
+			}
+		}
+		return suggestList;
+	}
+
+	// 家事を「今日の家事」に追加する(status を true に更新)
 	@PostMapping("/today/{id}")
 	public Chore addToday(@PathVariable Integer id) {
 		Chore chore = choreRepository.findById(id).orElseThrow();
@@ -40,7 +66,7 @@ public class ChoreController {
 		return choreRepository.save(chore);
 	}
 
-	// 家事の登録(初期データ投入や家事リストからの追加に使う)
+	// 家事の登録
 	@PostMapping("/add")
 	public Chore addChore(@RequestBody Chore chore) {
 		return choreRepository.save(chore);
