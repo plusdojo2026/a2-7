@@ -20,6 +20,8 @@ public class MealController {
 	//食事内容の登録
 	@PostMapping("/meal/register/")
 	private Meal regist(@RequestBody Meal meal) { //JSONデータをオブジェクトに変換
+		Integer userId = 1;  //ログイン中のユーザーのｉｄ取得→１は仮置き
+		meal.setUserId(userId);
 		repository.save(meal);
 		return meal;
 	}
@@ -27,7 +29,8 @@ public class MealController {
 	//食事内容の一覧取得
 	@GetMapping("/meal/") 
 		List<Meal> get(){
-		return repository.findByUserId();
+		Integer userId = 1; //ログイン中のユーザーのｉｄ取得→１は仮置き
+		return repository.findByUserId(userId);
 	}
 	
 
