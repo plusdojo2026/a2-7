@@ -8,13 +8,14 @@ INSERT INTO User (user_id, user_name, password, point) VALUES
 
 -- 家事
 INSERT INTO Chores
-(chores_name, priority, estimated_time,created_at, point, status, user_id)
+(chores_name, priority, estimated_time,
+ created_at, point, status)
 VALUES
-('掃除機をかける', '高', 30, '2026-07-14 09:00:00', 30, FALSE, 1),
-('食器洗い', '中', 15, '2026-07-14 09:10:00', 15, TRUE, 1),
-('洗濯をする', '高', 60, '2026-07-14 09:20:00', 50, FALSE, 2),
-('ゴミ出し', '低', 10, '2026-07-14 09:30:00', 10, TRUE, 2),
-('お風呂掃除', '中', 20, '2026-07-14 09:40:00', 20, FALSE, 3);
+('掃除機をかける', '高', 30, '2026-07-14 09:00:00', 30, FALSE),
+('食器洗い', '中', 15, '2026-07-14 09:10:00', 15, TRUE),
+('洗濯をする', '高', 60, '2026-07-14 09:20:00', 50, FALSE),
+('ゴミ出し', '低', 10, '2026-07-14 09:30:00', 10, TRUE),
+('お風呂掃除', '中', 20, '2026-07-14 09:40:00', 20, FALSE);
 
 -- 食事
 INSERT INTO Meal
