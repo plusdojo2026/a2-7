@@ -68,7 +68,7 @@ VALUES
 ('洗剤', '掃除用品', '2026-10-01', '2026-07-18', FALSE, 1, 5);
 
 --買い物リスト
-INSERT INTO ShoppingList
+INSERT INTO shopping_list
 (shoppingListid, create_date, user_id)
 VALUES
 (1,'2026-07-14', 1),
@@ -78,7 +78,7 @@ VALUES
 (5,'2026-07-18', 1);
 
 -- 買い物リスト商品
-INSERT INTO ShoppingItem
+INSERT INTO shopping_item
 (ShoppingItemId, ShoppingListId, itemName, isBought)
 VALUES
 (1, 1, '牛乳', 0),
