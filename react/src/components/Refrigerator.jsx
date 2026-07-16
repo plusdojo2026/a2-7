@@ -4,7 +4,7 @@ import axios from 'axios';
 
 function Refrigerator(){
 
-{/*食材と日用品を取得するからの箱*/}
+{/*食材と日用品を取得する空の箱*/}
 const [foods, setFoods] = useState([]);
 const [items, setItems] = useState([]);
 
@@ -14,6 +14,7 @@ const [tab, setTab] = useState("food");
 {/*画面が表示されたら一度だけ実行する*/}
 useEffect(() => {
 
+    //Spring Bootの@GetMapping("/api/food_stock/")を呼ぶ
     axios.get("http://localhost:8080/api/food_stock/")
         .then(res => {
             setFoods(res.data);
