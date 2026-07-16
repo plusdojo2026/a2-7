@@ -1,4 +1,6 @@
 //モーダル表示
+
+//一覧の商品情報を受け取る
 function ShoppingModal({ items, closeModal }) {
      return (
         <div>
@@ -13,8 +15,17 @@ function ShoppingModal({ items, closeModal }) {
                     </span>
 
                     <input
-                        type=""
+                        type="checkbox"
+                        checked={item.isBought === 1}
+                        readOnly
+                    />
+                </div>
             ))}
+
+            <button onClick={closeModal}>閉じる</button>
+
         </div>
-     )
+     );
 }
+
+export default ShoppingModal;

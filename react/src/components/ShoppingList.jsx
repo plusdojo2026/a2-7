@@ -2,18 +2,24 @@
 
 import { useEffect,useState } from "react";
 import axios from "axios";
+import ShoppingModal from "./ShoppingModal";
 
 function ShoppingList() {
 
     const [Lists, setLists] = useState([]);
     const [items, setItems] = useState([]);
+    //モーダル表示するかどうかの関数
+    const [showModal, setShowModal] = useState(false);
 
     //指定された買い物リストの商品を取得する
     const getItems = (ShoppingListid) => {
 
         axios.get("http://localhost:8080/shopping/item/" + ShoppingListid)
         .then((response) => {
+
              setItems(response.data);
+
+             setShowModal(true);
 
         })
         .catch((error) => {
@@ -59,8 +65,15 @@ function ShoppingList() {
                                 ? "未購入"
                                 : "購入済"}
                         </p>
-                        
+
                     ))}
+                    
+                    {showModal && (
+                        <ShoppingModal
+                            items={items}
+                            closeModal={() => setShowModal(false)}
+                        />
+                    )}
 
                 </div>
             ))}
