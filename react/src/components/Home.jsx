@@ -129,7 +129,7 @@ function Home() {
             {/* ポイント */}
             <div className="point">
                 <p>現在の米粒ポイント</p>
-                <h1>3</h1>
+                <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
 
