@@ -78,7 +78,7 @@ VALUES
 ('2026-07-18', 1);
 
 -- 買い物リスト商品
-INSERT INTO ShopppingItem
+INSERT INTO shoppping_item
 (shopping_list_id, item_name, is_bought)
 VALUES
 (1, '牛乳', 0),
@@ -91,7 +91,6 @@ VALUES
 (4, '鶏むね肉', 0),
 (4, '野菜', 0),
 (5, '調味料', 1);
-
 -- ゴミ出し設定
 INSERT INTO Garbage
 (garbage_type, cycle, garbage_day, user_id)
