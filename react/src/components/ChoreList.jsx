@@ -21,6 +21,15 @@ function ChoreList(){
     // 家事リスト:アラート表示
     const [alert, setAlert] = useState(false);
 
+    // 提案結果
+    const [result, setResult] = useState([]);
+
+    const chores = [
+    { name: "掃除機", time: 10, category: "掃除" },
+    { name: "お風呂掃除", time: 20, category: "お風呂掃除" },
+    { name: "洗濯", time: 30, category: "洗濯" },
+];
+
     // 家事の選択/解除を切り替える
     const toggleSelect = (name) => {
         if (selected.includes(name)) {
@@ -39,13 +48,29 @@ function ChoreList(){
     };
 
     // 確定 → 読み込み → 結果
-    const handleSuggest = () => {
-        setStep("loading");
-        setTimeout(() => setStep("result"), 1500);
-    };
+const handleSuggest = () => {
 
-    return(
-        <div className="chore">
+    console.log(selected);
+    console.log(time);
+
+    const filtered = chores.filter(chore =>
+        selected.includes(chore.category) &&
+        chore.time <= time
+    );
+
+    console.log(filtered);
+
+    setResult(filtered);
+
+    setStep("loading");
+
+    setTimeout(() => {
+        setStep("result");
+    }, 1500);
+};
+
+return (
+    <div className="chore">
 
     {/* タブ */}
     <div className="menu">
@@ -97,6 +122,8 @@ function ChoreList(){
                             value={time}
                             onChange={(e) => setTime(Number(e.target.value))}
                             className="slider"
+                            style={{"--progress": `${((time - 10) / (60 - 10)) * 100}%`
+                             }}
                         />
                         <p className="timeText">{time}分</p>
 
@@ -133,10 +160,17 @@ function ChoreList(){
                                 <p className="resultTime">10分</p>
                                 <p className="resultName">掃除機</p>
                             </div>
+
                             <div className="resultItem">
                                 <p className="resultTime">20分</p>
                                 <p className="resultName">お風呂掃除</p>
                             </div>
+                            
+                            <div className="resultItem">
+                                <p className="resultTime">30分</p>
+                                <p className="resultName">洗濯</p>
+                            </div>
+
                         </div>
 
                         <label className="checkLabel">
