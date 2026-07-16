@@ -76,28 +76,28 @@ function Home() {
         }
 
         try {
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "燃えるゴミ",
                 cycle: "毎週",
                 garbageDay: weekNumber[burnableDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "燃えないゴミ",
                 cycle: "毎週",
                 garbageDay: weekNumber[nonBurnableDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "ペットボトル",
                 cycle: "毎週",
                 garbageDay: weekNumber[petBottleDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "缶・びん",
                 cycle: "毎週",
                 garbageDay: weekNumber[canBottleDay],
