@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import riceImage from "../assets/rice.png";
 import "../css/Home.css";
@@ -7,6 +7,7 @@ function Home() {
 
     const [modalType, setModalType] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
+
     function showAlert(message) {
         setAlertMessage(message);
 
@@ -14,6 +15,10 @@ function Home() {
             setAlertMessage("");
         }, 3000);
     }
+
+    const [tips, setTips] = useState(null);
+    const [point,setPoint] = useState(0);
+
     const weekNumber = {
         "月曜日": 1,
         "火曜日": 2,
@@ -38,6 +43,27 @@ function Home() {
     const [petBottleDay, setPetBottleDay] = useState("");
     const [canBottleDay, setCanBottleDay] = useState("");
     const [notification, setNotification] = useState(false);
+
+    useEffect(() => {
+        axios.get("/api/home/tips")
+            .then((res) => {
+                setTips(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
+     useEffect(() => {
+        axios.get("/api/home/point")
+            .then((res) => {
+                setPoint(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
     function shoppingClick() {
         console.log("買い物画面に遷移");
     }
@@ -103,7 +129,7 @@ function Home() {
             {/* ポイント */}
             <div className="point">
                 <p>現在の米粒ポイント</p>
-                <h1>3</h1>
+                <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
 
@@ -130,7 +156,7 @@ function Home() {
             {/* 豆知識 */}
             <div className="riceArea">
                 <div className="tips">
-                    tips
+                    {tips ? tips.tips : "読み込み中..."}
                 </div>
 
                 {/* 米キャラクター */}
@@ -233,9 +259,9 @@ function Home() {
             {modalType === "music" && (
                 <div className="modal">
                     <div className="modalContent">
-                        <h2>今日の曲</h2>
+                        <h2>🎵 今日の曲</h2>
 
-                        <p>ここに今日の曲を表示します。</p>
+                        <h3>{tips?.music}</h3>
 
                         <button onClick={() => setModalType("")}>
                             閉じる

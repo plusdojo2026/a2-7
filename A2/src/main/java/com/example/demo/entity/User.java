@@ -21,6 +21,6 @@ public class User {
 	private Integer userId;
 	private String user_name;
 	private String password;
-	private String point;
+	private Integer point;
 	
 }
