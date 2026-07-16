@@ -1,3 +1,8 @@
+.stock-page,
+.stock-page * {
+    box-sizing: border-box;
+}
+
 .stock-page {
     min-height: 100vh;
     padding: 24px;
@@ -179,7 +184,13 @@
 }
 
 .candidate-item {
+    display: flex;
+    width: 94px;
+    height: 112px;
     flex: 0 0 94px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding: 8px;
     border: 3px solid #1b6f97;
     background: #f8fcff;
@@ -197,11 +208,15 @@
     display: block;
     margin-top: 4px;
     font-size: 12px;
+    line-height: 16px;
+    white-space: nowrap;
 }
 
 @media (max-width: 600px) {
     .stock-page {
+        min-height: 100dvh;
         padding: 0;
+        background: #ffffff;
     }
 
     .page-title {
@@ -212,12 +227,19 @@
 
     .stock-app {
         width: 100%;
-        border-right: none;
-        border-left: none;
+        max-width: none;
+        margin: 0;
+        border: none;
         border-radius: 0;
+        box-shadow: none;
     }
 
     .storage-area {
         height: 430px;
+    }
+
+    .tab-button {
+        padding: 16px 8px;
+        font-size: 18px;
     }
 }
