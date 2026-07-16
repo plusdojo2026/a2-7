@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import '/Refrigerator.css';
 import axios from 'axios';
 
 function Refrigerator(){
@@ -16,6 +15,7 @@ useEffect(() => {
 
     //Spring Bootの@GetMapping("/api/food_stock/")を呼ぶ
     axios.get("http://localhost:8080/api/food_stock/")
+    //Spring Bootで返したデータをres.dataに入れsetFoodsでfoodsに保存
         .then(res => {
             setFoods(res.data);
         });
@@ -26,22 +26,29 @@ useEffect(() => {
 
         <div>
 
+             {/* タイトル */}
             <h1>冷蔵庫</h1>
 
-            {foods.map(food => (
+            {/* タブ（冷蔵庫・日用品） */}
+        
 
-                <img
-                    key={food.stockFoodId}
-                    src={"/image/" + food.stockFoodName + ".png"}
-                    width="80"
-                    draggable
-                    onDragStart={(e) => {
+        {/* 冷蔵庫の背景画像 */}
 
-                    }}
-                />
+         {/* 日用品倉庫画像 */}
+        
 
-            ))}
+        {/* 食材一覧を表示 */}
+           {foods.map(food => (
 
+    <div key={food.stockFoodId}>
+        <p>{food.stockFoodName}</p>
+    </div>
+
+))}
+
+            {/* 日用品一覧 */}
+
+            {/* ドロップエリア（冷蔵庫） */}
             <div
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
@@ -52,6 +59,8 @@ useEffect(() => {
                 冷蔵庫
 
             </div>
+
+            {/* ゴミ箱 */}
 
         </div>
 

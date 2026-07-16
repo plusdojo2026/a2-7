@@ -8,7 +8,7 @@ INSERT INTO User (user_id, user_name, password, point) VALUES
 
 -- 家事
 INSERT INTO Chores
-(chores_name, priority, estimated_time, created_at, point, chores_status, user_id)
+(chores_name, priority, estimated_time,created_at, point, status, user_id)
 VALUES
 ('掃除機をかける', '高', 30, '2026-07-14 09:00:00', 30, FALSE, 1),
 ('食器洗い', '中', 15, '2026-07-14 09:10:00', 15, TRUE, 1),
@@ -40,8 +40,8 @@ INSERT INTO Food_Master (food_master_id, food_name, expiration_date, food_img) V
 (5, 'にんじん', 21, NULL);
 
 -- 食材在庫
-INSERT INTO Stock_Food
-(stock_food_id, stock_food_name, category, add_day, user_id, food_master_id, expiration_date, status)
+INSERT INTO Food_Stock
+(food_stock_id, food_stock_name, category, add_day, user_id, food_master_id, expiration_date, status)
 VALUES
 (1, '卵', '卵類', '2026-07-14', 1, 1, '2026-07-28', FALSE),
 (2, '牛乳', '乳製品', '2026-07-13', 1, 2, '2026-07-20', FALSE),
