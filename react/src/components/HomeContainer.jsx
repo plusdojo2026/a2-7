@@ -2,6 +2,7 @@ import { useState } from "react";
 import Home from "./Home";
 import Notice from "./Notice";
 //import Chores from "./Chores";
+import "../css/HomeContainer.css";
 
 function HomeContainer() {
 
@@ -12,15 +13,24 @@ function HomeContainer() {
 
             {/* タブ */}
             <div className="menu">
-                <button onClick={() => setPage("notice")}>
+                <button
+                    className={page === "notice" ? "active" : ""}
+                    onClick={() => setPage("notice")}
+                >
                     お知らせ
                 </button>
 
-                <button onClick={() => setPage("home")}>
+                <button
+                    className={page === "home" ? "active" : ""}
+                    onClick={() => setPage("home")}
+                >
                     ホーム
                 </button>
 
-                <button onClick={() => setPage("chores")}>
+                <button
+                    className={page === "chores" ? "active" : ""}
+                    onClick={() => setPage("chores")}
+                >
                     家事
                 </button>
             </div>

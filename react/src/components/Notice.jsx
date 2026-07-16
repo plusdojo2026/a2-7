@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import "../css/Notice.css";
 function Notice() {
 
     const [garbageMessage, setGarbageMessage] = useState("");
     const [nearFoodMessage, setNearFoodMessage] = useState("");
     const [foodList, setFoodList] = useState([]);
+    const [nearestFood, setNearestFood] = useState(null);
 
     useEffect(() => {
 
@@ -69,6 +70,8 @@ function Notice() {
                 // 一番賞味期限が近い食品
                 const nearestFood = sortedFoods[0];
 
+                setNearestFood(nearestFood);
+
 
                 if (nearestFood) {
 
@@ -103,42 +106,47 @@ function Notice() {
 
 
     return (
-        <div>
+        <div className="notice">
 
             <h2>お知らせ</h2>
 
-            <h3>ゴミのお知らせ</h3>
-            <p>{garbageMessage}</p>
+            <div className="noticeCard">
+                <h3>ゴミのお知らせを表示</h3>
+                <p>{garbageMessage}</p>
+            </div>
 
+            <div className="noticeCard">
+                <h3>一番近い賞味期限</h3>
+                <p>{nearFoodMessage}</p>
+            </div>
+            <hr></hr>
+            <div className="noticeCard">
+                <h3>他の食材の賞味期限</h3>
+                <div className="foodList">
+                    {foodList
+                        .filter(food => food.foodStockId !== nearestFood?.foodStockId)
+                        .map(food => {
 
-            <h3>賞味期限のお知らせ</h3>
-            <p>{nearFoodMessage}</p>
+                            const today = new Date();
 
+                            const expiration = new Date(food.addDay);
 
-            <h3>賞味期限一覧</h3>
+                            expiration.setDate(
+                                expiration.getDate() + food.foodMaster.expirationDate
+                            );
 
-            <table>
-                <tbody>
-                    {foodList.map((food) => {
+                            const diff = Math.ceil(
+                                (expiration - today) / (1000 * 60 * 60 * 24)
+                            );
 
-                        const expiration = new Date(food.addDay);
-
-                        expiration.setDate(
-                            expiration.getDate()
-                            + food.foodMaster.expirationDate
-                        );
-
-                        return (
-                            <tr key={food.foodStockId}>
-                                <td>{food.foodStockName}</td>
-                                <td>
-                                    {expiration.toLocaleDateString()}
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                            return (
+                                <p key={food.foodStockId}>
+                                    {food.foodStockName}の賞味期限が残り{diff}日で切れます。
+                                </p>
+                            );
+                        })}
+                </div>
+            </div>
         </div>
     );
 }

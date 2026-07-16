@@ -1,5 +1,5 @@
 package com.example.demo.controller.api;
 
-public class Noticeontroller {
+public class NoticeController {
 	
 }

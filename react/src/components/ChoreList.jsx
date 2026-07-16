@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./ChoreList.css";
+import "../css/ChoreList.css";
 
 function ChoreList(){
 
@@ -12,7 +12,7 @@ function ChoreList(){
     // 家事提案:所要時間(スライダー)
     const [time, setTime] = useState(30);
 
-    // 家事提案:選択した家事
+    // 家事提案:選択したカテゴリ
     const [selected, setSelected] = useState([]);
 
     // 家事リスト:設定中の家事名
@@ -21,7 +21,24 @@ function ChoreList(){
     // 家事リスト:アラート表示
     const [alert, setAlert] = useState(false);
 
-    // 家事の選択/解除を切り替える
+    // 提案結果
+    const [result, setResult] = useState([]);
+
+    // 家事データ(仮。後でAPIから取得する)
+    const chores = [
+        // 掃除
+        { name: "掃除機", category: "掃除", time: 10 },
+        { name: "お風呂掃除", category: "掃除", time: 20 },
+        { name: "トイレ掃除", category: "掃除", time: 30 },
+        // 洗い物
+        { name: "食器洗い", category: "洗い物", time: 10 },
+        { name: "シンク掃除", category: "洗い物", time: 15 },
+        // 洗濯
+        { name: "洗濯", category: "洗濯", time: 30 },
+        { name: "洗濯物を畳む", category: "洗濯", time: 15 }
+    ];
+
+    // カテゴリの選択/解除を切り替える
     const toggleSelect = (name) => {
         if (selected.includes(name)) {
             setSelected(selected.filter(item => item !== name));
@@ -38,13 +55,36 @@ function ChoreList(){
         setOpenModal("suggest");
     };
 
-    // 確定 → 読み込み → 結果
+    // 確定 → 提案を作る → 読み込み → 結果
     const handleSuggest = () => {
+
+        // 1. 選択したカテゴリの家事だけに絞る
+        const filtered = chores.filter(chore =>
+            selected.includes(chore.category)
+        );
+
+        // 2. 順番をランダムにシャッフルする
+        const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+
+        // 3. 合計が所要時間以内に収まるように上から詰める
+        const suggestList = [];
+        let total = 0;
+        for (const chore of shuffled) {
+            if (total + chore.time <= time) {
+                suggestList.push(chore);
+                total += chore.time;
+            }
+        }
+
+        setResult(suggestList);
+
         setStep("loading");
-        setTimeout(() => setStep("result"), 1500);
+        setTimeout(() => {
+            setStep("result");
+        }, 1500);
     };
 
-    return(
+    return (
         <div className="chore">
 
     {/* タブ */}
@@ -97,6 +137,8 @@ function ChoreList(){
                             value={time}
                             onChange={(e) => setTime(Number(e.target.value))}
                             className="slider"
+                            style={{"--progress": `${((time - 10) / (60 - 10)) * 100}%`
+                             }}
                         />
                         <p className="timeText">{time}分</p>
 
@@ -128,16 +170,18 @@ function ChoreList(){
                     <>
                         <p className="resultText">所要時間:{time}分でできる家事<br />いかがでしょうか?</p>
 
-                        <div className="resultArea">
-                            <div className="resultItem">
-                                <p className="resultTime">10分</p>
-                                <p className="resultName">掃除機</p>
+                        {result.length > 0 ? (
+                            <div className="resultArea">
+                                {result.map(chore => (
+                                    <div className="resultItem" key={chore.name}>
+                                        <p className="resultTime">{chore.time}分</p>
+                                        <p className="resultName">{chore.name}</p>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="resultItem">
-                                <p className="resultTime">20分</p>
-                                <p className="resultName">お風呂掃除</p>
-                            </div>
-                        </div>
+                        ) : (
+                            <p className="resultText">条件に合う家事が<br />見つかりませんでした。</p>
+                        )}
 
                         <label className="checkLabel">
                             <input type="checkbox" />

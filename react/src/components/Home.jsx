@@ -1,8 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import riceImage from "../assets/rice.png";
+import "../css/Home.css";
+
 function Home() {
 
     const [modalType, setModalType] = useState("");
+    const [alertMessage, setAlertMessage] = useState("");
+
+    function showAlert(message) {
+        setAlertMessage(message);
+
+        setTimeout(() => {
+            setAlertMessage("");
+        }, 3000);
+    }
+
+    const [tips, setTips] = useState(null);
+    const [point,setPoint] = useState(0);
+
     const weekNumber = {
         "月曜日": 1,
         "火曜日": 2,
@@ -27,6 +43,27 @@ function Home() {
     const [petBottleDay, setPetBottleDay] = useState("");
     const [canBottleDay, setCanBottleDay] = useState("");
     const [notification, setNotification] = useState(false);
+
+    useEffect(() => {
+        axios.get("/api/home/tips")
+            .then((res) => {
+                setTips(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
+     useEffect(() => {
+        axios.get("/api/home/point")
+            .then((res) => {
+                setPoint(res.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }, []);
+
     function shoppingClick() {
         console.log("買い物画面に遷移");
     }
@@ -34,57 +71,65 @@ function Home() {
     async function saveGarbageRule() {
 
         if (burnableDay === "") {
-            alert("燃えるゴミ出し曜日を選択してください。");
+            showAlert("燃えるゴミ出し曜日を選択してください。");
             return;
         }
 
         try {
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "燃えるゴミ",
                 cycle: "毎週",
                 garbageDay: weekNumber[burnableDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "燃えないゴミ",
                 cycle: "毎週",
                 garbageDay: weekNumber[nonBurnableDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "ペットボトル",
                 cycle: "毎週",
                 garbageDay: weekNumber[petBottleDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "缶・びん",
                 cycle: "毎週",
                 garbageDay: weekNumber[canBottleDay],
                 userId: 1
             });
 
-            alert("ゴミルールを登録しました");
+            showAlert("ゴミルールの設定を更新しました。");
+
+
+
             setModalType("");
 
         } catch (error) {
             console.error(error);
-            alert("登録に失敗しました");
+            showAlert("登録に失敗しました");
         }
     }
     return (
 
         <div className="home">
 
-
+            {alertMessage && (
+                <div className="customAlert">
+                    <span className="dot"></span>
+                    {alertMessage}
+                </div>
+            )}
 
             {/* ポイント */}
             <div className="point">
                 <p>現在の米粒ポイント</p>
-                <h1>3</h1>
+                <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
 
@@ -109,15 +154,16 @@ function Home() {
             </div>
 
             {/* 豆知識 */}
-            <div className="tips">
-                tips
-            </div>
+            <div className="riceArea">
+                <div className="tips">
+                    {tips ? tips.tips : "読み込み中..."}
+                </div>
 
-            {/* 米キャラクター */}
-            <div className="rice">
-                {/* <img src={riceImage} alt="米" /> */}
+                {/* 米キャラクター */}
+                <div className="rice">
+                    <img src={riceImage} alt="米" />
+                </div>
             </div>
-
             {modalType === "garbage" && (
                 <div className="modal">
                     <div className="modalContent">
@@ -177,7 +223,14 @@ function Home() {
                         </select>
 
                         <p>
-                            ゴミ出し通知設定<input type="checkbox" checked={notification} onChange={(e) => setNotification(e.target.checked)} />
+                            ゴミ出し通知設定<br /><label className="switch">
+                                <input
+                                    type="checkbox"
+                                    checked={notification}
+                                    onChange={(e) => setNotification(e.target.checked)}
+                                />
+                                <span className="slider"></span>
+                            </label>
                         </p>
                         <button onClick={saveGarbageRule}>
                             登録
@@ -206,9 +259,9 @@ function Home() {
             {modalType === "music" && (
                 <div className="modal">
                     <div className="modalContent">
-                        <h2>今日の曲</h2>
+                        <h2>🎵 今日の曲</h2>
 
-                        <p>ここに今日の曲を表示します。</p>
+                        <h3>{tips?.music}</h3>
 
                         <button onClick={() => setModalType("")}>
                             閉じる
