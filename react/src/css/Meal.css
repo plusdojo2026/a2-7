@@ -1,3 +1,15 @@
-.createBtn{
+.filter{
+    border: 1px solid black;
+}
+
+.mealCard{
+    border: 1px solid black;
+}
+
+.newRegistModal{
+    border: 1px solid black;
+}
+
+.updateModal{
     border: 1px solid black;
 }

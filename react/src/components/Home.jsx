@@ -1,8 +1,19 @@
 import { useState } from "react";
 import axios from "axios";
+import riceImage from "../assets/rice.png";
+import "../css/Home.css";
+
 function Home() {
 
     const [modalType, setModalType] = useState("");
+    const [alertMessage, setAlertMessage] = useState("");
+    function showAlert(message) {
+        setAlertMessage(message);
+
+        setTimeout(() => {
+            setAlertMessage("");
+        }, 3000);
+    }
     const weekNumber = {
         "月曜日": 1,
         "火曜日": 2,
@@ -34,7 +45,7 @@ function Home() {
     async function saveGarbageRule() {
 
         if (burnableDay === "") {
-            alert("燃えるゴミ出し曜日を選択してください。");
+            showAlert("燃えるゴミ出し曜日を選択してください。");
             return;
         }
 
@@ -67,19 +78,27 @@ function Home() {
                 userId: 1
             });
 
-            alert("ゴミルールを登録しました");
+            showAlert("ゴミルールの設定を更新しました。");
+
+
+
             setModalType("");
 
         } catch (error) {
             console.error(error);
-            alert("登録に失敗しました");
+            showAlert("登録に失敗しました");
         }
     }
     return (
 
         <div className="home">
 
-
+            {alertMessage && (
+                <div className="customAlert">
+                    <span className="dot"></span>
+                    {alertMessage}
+                </div>
+            )}
 
             {/* ポイント */}
             <div className="point">
@@ -109,15 +128,16 @@ function Home() {
             </div>
 
             {/* 豆知識 */}
-            <div className="tips">
-                tips
-            </div>
+            <div className="riceArea">
+                <div className="tips">
+                    tips
+                </div>
 
-            {/* 米キャラクター */}
-            <div className="rice">
-                {/* <img src={riceImage} alt="米" /> */}
+                {/* 米キャラクター */}
+                <div className="rice">
+                    <img src={riceImage} alt="米" />
+                </div>
             </div>
-
             {modalType === "garbage" && (
                 <div className="modal">
                     <div className="modalContent">
@@ -177,7 +197,14 @@ function Home() {
                         </select>
 
                         <p>
-                            ゴミ出し通知設定<input type="checkbox" checked={notification} onChange={(e) => setNotification(e.target.checked)} />
+                            ゴミ出し通知設定<br /><label className="switch">
+                                <input
+                                    type="checkbox"
+                                    checked={notification}
+                                    onChange={(e) => setNotification(e.target.checked)}
+                                />
+                                <span className="slider"></span>
+                            </label>
                         </p>
                         <button onClick={saveGarbageRule}>
                             登録
