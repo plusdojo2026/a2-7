@@ -43,8 +43,8 @@ const MealComponent = () =>{
             <div className="updateModal">
                 新規作成
                 タイトル：<input type ="text" name="date"/><br />
-                ＊必須＊画像ファイル:<input type ="file" name="mealImg"/><br />
-                ＊必須＊日付:<input type ="date" name="date"/><br />
+                画像ファイル:<input type ="file" name="mealImg"/><br />
+                日付:<input type ="date" name="date"/><br />
                 参考URL：<input type ="text" name="url"/><br />
                 レシピ：<input type ="text" name="recipe"/><br />
                 <div className="mealtype">

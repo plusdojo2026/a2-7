@@ -11,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,16 +52,28 @@ public class MealController {
 		String fileName =
 				System.currentTimeMillis() + "_" + file.getOriginalFilename(); //fileNameが取得してきた画像名に
 		file.transferTo(
-				new File("uploads/"+ fileName)
+				new File("src/main/resources/uploads/"+ fileName)
 		);
 		return fileName;  //fileName = saveImage(image)へ戻る
 	}
 	
 	//食事内容の更新
 	@PostMapping("/meal/update/")
-	private Meal update(@RequestBody Meal meal) {
-		repository.save(meal);
-		return meal;
+	private Meal update(
+			@RequestParam("image") MultipartFile image,
+			@ModelAttribute Meal meal) {
+		try {
+			
+			if(!image.isEmpty()) {  //画像が空じゃない＝選択されていた時は更新！
+				String fileName = saveImage(image); //以下の画像保存メソッドに移動
+				meal.setMealImage(fileName);  //entityに値をセット
+			}
+			repository.save(meal);  //DB保存
+			return meal;
+		
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	//食事内容の一覧取得+記録日が新しい順古い順に切り替え
