@@ -67,8 +67,8 @@ VALUES
 ('シャンプー', '衛生用品', '2026-09-15', '2026-07-12', TRUE, 2, 4),
 ('洗剤', '掃除用品', '2026-10-01', '2026-07-18', FALSE, 1, 5);
 
--- 買い物リスト
-INSERT INTO ShoppingList
+--買い物リスト
+INSERT INTO shopping_list
 (create_date, user_id)
 VALUES
 ('2026-07-14', 1),
