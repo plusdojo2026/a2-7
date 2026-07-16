@@ -78,7 +78,7 @@ VALUES
 (5,'2026-07-18', 1);
 
 -- 買い物リスト商品
-INSERT INTO shoppping_item
+INSERT INTO ShoppingItem
 (ShoppingItemId, ShoppingListId, itemName, isBought)
 VALUES
 (1, 1, '牛乳', 0),
