@@ -12,12 +12,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Garbage;
 import com.example.demo.entity.Tips;
+import com.example.demo.entity.User;
 import com.example.demo.repository.GarbageRepository;
 import com.example.demo.repository.TipsRepository;
+import com.example.demo.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/home")
 public class HomeController {
+	@Autowired
+	private UserRepository userRepository;
+
+	@GetMapping("/point")
+	public Integer getPoint() {
+
+		User user = userRepository.findById(1).orElse(null);
+
+		return user.getPoint();
+	}
 
 	@Autowired
 	private GarbageRepository garbageRepository;
