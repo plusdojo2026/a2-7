@@ -10,5 +10,6 @@ public interface ShoppingItemRepository extends JpaRepository<ShoppingItem, Inte
 	
 	//指定したリストの商品一覧を取得
 	List<ShoppingItem> findByShoppingListId(Integer shoppingListId);
+	
 
 }

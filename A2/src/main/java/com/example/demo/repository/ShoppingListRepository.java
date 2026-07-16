@@ -8,5 +8,6 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, Inte
 	
 	//新しい買い物リストを取得
 	ShoppingList findTopByOrderByCreateDateDesc();
+	
 }
  
