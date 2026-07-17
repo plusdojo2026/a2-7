@@ -1,10 +1,18 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import riceImage from "../assets/rice.png";
+import riceImage0 from "../assets/rice0.png";
+import riceImage1 from "../assets/rice1.png";
+import riceImage2 from "../assets/rice2.png";
+import riceImage3 from "../assets/rice3.png";
+import riceImage4 from "../assets/rice4.png";
+import riceImage5 from "../assets/rice5.png";
+import riceImage6 from "../assets/rice6.png";
+import riceImage7 from "../assets/rice7.png";
 import "../css/Home.css";
 
 function Home() {
-
+    const navigate = useNavigate();
     const [modalType, setModalType] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
 
@@ -17,7 +25,7 @@ function Home() {
     }
 
     const [tips, setTips] = useState(null);
-    const [point,setPoint] = useState(0);
+    const [point, setPoint] = useState(0);
 
     const weekNumber = {
         "月曜日": 1,
@@ -54,7 +62,7 @@ function Home() {
             });
     }, []);
 
-     useEffect(() => {
+    useEffect(() => {
         axios.get("/api/home/point")
             .then((res) => {
                 setPoint(res.data);
@@ -63,9 +71,25 @@ function Home() {
                 console.error(err);
             });
     }, []);
+    let riceImage = riceImage0;
 
+    if (point >= 70) {
+        riceImage = riceImage7;
+    } else if (point >= 60) {
+        riceImage = riceImage6;
+    } else if (point >= 50) {
+        riceImage = riceImage5;
+    } else if (point >= 40) {
+        riceImage = riceImage4;
+    } else if (point >= 30) {
+        riceImage = riceImage3;
+    } else if (point >= 20) {
+        riceImage = riceImage2;
+    } else if (point >= 10) {
+        riceImage = riceImage1;
+    }
     function shoppingClick() {
-        console.log("買い物画面に遷移");
+        navigate("/shopping");
     }
 
     async function saveGarbageRule() {
@@ -76,37 +100,45 @@ function Home() {
         }
 
         try {
-            await axios.post("/api/garbage/add", {
-                garbageType: "燃えるゴミ",
-                cycle: "毎週",
-                garbageDay: weekNumber[burnableDay],
-                userId: 1
-            });
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "燃えないゴミ",
-                cycle: "毎週",
-                garbageDay: weekNumber[nonBurnableDay],
-                userId: 1
-            });
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "ペットボトル",
-                cycle: "毎週",
-                garbageDay: weekNumber[petBottleDay],
-                userId: 1
-            });
+            if (burnableDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "燃えるゴミ",
+                    garbageDay: weekNumber[burnableDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "缶・びん",
-                cycle: "毎週",
-                garbageDay: weekNumber[canBottleDay],
-                userId: 1
-            });
+            if (nonBurnableDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "燃えないゴミ",
+                    garbageDay: weekNumber[nonBurnableDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
+
+            if (petBottleDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "ペットボトル",
+                    garbageDay: weekNumber[petBottleDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
+
+            if (canBottleDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "缶・びん",
+                    garbageDay: weekNumber[canBottleDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
             showAlert("ゴミルールの設定を更新しました。");
-
-
 
             setModalType("");
 
@@ -128,7 +160,7 @@ function Home() {
 
             {/* ポイント */}
             <div className="point">
-                <p>現在の米粒ポイント</p>
+                <h2>現在の米粒ポイント</h2>
                 <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
@@ -139,7 +171,7 @@ function Home() {
             </button>
 
             {/* ボタン */}
-            <div className="buttonArea">
+            <div className="buttonArea2">
                 <button onClick={() => setModalType("garbage")}>
                     ゴミルール設定
                 </button>
@@ -165,8 +197,8 @@ function Home() {
                 </div>
             </div>
             {modalType === "garbage" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>ゴミルール</h2>
 
                         <p>燃えるゴミ出し曜日（必須）</p>
@@ -223,13 +255,13 @@ function Home() {
                         </select>
 
                         <p>
-                            ゴミ出し通知設定<br /><label className="switch">
+                            ゴミ出し通知設定<br /><label className="switch2">
                                 <input
                                     type="checkbox"
                                     checked={notification}
                                     onChange={(e) => setNotification(e.target.checked)}
                                 />
-                                <span className="slider"></span>
+                                <span className="slider2"></span>
                             </label>
                         </p>
                         <button onClick={saveGarbageRule}>
@@ -243,8 +275,8 @@ function Home() {
             )}
 
             {modalType === "about" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>アプリについて</h2>
 
                         <p>ここにアプリの説明画面を作ります。</p>
@@ -257,8 +289,8 @@ function Home() {
             )}
 
             {modalType === "music" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>🎵 今日の曲</h2>
 
                         <h3>{tips?.music}</h3>

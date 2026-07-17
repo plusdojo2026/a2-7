@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import garbageImage from "../assets/garbage.png";
 import "../css/Notice.css";
 function Notice() {
 
@@ -7,11 +8,21 @@ function Notice() {
     const [nearFoodMessage, setNearFoodMessage] = useState("");
     const [foodList, setFoodList] = useState([]);
     const [nearestFood, setNearestFood] = useState(null);
+    const week = [
+        "日曜日",
+        "月曜日",
+        "火曜日",
+        "水曜日",
+        "木曜日",
+        "金曜日",
+        "土曜日"
+    ];
 
+    const todayName = week[new Date().getDay()];
     useEffect(() => {
 
         // ゴミ情報取得
-        axios.get("/api/home/garbage")
+        axios.get("/api/notice/garbage")
             .then((res) => {
 
                 const garbageList = res.data;
@@ -23,12 +34,12 @@ function Notice() {
                 }
 
                 const todayGarbage = garbageList.filter(
-                    (garbage) => garbage.garbage_day === today
+                    (garbage) => garbage.garbageDay === today
                 );
 
                 if (todayGarbage.length > 0) {
                     setGarbageMessage(
-                        `今日は${todayGarbage[0].garbageType}の日です`
+                        `今日は${todayName}<br />${todayGarbage[0].garbageType}の日です!`
                     );
                 } else {
                     setGarbageMessage(
@@ -39,113 +50,108 @@ function Notice() {
 
 
         // 食品在庫取得
-        axios.get("/api/foodstock")
+        axios.get("/api/notice/food")
             .then((res) => {
 
                 const foods = res.data;
 
-                const today = new Date();
-
-                // 一覧表示用
-                setFoodList(foods);
-
-
-                // 賞味期限が近い順に並び替え
-                const sortedFoods = [...foods].sort((a, b) => {
-
-                    const dateA = new Date(a.addDay);
-                    dateA.setDate(
-                        dateA.getDate() + a.foodMaster.expirationDate
-                    );
-
-                    const dateB = new Date(b.addDay);
-                    dateB.setDate(
-                        dateB.getDate() + b.foodMaster.expirationDate
-                    );
-
-                    return dateA - dateB;
-                });
-
-
-                // 一番賞味期限が近い食品
-                const nearestFood = sortedFoods[0];
-
-                setNearestFood(nearestFood);
-
-
-                if (nearestFood) {
-
-                    // 賞味期限を計算
-                    const expiration = new Date(nearestFood.addDay);
-
-                    expiration.setDate(
-                        expiration.getDate()
-                        + nearestFood.foodMaster.expirationDate
-                    );
-
-
-                    const diff = Math.ceil(
-                        (expiration - today)
-                        / (1000 * 60 * 60 * 24)
-                    );
-
-
-                    if (diff >= 0) {
-                        setNearFoodMessage(
-                            `${nearestFood.foodStockName}は賞味期限まで残り${diff}日です`
-                        );
-                    } else {
-                        setNearFoodMessage(
-                            `${nearestFood.foodStockName}は賞味期限が切れています`
-                        );
-                    }
+                if (!foods || foods.length === 0) {
+                    setNearFoodMessage("食品が登録されていません");
+                    return;
                 }
+                setFoodList(foods);
+                const nearestFood = foods[0];
+                setNearestFood(nearestFood);
+                const today = new Date();
+                const expiration = new Date(nearestFood.expirationDate);
+                const diff = Math.ceil(
+                    (expiration - today) / (1000 * 60 * 60 * 24)
+                );
 
+                if (diff >= 0) {
+                    setNearFoodMessage(
+                        `${nearestFood.foodStockName}は賞味期限まで残り${diff}日です`
+                    );
+                } else {
+                    setNearFoodMessage(
+                        `${nearestFood.foodStockName}は賞味期限が切れています`
+                    );
+                }
             });
     }, []);
 
+    async function readNotice(id) {
 
+        try {
+
+            await axios.put(`/api/notice/food/read/${id}`);
+
+            setFoodList(
+                foodList.map(food =>
+                    food.foodStockId === id
+                        ? { ...food, noticeRead: true }
+                        : food
+                )
+            );
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
     return (
-        <div className="notice">
+        <div className="notice2">
 
-            <h2>お知らせ</h2>
 
-            <div className="noticeCard">
-                <h3>ゴミのお知らせを表示</h3>
-                <p>{garbageMessage}</p>
-            </div>
 
-            <div className="noticeCard">
-                <h3>一番近い賞味期限</h3>
-                <p>{nearFoodMessage}</p>
-            </div>
-            <hr></hr>
-            <div className="noticeCard">
-                <h3>他の食材の賞味期限</h3>
-                <div className="foodList">
-                    {foodList
-                        .filter(food => food.foodStockId !== nearestFood?.foodStockId)
-                        .map(food => {
+            <div className="garbageCard">
+                <div className="garbageContent">
+                    <p dangerouslySetInnerHTML={{ __html: garbageMessage }} />
 
-                            const today = new Date();
-
-                            const expiration = new Date(food.addDay);
-
-                            expiration.setDate(
-                                expiration.getDate() + food.foodMaster.expirationDate
-                            );
-
-                            const diff = Math.ceil(
-                                (expiration - today) / (1000 * 60 * 60 * 24)
-                            );
-
-                            return (
-                                <p key={food.foodStockId}>
-                                    {food.foodStockName}の賞味期限が残り{diff}日で切れます。
-                                </p>
-                            );
-                        })}
+                    <img
+                        src={garbageImage}
+                        alt="ゴミ"
+                        className="garbageImage"
+                    />
                 </div>
+            </div>
+            <div className="nearestCard">
+                <h3>{nearFoodMessage}</h3>
+            </div>
+
+            <hr />
+
+            <div className="foodList">
+                {foodList
+                    .filter(food => food.foodStockId !== nearestFood?.foodStockId)
+                    .map(food => {
+
+                        const today = new Date();
+                        const expiration = new Date(food.expirationDate);
+
+                        const diff = Math.ceil(
+                            (expiration - today) / (1000 * 60 * 60 * 24)
+                        );
+
+                        return (
+                            <div
+                                className="foodCard"
+                                key={food.foodStockId}
+                                onClick={() => readNotice(food.foodStockId)}
+                            >
+
+                                {!food.noticeRead && (
+                                    <div className="unreadMark"></div>
+                                )}
+
+                                <p>
+                                    {diff >= 0
+                                        ? `${food.foodStockName}の賞味期限が残り${diff}日です`
+                                        : `${food.foodStockName}の賞味期限が切れています`}
+                                </p>
+
+                            </div>
+                        );
+                    })}
             </div>
         </div>
     );

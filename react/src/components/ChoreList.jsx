@@ -1,6 +1,28 @@
 import { useState } from "react";
 import "../css/ChoreList.css";
 
+// 曜日のリスト(0=月曜 〜 6=日曜)
+const DAYS = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日", "日曜日"];
+const getPatternDays = (frequency, dayIndex) => {
+
+    if (frequency === "毎日") {
+        return [0,1,2,3,4,5,6];
+    }
+
+    if (frequency === "週2回") {
+        return [
+            dayIndex,
+            (dayIndex + 3) % 7
+        ];
+    }
+
+    if (frequency === "週1回") {
+        return [dayIndex];
+    }
+
+    return [];
+};
+
 function ChoreList(){
 
     // どのモーダルが開いているか
@@ -18,11 +40,21 @@ function ChoreList(){
     // 家事リスト:設定中の家事名
     const [settingChore, setSettingChore] = useState(null);
 
-    // 家事リスト:アラート表示
-    const [alert, setAlert] = useState(false);
+    // 家事リスト:アラート表示(文字列を入れて表示する)
+    const [alert, setAlert] = useState("");
 
     // 提案結果
     const [result, setResult] = useState([]);
+
+    // ★追加:全家事の設定を保存する箱
+    // 例:{ "掃除機": { frequency: "週1回", day: 0 } }
+    const [settings, setSettings] = useState({});
+
+    // ★追加:設定画面で今選んでいる頻度
+    const [frequency, setFrequency] = useState("毎日");
+
+    // ★追加:設定画面で今選んでいる曜日(未選択は null)
+    const [day, setDay] = useState(null);
 
     // 家事データ(仮。後でAPIから取得する)
     const chores = [
@@ -37,6 +69,54 @@ function ChoreList(){
         { name: "洗濯", category: "洗濯", time: 30 },
         { name: "洗濯物を畳む", category: "洗濯", time: 15 }
     ];
+
+    // ★追加:他の家事が使っている曜日を集める(自分の家事は除く)
+    const getUsedDays = () => {
+        const used = new Set();
+        Object.entries(settings).forEach(([choreName, setting]) => {
+            if (choreName === settingChore) return;   // 自分の設定は除外
+            getPatternDays(setting.frequency, setting.day).forEach(d => used.add(d));
+        });
+        return used;
+    };
+
+    // ★追加:その曜日を選んだ場合、他の家事と重複するか判定
+    const isConflict = (dayIndex) => {
+    const used = getUsedDays();
+    return used.has(dayIndex);
+};
+
+    // ★追加:設定画面を開く(保存済みの設定があれば読み込む)
+    const openSetting = (name) => {
+        const saved = settings[name];
+        setFrequency(saved ? saved.frequency : "毎日");
+        setDay(saved && saved.day !== undefined ? saved.day : null);
+        setSettingChore(name);
+    };
+
+    // ★追加:設定を確定する
+    const handleSaveSetting = () => {
+        // 曜日が必要な頻度なのに未選択ならメッセージ
+        if (frequency !== "毎日" && day === null) {
+            setAlert("● 曜日を選択してください。");
+            setTimeout(() => setAlert(""), 2000);
+            return;
+        }
+        // 重複チェック(選べない曜日は選択肢から消しているが、念のため)
+        if (frequency !== "毎日" && isConflict(day)) {
+            setAlert("● その曜日は他の家事で使用されています。");
+            setTimeout(() => setAlert(""), 2000);
+            return;
+        }
+        // settings に保存(既存の設定をコピーして、この家事だけ上書き)
+        setSettings({
+            ...settings,
+            [settingChore]: { frequency: frequency, day: day }
+        });
+        setAlert("● 設定が完了しました。");
+        setSettingChore(null);
+        setTimeout(() => setAlert(""), 2000);
+    };
 
     // カテゴリの選択/解除を切り替える
     const toggleSelect = (name) => {
@@ -57,16 +137,10 @@ function ChoreList(){
 
     // 確定 → 提案を作る → 読み込み → 結果
     const handleSuggest = () => {
-
-        // 1. 選択したカテゴリの家事だけに絞る
         const filtered = chores.filter(chore =>
             selected.includes(chore.category)
         );
-
-        // 2. 順番をランダムにシャッフルする
         const shuffled = [...filtered].sort(() => Math.random() - 0.5);
-
-        // 3. 合計が所要時間以内に収まるように上から詰める
         const suggestList = [];
         let total = 0;
         for (const chore of shuffled) {
@@ -75,9 +149,7 @@ function ChoreList(){
                 total += chore.time;
             }
         }
-
         setResult(suggestList);
-
         setStep("loading");
         setTimeout(() => {
             setStep("result");
@@ -87,12 +159,7 @@ function ChoreList(){
     return (
         <div className="chore">
 
-    {/* タブ */}
-    <div className="menu">
-        <button>お知らせ</button>
-        <button>ホーム</button>
-        <button className="active">家事</button>
-    </div>
+
 
     {/* 家事忘れ防止通知 */}
     <div className="notice">
@@ -207,7 +274,7 @@ function ChoreList(){
                     <>
                         <div className="listArea">
                             {["掃除機", "お風呂掃除", "洗濯", "洗い物", "トイレ掃除"].map(name => (
-                                <div className="listRow" key={name} onClick={() => setSettingChore(name)}>
+                                <div className="listRow" key={name} onClick={() => openSetting(name)}>
                                     <span>{name}</span>
                                     <span className="arrow">›</span>
                                 </div>
@@ -222,15 +289,76 @@ function ChoreList(){
                     <>
                         <h3 className="settingTitle">{settingChore} -設定-</h3>
 
+                        {/* 頻度の選択 */}
                         <div className="settingItem">
                             <p className="label">家事を行う頻度</p>
-                            <select className="select">
+                            <select
+                                className="select"
+                                value={frequency}
+                                onChange={(e) => {
+                                    setFrequency(e.target.value);
+                                    setDay(null);   // 頻度を変えたら曜日は選び直し
+                                }}
+                            >
                                 <option>毎日</option>
-                                <option>2日に1回</option>
+                                <option>週2回</option>
                                 <option>週1回</option>
                             </select>
                         </div>
 
+                        {/* ★2日に1回のとき:開始曜日を表示 */}
+                        {frequency === "週2回" && (
+                            <div className="settingItem">
+                                <p className="label">開始曜日</p>
+                                <select
+                                    className="select"
+                                    value={day === null ? "" : day}
+                                    onChange={(e) => setDay(Number(e.target.value))}
+                                >
+                                    <option value="" disabled>選択してください</option>
+                                    {DAYS.map((name, index) => (
+                                        <option
+                                            key={name}
+                                            value={index}
+                                            disabled={isConflict(index)}
+                                        >
+                                            {name}{isConflict(index) ? "(使用中)" : ""}
+                                        </option>
+                                    ))}
+                                </select>
+                                {/* 実施パターンのプレビュー */}
+                                {day !== null && (
+                                    <p className="label">
+                                        実施日:{getPatternDays("週2回", day).map(d => DAYS[d].charAt(0)).join("・")}
+                                    </p>
+                                )}
+                            </div>
+                        )}
+
+                        {/* ★週1回のとき:曜日を表示 */}
+                        {frequency === "週1回" && (
+                            <div className="settingItem">
+                                <p className="label">曜日</p>
+                                <select
+                                    className="select"
+                                    value={day === null ? "" : day}
+                                    onChange={(e) => setDay(Number(e.target.value))}
+                                >
+                                    <option value="" disabled>選択してください</option>
+                                    {DAYS.map((name, index) => (
+                                        <option
+                                            key={name}
+                                            value={index}
+                                            disabled={isConflict(index)}
+                                        >
+                                            {name}{isConflict(index) ? "(使用中)" : ""}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            
+                        )}
                         <div className="settingItem">
                             <p className="label">家事忘れ防止通知</p>
                             <select className="select">
@@ -238,6 +366,8 @@ function ChoreList(){
                                 <option>OFF</option>
                             </select>
                         </div>
+
+
 
                         <div className="settingItem">
                             <p className="label">マイ家事登録</p>
@@ -247,11 +377,7 @@ function ChoreList(){
                             </select>
                         </div>
 
-                        <button className="confirmBtn" onClick={() => {
-                            setAlert(true);
-                            setSettingChore(null);
-                            setTimeout(() => setAlert(false), 2000);
-                        }}>確定</button>
+                        <button className="confirmBtn" onClick={handleSaveSetting}>確定</button>
                     </>
                 )}
             </div>
@@ -259,8 +385,8 @@ function ChoreList(){
     )}
 
     {/* アラート */}
-    {alert && (
-        <div className="alertBox">● 設定が完了しました。</div>
+    {alert !== "" && (
+        <div className="alertBox">{alert}</div>
     )}
 
 </div>

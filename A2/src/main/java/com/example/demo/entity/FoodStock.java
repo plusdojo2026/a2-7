@@ -30,7 +30,7 @@ public class FoodStock {
 	private LocalDate addDay;
 	private LocalDate expirationDate;
 	private Boolean status;
-	
+	private Boolean noticeRead;
 	@ManyToOne
 	 @JoinColumn(name = "user_id")
 	 @JsonIgnore
