@@ -11,6 +11,11 @@ const MealComponent = () =>{
     //登録
     let [newMeal, setNewMeal] = useState({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});
     let [meals, setMeals] = useState([]);
+    //並び替え（プルダウンボタン）
+    let [showSortMenu, setShowSortMenu] = useState(false);
+    //一件クリックしたらそのデータをsetSlectedMealに保存しておく
+    let [selectedMeal, setSelectedMeal] = useState({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});
+
     
 
     //登録
@@ -35,6 +40,27 @@ const MealComponent = () =>{
         setNewMeal({ ...newMeal, mealType:mealType});
     };
 
+    //編集
+    let openUpdateModal = (meal) =>{  //一件クリックしたら実行
+        console.log(meal);
+        setSelectedMeal(meal); //selectedMealに取得したデータを保存
+        setShowUpdateModal(true);  //編集モーダルを開く
+    }
+    //モーダル内の食事情報(更新内容)をmodBookに保存(reactのstateに保存)
+    let inputSelectedMeal = (e) => {
+        setSelectedMeal({ ...selectedMeal, [e.target.name]: e.target.value });
+    }
+
+    //更新
+    let updateMeal = () =>{
+        let updateMeals = meals.map((meal) => meal.title === selectedMeal.title ? selectedMeal : meal);
+        setMeals(updateMeals); //mealsの中身をupdatedMealsに書き換え
+        setShowUpdateModal(false);
+    }
+    let selectUpdateMealType = (mealType) =>{
+        setSelectedMeal({ ...selectedMeal, mealTpe:mealType });
+    }
+
 
 
     return(
@@ -42,10 +68,16 @@ const MealComponent = () =>{
 
             {/* 絞り込み */}
             <div className="filter">
-                <button>並び替え</button>
-                <button>朝</button>
-                <button>昼</button>
-                <button>夜</button>
+                <button onClick={() =>setShowSortMenu(!showSortMenu)}>並び替え</button>
+                {showSortMenu &&(
+                    <div className='sortMenu'>
+                        <button onClick={() => sortMeal("new")}>新しい順</button>
+                        <button onClick={() => sortMeal("old")}>古い順</button>
+                    </div>
+                )}
+                    <button >朝</button>
+                    <button >昼</button>
+                    <button >夜</button>
             </div>
 
             {/* 新規作成ボタン→クリックすると新規作成モーダルが展開*/}
@@ -56,7 +88,7 @@ const MealComponent = () =>{
             {/* 食事一覧の表示 */}
             {/* `/uploads/${meal.mealImg}` */}
             {meals.map((meal) =>
-                <div key={meal.title} className="mealCard" onClick={() => setShowUpdateModal(true)}>
+                <div key={meal.title} className="mealCard" onClick={() => openUpdateModal(meal)}>
                     <div className="mealImage">{meal.mealImg}</div>
                     <div className="mealTitle">{meal.title}</div>
                     <div className="mealdate">日付：{meal.date}</div>
@@ -89,17 +121,17 @@ const MealComponent = () =>{
                 <div className="updateModal">
                     <button  onClick={() => setShowUpdateModal(false)}>×</button><br />
                     編集<br />
-                    タイトル：<input type ="text" name="date"/><br />
+                    タイトル：<input type ="text" name="title" value={selectedMeal.title} onChange={inputSelectedMeal}/><br />
                     画像ファイル:<input type ="file" name="mealImg"/><br />
-                    日付:<input type ="date" name="date"/><br />
-                    参考URL：<input type ="text" name="url"/><br />
-                    レシピ：<input type ="text" name="recipe"/><br />
+                    日付:<input type ="date" name="date"value={selectedMeal.date}  onChange={inputSelectedMeal}/><br />
+                    参考URL：<input type ="text" name="url" value={selectedMeal.url} onChange={inputSelectedMeal}/><br />
+                    レシピ：<input type ="text" name="recipe" value={selectedMeal.recipe} onChange={inputSelectedMeal}/><br />
                     <div className="mealtype">
-                        <button>朝</button>
-                        <button>昼</button>
-                        <button>夜</button>
+                        <button onClick={()=> selectUpdateMealType("朝")}>朝</button>
+                        <button onClick={()=> selectUpdateMealType("昼")}>昼</button>
+                        <button onClick={()=> selectUpdateMealType("夜")}>夜</button>
                     </div>
-                    <button>更新</button>
+                    <button onClick={updateMeal}>更新</button>
                 </div>
             }
 
