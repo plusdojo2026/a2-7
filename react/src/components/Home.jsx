@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import riceImage from "../assets/rice.png";
 import "../css/Home.css";
 
 function Home() {
-
+    const navigate = useNavigate();
     const [modalType, setModalType] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
 
@@ -17,7 +18,7 @@ function Home() {
     }
 
     const [tips, setTips] = useState(null);
-    const [point,setPoint] = useState(0);
+    const [point, setPoint] = useState(0);
 
     const weekNumber = {
         "月曜日": 1,
@@ -54,7 +55,7 @@ function Home() {
             });
     }, []);
 
-     useEffect(() => {
+    useEffect(() => {
         axios.get("/api/home/point")
             .then((res) => {
                 setPoint(res.data);
@@ -65,7 +66,7 @@ function Home() {
     }, []);
 
     function shoppingClick() {
-        console.log("買い物画面に遷移");
+        navigate("/shopping");
     }
 
     async function saveGarbageRule() {
@@ -76,28 +77,28 @@ function Home() {
         }
 
         try {
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "燃えるゴミ",
                 cycle: "毎週",
                 garbageDay: weekNumber[burnableDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "燃えないゴミ",
                 cycle: "毎週",
                 garbageDay: weekNumber[nonBurnableDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "ペットボトル",
                 cycle: "毎週",
                 garbageDay: weekNumber[petBottleDay],
                 userId: 1
             });
 
-            await axios.post("/api/home/garbage/add", {
+            await axios.post("/api/garbage/add", {
                 garbageType: "缶・びん",
                 cycle: "毎週",
                 garbageDay: weekNumber[canBottleDay],
@@ -129,7 +130,7 @@ function Home() {
             {/* ポイント */}
             <div className="point">
                 <p>現在の米粒ポイント</p>
-                <h1>3</h1>
+                <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
 
