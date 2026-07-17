@@ -94,7 +94,7 @@ public class ShoppingController {
 		
 		//最新の買い物リスト取得
 		ShoppingList latestList =
-				shoppingListRepository.findTopByOrderByCreateDateDesc();
+				shoppingListRepository.findTopByOrderByShoppingListidDesc();
 		
 		if (latestList == null) {
 			return new ArrayList<>();

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import "../css/ShoppingModal.css";
 
 //モーダル表示
 
@@ -41,12 +42,16 @@ function ShoppingModal({ items, closeModal, reload }) {
     };
 
      return (
-        <div>
+        <div className="modal-overlay">
+
+            <div className="modal">
 
             <h2>購入状況確認</h2>
 
             {shoppingItems.map((item, index) => (
-                <div key={item.shoppingItemId}>
+                <div 
+                className="item-row"
+                key={item.shoppingItemId}>
 
                     <span>
                         {item.itemName}
@@ -69,7 +74,10 @@ function ShoppingModal({ items, closeModal, reload }) {
             </button>
 
         </div>
-     );
+    
+    </div>
+
+    );
 }
 
 export default ShoppingModal;
