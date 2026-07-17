@@ -15,8 +15,6 @@ const MealComponent = () =>{
     let [selectedMeal, setSelectedMeal] = useState({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});
     //記録アラート
     let[message, setMessage] = useState("");
-    //並び替え（プルダウンボタン）
-    let [showSortMenu, setShowSortMenu] = useState(false);
     //絞り込み(朝昼夜ボタン)
     let [filterMealType, setFilterMealType] = useState("");
 
@@ -115,13 +113,12 @@ const MealComponent = () =>{
 
             {/* 絞り込み */}
             <div className="filter">
-                <button onClick={() =>setShowSortMenu(!showSortMenu)}>並び替え</button>
-                {showSortMenu &&(
-                    <div className='sortMenu'>
-                        <button onClick={() => sortMeal("new")}>新しい順</button>
-                        <button onClick={() => sortMeal("old")}>古い順</button>
-                    </div>
-                )}
+                <select onChange={(e) => sortMeal(e.target.value)}>
+<option value="" disabled>並び替え</option>
+<option value="new">新しい順</option>
+<option value="old">古い順</option>
+</select>
+    
                     <button onClick={() => toggleMealType("朝")}>朝</button>
                     <button onClick={() => toggleMealType("昼")}>昼</button>
                     <button onClick={() => toggleMealType("夜")}>夜</button>
