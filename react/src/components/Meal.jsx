@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/Meal.css'
-
+import axios from "axios";
 
 
 const MealComponent = () =>{
@@ -34,7 +34,7 @@ const MealComponent = () =>{
     //入力フォームの値をnewMealに保存(reactのstateに保存)
     let inputNewMeal = (e) => {
         if(e.target.name === "mealImage"){
-            setNewMeal({...newMeal, mealImage:e.target.files[0].name});
+            setNewMeal({...newMeal, mealImage:e.target.files[0]});
         }else{
             setNewMeal({ ...newMeal, [e.target.name]: e.target.value });
         }
@@ -45,14 +45,31 @@ const MealComponent = () =>{
             alert("画像と日付は必須です");
             return;
         }
-        setMeals([...meals, newMeal]);
-        console.log(newMeal);
+        //setMeals([...meals, newMeal]);
+        let formData = new FormData();
 
-        setMessage("記録しました");
-        setTimeout(() => {setMessage("");},3000);
-    
-        setNewMeal({recipeTitle:'', mealImage:'', recordDate:'', url:'', recipeMemo:'',mealType:''});//入力フォームを空欄に
-        setShowRegistModal(false);
+        formData.append("recipeTitle", newMeal.recipeTitle);
+        formData.append("recordDate", newMeal.recordDate);
+        formData.append("mealType", newMeal.mealType);
+        formData.append("url", newMeal.url);
+        formData.append("recipeMemo", newMeal.recipeMemo);
+
+        formData.append("image", newMeal.mealImage);
+
+        console.log(newMeal);
+        axios.post(
+            "/api/meal/regist/",
+            formData
+        )
+
+        .then(response =>{
+            refreshMealList();
+            setMessage("記録しました");
+            setTimeout(() => {setMessage("");},3000);
+        
+            setNewMeal({recipeTitle:'', mealImage:'', recordDate:'', url:'', recipeMemo:'',mealType:''});//入力フォームを空欄に
+            setShowRegistModal(false);
+        });
     };
     //朝昼夜ボタン
     let selectMealType = (mealType) =>{

@@ -52,7 +52,7 @@ public class MealController {
 		String fileName =
 				System.currentTimeMillis() + "_" + file.getOriginalFilename(); //fileNameが取得してきた画像名に
 		file.transferTo(
-				new File("src/main/resources/uploads/"+ fileName)
+				new File("uploads/"+ fileName)
 		);
 		return fileName;  //fileName = saveImage(image)へ戻る
 	}
