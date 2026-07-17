@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import riceImage from "../assets/rice.png";
 import "../css/Home.css";
 
 function Home() {
-
+    const navigate = useNavigate();
     const [modalType, setModalType] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
 
@@ -17,7 +18,7 @@ function Home() {
     }
 
     const [tips, setTips] = useState(null);
-    const [point,setPoint] = useState(0);
+    const [point, setPoint] = useState(0);
 
     const weekNumber = {
         "月曜日": 1,
@@ -54,7 +55,7 @@ function Home() {
             });
     }, []);
 
-     useEffect(() => {
+    useEffect(() => {
         axios.get("/api/home/point")
             .then((res) => {
                 setPoint(res.data);
@@ -65,7 +66,7 @@ function Home() {
     }, []);
 
     function shoppingClick() {
-        console.log("買い物画面に遷移");
+        navigate("/shopping");
     }
 
     async function saveGarbageRule() {

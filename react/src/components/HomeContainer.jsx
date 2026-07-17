@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Home from "./Home";
 import Notice from "./Notice";
-//import Chores from "./Chores";
+// import ChoreList from "./ChoreList";
 import "../css/HomeContainer.css";
 
 function HomeContainer() {
