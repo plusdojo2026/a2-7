@@ -49,68 +49,33 @@ function Notice() {
 
 
         // 食品在庫取得
-        axios.get("/api/foodstock")
+        axios.get("/api/notice/food")
             .then((res) => {
 
                 const foods = res.data;
 
-                const today = new Date();
-
-                // 一覧表示用
-                setFoodList(foods);
-
-
-                // 賞味期限が近い順に並び替え
-                const sortedFoods = [...foods].sort((a, b) => {
-
-                    const dateA = new Date(a.addDay);
-                    dateA.setDate(
-                        dateA.getDate() + a.foodMaster.expirationDate
-                    );
-
-                    const dateB = new Date(b.addDay);
-                    dateB.setDate(
-                        dateB.getDate() + b.foodMaster.expirationDate
-                    );
-
-                    return dateA - dateB;
-                });
-
-
-                // 一番賞味期限が近い食品
-                const nearestFood = sortedFoods[0];
-
-                setNearestFood(nearestFood);
-
-
-                if (nearestFood) {
-
-                    // 賞味期限を計算
-                    const expiration = new Date(nearestFood.addDay);
-
-                    expiration.setDate(
-                        expiration.getDate()
-                        + nearestFood.foodMaster.expirationDate
-                    );
-
-
-                    const diff = Math.ceil(
-                        (expiration - today)
-                        / (1000 * 60 * 60 * 24)
-                    );
-
-
-                    if (diff >= 0) {
-                        setNearFoodMessage(
-                            `${nearestFood.foodStockName}は賞味期限まで残り${diff}日です`
-                        );
-                    } else {
-                        setNearFoodMessage(
-                            `${nearestFood.foodStockName}は賞味期限が切れています`
-                        );
-                    }
+                if (!foods || foods.length === 0) {
+                    setNearFoodMessage("食品が登録されていません");
+                    return;
                 }
+                setFoodList(foods);
+                const nearestFood = foods[0];
+                setNearestFood(nearestFood);
+                const today = new Date();
+                const expiration = new Date(nearestFood.expirationDate);
+                const diff = Math.ceil(
+                    (expiration - today) / (1000 * 60 * 60 * 24)
+                );
 
+                if (diff >= 0) {
+                    setNearFoodMessage(
+                        `${nearestFood.foodStockName}は賞味期限まで残り${diff}日です`
+                    );
+                } else {
+                    setNearFoodMessage(
+                        `${nearestFood.foodStockName}は賞味期限が切れています`
+                    );
+                }
             });
     }, []);
 
@@ -139,11 +104,9 @@ function Notice() {
 
                             const today = new Date();
 
-                            const expiration = new Date(food.addDay);
+                            const expiration = new Date(food.expirationDate);
 
-                            expiration.setDate(
-                                expiration.getDate() + food.foodMaster.expirationDate
-                            );
+
 
                             const diff = Math.ceil(
                                 (expiration - today) / (1000 * 60 * 60 * 24)
@@ -151,7 +114,9 @@ function Notice() {
 
                             return (
                                 <p key={food.foodStockId}>
-                                    {food.foodStockName}の賞味期限が残り{diff}日で切れます。
+                                    {diff >= 0
+                                        ? `${food.foodStockName}は賞味期限まで残り${diff}日です`
+                                        : `${food.foodStockName}は賞味期限が切れています`}
                                 </p>
                             );
                         })}

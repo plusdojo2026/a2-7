@@ -77,33 +77,43 @@ function Home() {
         }
 
         try {
-            await axios.post("/api/garbage/add", {
-                garbageType: "燃えるゴミ",
-                garbageDay: weekNumber[burnableDay],
-                userId: 1,
-                notification: notification
-            });
+            
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "燃えないゴミ",
-                garbageDay: weekNumber[nonBurnableDay],
-                userId: 1,
-                notification: notification
-            });
+            if (burnableDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "燃えるゴミ",
+                    garbageDay: weekNumber[burnableDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "ペットボトル",
-                garbageDay: weekNumber[petBottleDay],
-                userId: 1,
-                notification: notification
-            });
+            if (nonBurnableDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "燃えないゴミ",
+                    garbageDay: weekNumber[nonBurnableDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "缶・びん",
-                garbageDay: weekNumber[canBottleDay],
-                userId: 1,
-                notification: notification
-            });
+            if (petBottleDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "ペットボトル",
+                    garbageDay: weekNumber[petBottleDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
+
+            if (canBottleDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "缶・びん",
+                    garbageDay: weekNumber[canBottleDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
             showAlert("ゴミルールの設定を更新しました。");
 
