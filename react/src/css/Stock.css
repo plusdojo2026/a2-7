@@ -1,67 +1,474 @@
-/*画面全体*/
+/* ==============================
+   画面全体
+============================== */
 .stock-list-page {
     min-height: 100vh;
     padding: 24px;
     background: #f4f6f8;
     color: #202124;
-    font-family: sans-serif;
+    font-family:
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        sans-serif;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-/*食材・日用品タブ全体*/
+
+/* ==============================
+   スマホ画面風の本体
+============================== */
+.stock-list-page {
+    min-height: 100vh;
+    background: #f4f6f8;
+
+    display: flex;
+    justify-content: center;
+}
+
+
+/* ==============================
+   食材・日用品タブ
+============================== */
 .stock-list-tabs {
     display: flex;
+    height: 72px;
     background: #ffffff;
     border-bottom: 1px solid #dedede;
 }
 
-/*食材一覧、日用品一覧それぞれのボタン*/
+
+/* タブボタン */
 .stock-list-tab {
     position: relative;
     flex: 1;
-    padding: 22px 10px 16px;
+
+    padding: 26px 10px 18px;
+
     border: none;
     background: transparent;
+
     color: #202124;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
+
     cursor: pointer;
 }
 
 
-@media (max-width: 600px) {
-    .stock-list-app {
-        width: 100%;
-        margin: 0;
-        border: none;
-        border-radius: 0;
-    }
+/* 選択中タブの下線 */
+.stock-list-tab.active::after {
+    content: "";
+
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    bottom: 0;
+
+    height: 5px;
+    background: #73efb4;
 }
 
-.stock-modal-overlay{
+
+/* ==============================
+   一覧部分
+============================== */
+.stock-list-content {
+    padding: 0 14px 24px;
+}
+
+
+/* データがないとき */
+.stock-list-message {
+    margin: 40px 0;
+    text-align: center;
+    color: #777777;
+    font-size: 14px;
+}
+
+
+/* APIエラー */
+.stock-list-error {
+    margin: 16px 0;
+    padding: 14px;
+
+    border: 1px solid #ef9a9a;
+    border-radius: 10px;
+
+    background: #ffebee;
+    color: #b71c1c;
+    text-align: center;
+}
+
+.stock-list-error p {
+    margin: 0 0 10px;
+}
+
+.stock-list-error button {
+    padding: 7px 14px;
+    border: none;
+    border-radius: 6px;
+    background: #d32f2f;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+
+/* ==============================
+   期限警告
+============================== */
+.expiration-alert {
+    margin: 12px 0 8px;
+    padding: 8px 12px;
+
+    border: 4px solid #d8d8d8;
+    border-radius: 22px;
+
+    background: #ffffff;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* 複数の警告を表示する場合 */
+.expiration-alert-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 3px 0;
+}
+
+
+/* 警告の赤丸 */
+.expiration-alert-dot {
+    flex-shrink: 0;
+
+    width: 13px;
+    height: 13px;
+    margin-top: 2px;
+
+    border-radius: 50%;
+    background: #ff1515;
+}
+
+
+/* ==============================
+   商品一覧
+============================== */
+.stock-list-items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+
+/* 商品1件分 */
+.stock-list-row {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    min-height: 125px;
+    padding: 14px 12px;
+
+    border-bottom: 2px solid #ded8c5;
+
+    box-sizing: border-box;
+}
+
+
+/* 商品画像の枠 */
+.stock-list-image {
+    flex-shrink: 0;
+
+    width: 68px;
+    height: 86px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* 商品画像 */
+.stock-list-image img {
+    display: block;
+
+    max-width: 64px;
+    max-height: 82px;
+
+    object-fit: contain;
+}
+
+
+/* 画像がない日用品などの背景 */
+.stock-list-image.daily {
+    width: 48px;
+    height: 62px;
+
+    margin-left: 8px;
+    margin-right: 12px;
+
+    border: 2px solid #2b7cb9;
+    background: #cdefff;
+}
+
+
+/* 日用品画像が存在する場合 */
+.stock-list-image.daily img {
+    max-width: 44px;
+    max-height: 58px;
+}
+
+
+/* ==============================
+   商品情報
+============================== */
+.stock-list-detail {
+    flex: 1;
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* 商品名など1行分 */
+.stock-list-detail>div {
+    display: flex;
+    align-items: flex-start;
+
+    margin-bottom: 3px;
+}
+
+
+/* 項目名 */
+.stock-list-detail dt {
+    flex-shrink: 0;
+    margin: 0;
+}
+
+
+/* 値 */
+.stock-list-detail dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+
+/* 編集ボタン */
+.stock-edit-button {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+
+    padding: 5px 12px;
+
+    border: 1px solid #69dca7;
+    border-radius: 14px;
+
+    background: #ffffff;
+    color: #23885e;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* 編集ボタンにマウスを載せたとき */
+.stock-edit-button:hover {
+    background: #73efb4;
+    color: #ffffff;
+}
+
+
+/* ==============================
+   モーダル背景
+============================== */
+.stock-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.5);
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.5);
+
+    box-sizing: border-box;
 }
 
-.stock-modal{
-    width:420px;
-    background:#fff;
-    border-radius:10px;
-    padding:20px;
+
+/* ==============================
+   モーダル本体
+============================== */
+.stock-modal {
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+
+    padding: 24px;
+
+    border-radius: 16px;
+    background: #ffffff;
+
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+
+    overflow-y: auto;
+    box-sizing: border-box;
 }
 
-.stock-modal input{
-    width:100%;
-    margin:5px 0 15px;
-    padding:8px;
-    box-sizing:border-box;
+
+/* モーダルタイトル */
+.stock-modal h2 {
+    margin: 0 0 22px;
+
+    text-align: center;
+    font-size: 21px;
 }
 
-.stock-modal-actions{
-    display:flex;
-    justify-content:flex-end;
-    gap:10px;
+
+/* 入力欄を囲うdiv */
+.stock-modal>div:not(.stock-modal-actions) {
+    margin-bottom: 16px;
+}
+
+
+/* ラベル */
+.stock-modal label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* テキスト・日付入力 */
+.stock-modal input {
+    width: 100%;
+    height: 42px;
+
+    padding: 8px 10px;
+
+    border: 1px solid #cccccc;
+    border-radius: 7px;
+
+    background: #ffffff;
+    font-size: 15px;
+
+    box-sizing: border-box;
+}
+
+
+/* カテゴリselect */
+.stock-modal select {
+    width: 100%;
+    height: 42px;
+
+    padding: 8px 10px;
+
+    border: 1px solid #cccccc;
+    border-radius: 7px;
+
+    background: #ffffff;
+    color: #202124;
+    font-size: 15px;
+
+    box-sizing: border-box;
+}
+
+
+/* 入力欄を選択したとき */
+.stock-modal input:focus,
+.stock-modal select:focus {
+    outline: none;
+    border-color: #65dca6;
+    box-shadow: 0 0 0 3px rgba(101, 220, 166, 0.2);
+}
+
+
+/* ==============================
+   モーダルボタン
+============================== */
+.stock-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 24px;
+}
+
+
+/* 更新・閉じるボタン */
+.stock-modal-actions button {
+    min-width: 90px;
+    padding: 10px 18px;
+
+    border: none;
+    border-radius: 7px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+
+/* 更新ボタン */
+.stock-modal-actions button:first-child {
+    background: #65dca6;
+    color: #ffffff;
+}
+
+
+/* 閉じるボタン */
+.stock-modal-actions button:last-child {
+    background: #e8e8e8;
+    color: #333333;
+}
+
+
+/* ==============================
+   スマートフォン表示
+============================== */
+@media (max-width: 600px) {
+    .stock-list-page {
+        min-height: 100vh;
+        background: #f4f6f8;
+
+        display: flex;
+        justify-content: center;
+    }
+
+    .stock-list-app {
+        width: 100%;
+        min-height: 100vh;
+
+        margin: 0;
+
+        border: none;
+        border-radius: 0;
+
+        box-shadow: none;
+    }
+
+    .stock-list-row {
+        min-height: 115px;
+    }
+
+    .stock-modal {
+        padding: 20px;
+    }
 }
