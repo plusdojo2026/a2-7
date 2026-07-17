@@ -210,18 +210,18 @@
     margin-left: 10px;
 }
 
-.switch {
+.switch2 {
     position: relative;
     display: inline-block;
     width: 58px;
     height: 30px;
 }
 
-.switch input {
+.switch2 input {
     display: none;
 }
 
-.slider {
+.slider2 {
     position: absolute;
     inset: 0;
     background: #eee;
@@ -229,7 +229,7 @@
     transition: .3s;
 }
 
-.slider::before {
+.slider2::before {
     content: "";
     position: absolute;
     width: 22px;
@@ -241,11 +241,11 @@
     transition: .3s;
 }
 
-.switch input:checked+.slider {
+.switch2 input:checked+.slider2 {
     background: #84FAB0;
 }
 
-.switch input:checked+.slider::before {
+.switch2 input:checked+.slider2::before {
     transform: translateX(28px);
 }
 
