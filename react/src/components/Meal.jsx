@@ -11,12 +11,14 @@ const MealComponent = () =>{
     //登録
     let [newMeal, setNewMeal] = useState({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});
     let [meals, setMeals] = useState([]);
+    //編集：一件クリックしたらそのデータをsetSlectedMealに保存しておく
+    let [selectedMeal, setSelectedMeal] = useState({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});
+    //記録アラート
+    let[message, setMessage] = useState("");
     //並び替え（プルダウンボタン）
     let [showSortMenu, setShowSortMenu] = useState(false);
-    //一件クリックしたらそのデータをsetSlectedMealに保存しておく
-    let [selectedMeal, setSelectedMeal] = useState({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});
-
-    
+    //絞り込み(朝昼夜ボタン)
+    let [filterMealType, setFilterMealType] = useState("");
 
     //登録
     //入力フォームの値をnewMealに保存(reactのstateに保存)
@@ -29,9 +31,16 @@ const MealComponent = () =>{
     }
     //新しい食事データを登録
     let registMeal = () => {
+        if(newMeal.mealImg === "" || newMeal.date === ""){
+            alert("画像と日付は必須です");
+            return;
+        }
         setMeals([...meals, newMeal]);
         console.log(newMeal);
 
+        setMessage("記録しました");
+        setTimeout(() => {setMessage("");},3000);
+    
         setNewMeal({title:'', mealImg:'', date:'', url:'', recipe:'',mealType:''});//入力フォームを空欄に
         setShowRegistModal(false);
     };
@@ -48,23 +57,61 @@ const MealComponent = () =>{
     }
     //モーダル内の食事情報(更新内容)をmodBookに保存(reactのstateに保存)
     let inputSelectedMeal = (e) => {
-        setSelectedMeal({ ...selectedMeal, [e.target.name]: e.target.value });
+        if(e.target.name === "mealImg"){
+            setSelectedMeal({...selectedMeal, mealImg:e.target.files[0].name});
+        }else{
+            setSelectedMeal({ ...selectedMeal, [e.target.name]: e.target.value });
+        }
     }
 
     //更新
     let updateMeal = () =>{
         let updateMeals = meals.map((meal) => meal.title === selectedMeal.title ? selectedMeal : meal);
+
+        setMessage("更新しました");
+        setTimeout(() => {setMessage("");},3000);
+
         setMeals(updateMeals); //mealsの中身をupdatedMealsに書き換え
         setShowUpdateModal(false);
     }
     let selectUpdateMealType = (mealType) =>{
-        setSelectedMeal({ ...selectedMeal, mealTpe:mealType });
+        setSelectedMeal({ ...selectedMeal, mealType:mealType });
+    }
+
+    //並び替え(新しい順と古い順)
+    let sortMeal = (sortType) =>{
+        let sortedMeals = [...meals];
+
+        if(sortType === "new"){
+            sortedMeals.sort(
+                (a,b) => new Date(b.date)- new Date(a.date)
+            );
+        }
+
+        if(sortType === "old"){
+            sortedMeals.sort(
+                (a,b) => new Date(a.date)- new Date(b.date)
+            );
+        }
+        
+        setMeals(sortedMeals);
+        setShowSortMenu(false);
+    }
+
+    //朝昼夜ボタンでの絞り込み
+    let toggleMealType = (mealType) =>{
+        if(filterMealType === mealType){
+            setFilterMealType("");
+        }else{
+            setFilterMealType(mealType);
+        }
     }
 
 
 
     return(
         <div className="mealContents">
+            {message && <div className='message'>{message}</div>}
 
             {/* 絞り込み */}
             <div className="filter">
@@ -75,9 +122,9 @@ const MealComponent = () =>{
                         <button onClick={() => sortMeal("old")}>古い順</button>
                     </div>
                 )}
-                    <button >朝</button>
-                    <button >昼</button>
-                    <button >夜</button>
+                    <button onClick={() => toggleMealType("朝")}>朝</button>
+                    <button onClick={() => toggleMealType("昼")}>昼</button>
+                    <button onClick={() => toggleMealType("夜")}>夜</button>
             </div>
 
             {/* 新規作成ボタン→クリックすると新規作成モーダルが展開*/}
@@ -87,7 +134,12 @@ const MealComponent = () =>{
 
             {/* 食事一覧の表示 */}
             {/* `/uploads/${meal.mealImg}` */}
-            {meals.map((meal) =>
+            {/*絞り込み条件が設定されていない、または食事の種類が絞り込み条件と一致している→trueで表示*/}
+            {meals
+            .filter(meal =>
+                filterMealType === "" || meal.mealType ===filterMealType
+            )
+            .map((meal) =>
                 <div key={meal.title} className="mealCard" onClick={() => openUpdateModal(meal)}>
                     <div className="mealImage">{meal.mealImg}</div>
                     <div className="mealTitle">{meal.title}</div>
@@ -95,7 +147,8 @@ const MealComponent = () =>{
                     <div className="url">URL：{meal.url}</div>
                     <div className="recipe">レシピ：{meal.recipe}</div>
                 </div>
-            )}
+            )
+            }
 
              {/* 新規作成モーダル */}
             {showRegistModal &&
@@ -122,7 +175,7 @@ const MealComponent = () =>{
                     <button  onClick={() => setShowUpdateModal(false)}>×</button><br />
                     編集<br />
                     タイトル：<input type ="text" name="title" value={selectedMeal.title} onChange={inputSelectedMeal}/><br />
-                    画像ファイル:<input type ="file" name="mealImg"/><br />
+                    画像ファイル:<input type ="file" name="mealImg" onChange={inputSelectedMeal}/><br />
                     日付:<input type ="date" name="date"value={selectedMeal.date}  onChange={inputSelectedMeal}/><br />
                     参考URL：<input type ="text" name="url" value={selectedMeal.url} onChange={inputSelectedMeal}/><br />
                     レシピ：<input type ="text" name="recipe" value={selectedMeal.recipe} onChange={inputSelectedMeal}/><br />
