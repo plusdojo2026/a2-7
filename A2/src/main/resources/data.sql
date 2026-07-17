@@ -39,13 +39,13 @@ VALUES
 
 -- 食材在庫
 INSERT INTO Food_Stock
-(food_stock_name, category, add_day, expiration_date, status, user_id, food_master_id)
+(food_stock_name, category, add_day, expiration_date, status, notice_read, user_id, food_master_id)
 VALUES
-('卵', '冷蔵', '2026-07-14', '2026-07-28', FALSE, 1, 1),
-('牛乳', '冷蔵', '2026-07-15', '2026-07-22', FALSE, 1, 2),
-('食パン', '常温', '2026-07-16', '2026-07-21', FALSE, 2, 3),
-('にんじん', '野菜', '2026-07-16', '2026-07-30', TRUE, 2, 4),
-('鶏むね肉', '冷蔵', '2026-07-17', '2026-07-20', FALSE, 1, 5);
+('卵', '冷蔵', '2026-07-14', '2026-07-28', FALSE, FALSE, 1, 1),
+('牛乳', '冷蔵', '2026-07-15', '2026-07-22', FALSE, FALSE, 1, 2),
+('食パン', '常温', '2026-07-16', '2026-07-21', FALSE, FALSE, 2, 3),
+('にんじん', '野菜', '2026-07-16', '2026-07-30', TRUE, FALSE, 2, 4),
+('鶏むね肉', '冷蔵', '2026-07-17', '2026-07-20', FALSE, FALSE, 1, 5);
 
 -- 日用品マスタ
 INSERT INTO Daily_Item_Master

@@ -1,6 +1,7 @@
 {/*商品入力画面*/}
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import "../css/Shopping.css";
 
 function Shopping() {
 
@@ -10,6 +11,26 @@ function Shopping() {
             isBought: 0
         }
     ]);
+
+useEffect(() => {
+
+        axios.get("http://localhost:8080/shopping/latest")
+        .then((response) => {
+
+            if(response.data.length > 0){
+
+                setItems(response.data);
+
+            }
+        })
+
+        .catch((error) => {
+             
+            console.log(error);
+        });
+
+    },[]);
+
 
     {/*ボタンが押されたら実行する処理*/}
     const addItem = () => {
@@ -36,11 +57,12 @@ function Shopping() {
     <>
         <h2>買い物リスト作成</h2>
 
+        <div className="shopping-list">
+
         {/*itemsの中身を1件ずつ取り出す*/}
         {items.map((item,index) => (
-            <div key={index}>
+            <div className="item-input" key={index}>
                 
-                //入力欄
                 <input
                  type="text"
                  value={item.itemName}
@@ -58,9 +80,11 @@ function Shopping() {
             </div>
         ))}
 
-        <button onClick={addItem}>+</button>
+        <button className="add-button" onClick={addItem}>+</button>
 
-        <button onClick={saveShopping}>作成</button>
+        </div>
+
+        <button className="save-button" onClick={saveShopping}>作成</button>
 
     </>
     );

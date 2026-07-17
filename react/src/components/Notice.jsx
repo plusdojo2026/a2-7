@@ -80,7 +80,24 @@ function Notice() {
             });
     }, []);
 
+    async function readNotice(id) {
 
+        try {
+
+            await axios.put(`/api/notice/food/read/${id}`);
+
+            setFoodList(
+                foodList.map(food =>
+                    food.foodStockId === id
+                        ? { ...food, noticeRead: true }
+                        : food
+                )
+            );
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
     return (
         <div className="notice2">
 
@@ -116,13 +133,22 @@ function Notice() {
                         );
 
                         return (
-                            <div className="foodCard" key={food.foodStockId}>
-                                <h4>{food.foodStockName}</h4>
+                            <div
+                                className="foodCard"
+                                key={food.foodStockId}
+                                onClick={() => readNotice(food.foodStockId)}
+                            >
+
+                                {!food.noticeRead && (
+                                    <div className="unreadMark"></div>
+                                )}
+
                                 <p>
                                     {diff >= 0
-                                        ? `賞味期限まで残り${diff}日`
-                                        : "賞味期限が切れています"}
+                                        ? `${food.foodStockName}の賞味期限が残り${diff}日です`
+                                        : `${food.foodStockName}の賞味期限が切れています`}
                                 </p>
+
                             </div>
                         );
                     })}
