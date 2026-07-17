@@ -11,23 +11,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.Tips;
 import com.example.demo.entity.User;
 import com.example.demo.repository.TipsRepository;
-import com.example.demo.repository.UserRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/home")
 public class HomeController {
-	@Autowired
-	private UserRepository userRepository;
+	
 
 	@GetMapping("/point")
-	public Integer getPoint() {
+	public Integer getPoint(HttpSession session) {
 
-		User user = userRepository.findById(1).orElse(null);
+	    User user = (User) session.getAttribute("loginUser");
 
-		return user.getPoint();
+	    if(user == null) {
+	        return 0;
+	    }
+
+	    return user.getPoint();
 	}
 
-	
 	@Autowired
 	private TipsRepository tipsRepository;
 
