@@ -81,7 +81,7 @@ function Notice() {
 
 
     return (
-        <div className="notice">
+        <div className="notice2">
 
             <h2>お知らせ</h2>
 
@@ -91,12 +91,12 @@ function Notice() {
             </div>
 
             <div className="noticeCard">
-                <h3>一番近い賞味期限</h3>
-                <p>{nearFoodMessage}</p>
+                {/* <h3>一番近い賞味期限</h3> */}
+                <h3>{nearFoodMessage}</h3>
             </div>
             <hr></hr>
             <div className="noticeCard">
-                <h3>他の食材の賞味期限</h3>
+                {/* <h3>他の食材の賞味期限</h3> */}
                 <div className="foodList">
                     {foodList
                         .filter(food => food.foodStockId !== nearestFood?.foodStockId)
@@ -113,11 +113,17 @@ function Notice() {
                             );
 
                             return (
-                                <p key={food.foodStockId}>
-                                    {diff >= 0
-                                        ? `${food.foodStockName}は賞味期限まで残り${diff}日です`
-                                        : `${food.foodStockName}は賞味期限が切れています`}
-                                </p>
+                                <div className="foodCard" key={food.foodStockId}>
+                                    <div className="foodCardTitle">
+                                        {food.foodStockName}
+                                    </div>
+
+                                    <div className="foodCardBody">
+                                        {diff >= 0
+                                            ? `賞味期限まで残り${diff}日`
+                                            : "賞味期限が切れています"}
+                                    </div>
+                                </div>
                             );
                         })}
                 </div>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Home from "./Home";
 import Notice from "./Notice";
-// import ChoreList from "./ChoreList";
+import ChoreList from "./ChoreList";
 import "../css/HomeContainer.css";
 
 function HomeContainer() {
@@ -41,7 +41,7 @@ function HomeContainer() {
 
             {page === "notice" && <Notice />}
 
-            {/* {page === "chores" && <Chores />} */}
+            {page === "chores" && <ChoreList />}
 
         </div>
     );

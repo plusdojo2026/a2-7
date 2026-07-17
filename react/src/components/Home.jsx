@@ -148,7 +148,7 @@ function Home() {
             </button>
 
             {/* ボタン */}
-            <div className="buttonArea">
+            <div className="buttonArea2">
                 <button onClick={() => setModalType("garbage")}>
                     ゴミルール設定
                 </button>
@@ -174,8 +174,8 @@ function Home() {
                 </div>
             </div>
             {modalType === "garbage" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>ゴミルール</h2>
 
                         <p>燃えるゴミ出し曜日（必須）</p>
@@ -252,8 +252,8 @@ function Home() {
             )}
 
             {modalType === "about" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>アプリについて</h2>
 
                         <p>ここにアプリの説明画面を作ります。</p>
@@ -266,8 +266,8 @@ function Home() {
             )}
 
             {modalType === "music" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>🎵 今日の曲</h2>
 
                         <h3>{tips?.music}</h3>
