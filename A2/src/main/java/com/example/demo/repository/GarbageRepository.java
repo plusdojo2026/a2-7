@@ -8,4 +8,6 @@ import com.example.demo.entity.Garbage;
 
 public interface GarbageRepository extends JpaRepository<Garbage, Integer> {
 	List<Garbage> findByUserIdAndGarbageDay(Integer user_id,Integer garbage_day);
+
+	List<Garbage> findByNotificationTrue(Integer userId);
 }

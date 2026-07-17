@@ -24,11 +24,12 @@ public class Garbage {
 	@Column(nullable = false, length = 20)
 	private String garbageType;
 
-	@Column(nullable = false, length = 20)
-	private String cycle;
+//	@Column(nullable = false, length = 20)
+//	private String cycle;
 
 	@Column(nullable = false)
 	private Integer garbageDay;
 
 	private Integer userId;
+	private Boolean notification;
 }
