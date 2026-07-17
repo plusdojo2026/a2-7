@@ -7,11 +7,21 @@ function Notice() {
     const [nearFoodMessage, setNearFoodMessage] = useState("");
     const [foodList, setFoodList] = useState([]);
     const [nearestFood, setNearestFood] = useState(null);
+    const week = [
+        "日曜日",
+        "月曜日",
+        "火曜日",
+        "水曜日",
+        "木曜日",
+        "金曜日",
+        "土曜日"
+    ];
 
+    const todayName = week[new Date().getDay()];
     useEffect(() => {
 
         // ゴミ情報取得
-        axios.get("/api/home/garbage")
+        axios.get("/api/notice/garbage")
             .then((res) => {
 
                 const garbageList = res.data;
@@ -23,12 +33,12 @@ function Notice() {
                 }
 
                 const todayGarbage = garbageList.filter(
-                    (garbage) => garbage.garbage_day === today
+                    (garbage) => garbage.garbageDay === today
                 );
 
                 if (todayGarbage.length > 0) {
                     setGarbageMessage(
-                        `今日は${todayGarbage[0].garbageType}の日です`
+                        `今日は${todayName}<br />${todayGarbage[0].garbageType}の日です!`
                     );
                 } else {
                     setGarbageMessage(
@@ -111,8 +121,8 @@ function Notice() {
             <h2>お知らせ</h2>
 
             <div className="noticeCard">
-                <h3>ゴミのお知らせを表示</h3>
-                <p>{garbageMessage}</p>
+                {/* <h3>ゴミのお知らせを表示</h3> */}
+                <p dangerouslySetInnerHTML={{ __html: garbageMessage }} />
             </div>
 
             <div className="noticeCard">
