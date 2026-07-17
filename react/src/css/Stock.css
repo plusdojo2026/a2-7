@@ -1,0 +1,67 @@
+/*画面全体*/
+.stock-list-page {
+    min-height: 100vh;
+    padding: 24px;
+    background: #f4f6f8;
+    color: #202124;
+    font-family: sans-serif;
+}
+
+/*食材・日用品タブ全体*/
+.stock-list-tabs {
+    display: flex;
+    background: #ffffff;
+    border-bottom: 1px solid #dedede;
+}
+
+/*食材一覧、日用品一覧それぞれのボタン*/
+.stock-list-tab {
+    position: relative;
+    flex: 1;
+    padding: 22px 10px 16px;
+    border: none;
+    background: transparent;
+    color: #202124;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+
+@media (max-width: 600px) {
+    .stock-list-app {
+        width: 100%;
+        margin: 0;
+        border: none;
+        border-radius: 0;
+    }
+}
+
+.stock-modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.stock-modal{
+    width:420px;
+    background:#fff;
+    border-radius:10px;
+    padding:20px;
+}
+
+.stock-modal input{
+    width:100%;
+    margin:5px 0 15px;
+    padding:8px;
+    box-sizing:border-box;
+}
+
+.stock-modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+}
