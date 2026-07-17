@@ -3,22 +3,24 @@ import "../css/ChoreList.css";
 
 // 曜日のリスト(0=月曜 〜 6=日曜)
 const DAYS = ["月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日", "日曜日"];
-
-// 頻度と開始曜日から「実施する曜日」の一覧を計算する
-// 例:2日に1回・月曜(0)スタート → [0, 2, 4, 6] = 月・水・金・日
 const getPatternDays = (frequency, dayIndex) => {
-    if (frequency === "週1回") {
-        return [dayIndex];                      // その曜日だけ
+
+    if (frequency === "毎日") {
+        return [0,1,2,3,4,5,6];
     }
-    if (frequency === "2日に1回") {
+
+    if (frequency === "週2回") {
         return [
-            dayIndex % 7,
-            (dayIndex + 2) % 7,
-            (dayIndex + 4) % 7,
-            (dayIndex + 6) % 7,
-        ];                                      // 1日おきに4日
+            dayIndex,
+            (dayIndex + 3) % 7
+        ];
     }
-    return [];                                  // 毎日は曜日を使わない
+
+    if (frequency === "週1回") {
+        return [dayIndex];
+    }
+
+    return [];
 };
 
 function ChoreList(){
@@ -80,21 +82,9 @@ function ChoreList(){
 
     // ★追加:その曜日を選んだ場合、他の家事と重複するか判定
     const isConflict = (dayIndex) => {
-
-    return chores.some(chore => {
-
-        if(chore.name === settingChore) return false;
-
-        const days = getPatternDays(
-            chore.frequency,
-            chore.day
-        );
-
-        return days.includes(dayIndex);
-
-    });
-
-}
+    const used = getUsedDays();
+    return used.has(dayIndex);
+};
 
     // ★追加:設定画面を開く(保存済みの設定があれば読み込む)
     const openSetting = (name) => {
@@ -169,12 +159,7 @@ function ChoreList(){
     return (
         <div className="chore">
 
-    {/* タブ */}
-    <div className="menu">
-        <button>お知らせ</button>
-        <button>ホーム</button>
-        <button className="active">家事</button>
-    </div>
+
 
     {/* 家事忘れ防止通知 */}
     <div className="notice">
@@ -316,13 +301,13 @@ function ChoreList(){
                                 }}
                             >
                                 <option>毎日</option>
-                                <option>2日に1回</option>
+                                <option>週2回</option>
                                 <option>週1回</option>
                             </select>
                         </div>
 
                         {/* ★2日に1回のとき:開始曜日を表示 */}
-                        {frequency === "2日に1回" && (
+                        {frequency === "週2回" && (
                             <div className="settingItem">
                                 <p className="label">開始曜日</p>
                                 <select
@@ -344,7 +329,7 @@ function ChoreList(){
                                 {/* 実施パターンのプレビュー */}
                                 {day !== null && (
                                     <p className="label">
-                                        実施日:{getPatternDays("2日に1回", day).map(d => DAYS[d].charAt(0)).join("・")}
+                                        実施日:{getPatternDays("週2回", day).map(d => DAYS[d].charAt(0)).join("・")}
                                     </p>
                                 )}
                             </div>
@@ -371,7 +356,16 @@ function ChoreList(){
                                     ))}
                                 </select>
                             </div>
+
+                            
                         )}
+                        <div className="settingItem">
+                            <p className="label">家事忘れ防止通知</p>
+                            <select className="select">
+                                <option>ON</option>
+                                <option>OFF</option>
+                            </select>
+                        </div>
 
 
 

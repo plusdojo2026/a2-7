@@ -19,13 +19,32 @@ public class GarbageController {
 	@Autowired
 	private GarbageRepository garbageRepository;
 
-	@PostMapping("/add")
-	public Garbage addGarbage(@RequestBody Garbage garbage) {
-		return garbageRepository.save(garbage);
-	}
+//	@PostMapping("/add")
+//	public Garbage addGarbage(@RequestBody Garbage garbage) {
+//		return garbageRepository.save(garbage);
+//	}
 
 	@GetMapping
 	public List<Garbage> getGarbage() {
 		return garbageRepository.findAll();
+	}
+
+	@PostMapping("/save")
+	public Garbage saveGarbage(@RequestBody Garbage garbage) {
+
+		Garbage existing = garbageRepository.findByUserIdAndGarbageType(garbage.getUserId(), garbage.getGarbageType())
+				.orElse(null);
+
+		if (existing != null) {
+
+			existing.setGarbageDay(garbage.getGarbageDay());
+			existing.setNotification(garbage.getNotification());
+
+			return garbageRepository.save(existing);
+
+		} else {
+
+			return garbageRepository.save(garbage);
+		}
 	}
 }

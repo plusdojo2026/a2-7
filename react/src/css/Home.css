@@ -42,14 +42,14 @@
 }
 
 /* 機能ボタン */
-.buttonArea {
+.buttonArea2 {
     display: flex;
     justify-content: center;
     gap: 15px;
     margin-bottom: 25px;
 }
 
-.buttonArea button {
+.buttonArea2 button {
     width: 95px;
     height: 95px;
     border: none;
@@ -63,7 +63,7 @@
     white-space: pre-line;
 }
 
-.buttonArea button:hover {
+.buttonArea2 button:hover {
     transform: translateY(-3px);
 }
 
@@ -119,7 +119,7 @@
 }
 
 /* モーダル背景 */
-.modal {
+.modal2 {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.2);
@@ -131,7 +131,7 @@
     z-index: 1000;
 }
 
-.modalContent {
+.modal2Content {
     width: 320px;
     background: white;
     border-radius: 40px;
@@ -139,20 +139,20 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, .15);
 }
 
-.modalContent h2 {
+.modal2Content h2 {
     text-align: center;
     margin-bottom: 25px;
     font-size: 30px;
 }
 
-.modalContent p {
+.modal2Content p {
     font-size: 20px;
     font-weight: bold;
     margin-top: 18px;
     margin-bottom: 8px;
 }
 
-.modalContent select {
+.modal2Content select {
     width: 100%;
     height: 52px;
 
@@ -184,16 +184,16 @@
     transition: .2s;
 }
 
-.modalContent select:hover {
+.modal2Content select:hover {
     border-color: #84FAB0;
 }
 
-.modalContent select:focus {
+.modal2Content select:focus {
     border-color: #84FAB0;
     box-shadow: 0 0 0 4px rgba(132,250,176,.25);
 }
 
-.modalContent button {
+.modal2Content button {
     width: 100%;
     height: 45px;
     margin-top: 15px;
@@ -205,7 +205,7 @@
     cursor: pointer;
 }
 
-.modalContent input[type="checkbox"] {
+.modal2Content input[type="checkbox"] {
     transform: scale(1.5);
     margin-left: 10px;
 }

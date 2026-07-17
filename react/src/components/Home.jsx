@@ -77,33 +77,43 @@ function Home() {
         }
 
         try {
-            await axios.post("/api/garbage/add", {
-                garbageType: "燃えるゴミ",
-                garbageDay: weekNumber[burnableDay],
-                userId: 1,
-                notification: notification
-            });
+            
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "燃えないゴミ",
-                garbageDay: weekNumber[nonBurnableDay],
-                userId: 1,
-                notification: notification
-            });
+            if (burnableDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "燃えるゴミ",
+                    garbageDay: weekNumber[burnableDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "ペットボトル",
-                garbageDay: weekNumber[petBottleDay],
-                userId: 1,
-                notification: notification
-            });
+            if (nonBurnableDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "燃えないゴミ",
+                    garbageDay: weekNumber[nonBurnableDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
-            await axios.post("/api/garbage/add", {
-                garbageType: "缶・びん",
-                garbageDay: weekNumber[canBottleDay],
-                userId: 1,
-                notification: notification
-            });
+            if (petBottleDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "ペットボトル",
+                    garbageDay: weekNumber[petBottleDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
+
+            if (canBottleDay !== "") {
+                await axios.post("/api/garbage/save", {
+                    garbageType: "缶・びん",
+                    garbageDay: weekNumber[canBottleDay],
+                    userId: 1,
+                    notification: notification
+                });
+            }
 
             showAlert("ゴミルールの設定を更新しました。");
 
@@ -138,7 +148,7 @@ function Home() {
             </button>
 
             {/* ボタン */}
-            <div className="buttonArea">
+            <div className="buttonArea2">
                 <button onClick={() => setModalType("garbage")}>
                     ゴミルール設定
                 </button>
@@ -164,8 +174,8 @@ function Home() {
                 </div>
             </div>
             {modalType === "garbage" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>ゴミルール</h2>
 
                         <p>燃えるゴミ出し曜日（必須）</p>
@@ -242,8 +252,8 @@ function Home() {
             )}
 
             {modalType === "about" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>アプリについて</h2>
 
                         <p>ここにアプリの説明画面を作ります。</p>
@@ -256,8 +266,8 @@ function Home() {
             )}
 
             {modalType === "music" && (
-                <div className="modal">
-                    <div className="modalContent">
+                <div className="modal2">
+                    <div className="modal2Content">
                         <h2>🎵 今日の曲</h2>
 
                         <h3>{tips?.music}</h3>
