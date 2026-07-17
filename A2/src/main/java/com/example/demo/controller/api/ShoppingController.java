@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.example.demo.repository.ShoppingListRepository;
 
 @RestController
 @RequestMapping("/shopping")
+@CrossOrigin(origins = "http://localhost:5173")
 public class ShoppingController {
 	
 	@Autowired
@@ -31,8 +33,20 @@ public class ShoppingController {
 	//買い物リスト一覧を取得
 	@GetMapping("/list")
 	public List<ShoppingList> getShoppingLists() {
+		List<ShoppingList> lists = shoppingListRepository.findAll();
 		
-		return shoppingListRepository.findAll();
+		//１件ずつ取り出す
+		for (ShoppingList list : lists) {
+			
+			//そのリストIDの商品を取得する
+			List<ShoppingItem> items = 
+					shoppingItemRepository.findByShoppingListId(
+							list.getShoppingListid());
+			
+			list.setItems(items);
+		}
+	
+		return lists;
 	}
 		
 	@PostMapping
@@ -76,19 +90,22 @@ public class ShoppingController {
 	//最新リストの未購入商品を取得
 	//latest==訳：最新の
 	@GetMapping("/latest")
-	public List<ShoppingItem> getLatestShoppingItems() {
+	public List<ShoppingItem> getLatestItems() {
 		
-		ShoppingList latest =
+		//最新の買い物リスト取得
+		ShoppingList latestList =
 				shoppingListRepository.findTopByOrderByCreateDateDesc();
 		
-		if (latest == null) {
+		if (latestList == null) {
 			return new ArrayList<>();
 		}
 		
+		//最新リストの商品を全部取得
 		List<ShoppingItem> items = 
 				shoppingItemRepository.findByShoppingListId(
-						latest.getShoppingListid());
+						latestList.getShoppingListid());
 		
+		//未購入だけ入れる
 		List<ShoppingItem> result = new ArrayList<>();
 		
 		for (ShoppingItem item : items) {

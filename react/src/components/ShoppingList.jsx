@@ -6,79 +6,92 @@ import ShoppingModal from "./ShoppingModal";
 
 function ShoppingList() {
 
+    //買い物リスト一覧
     const [Lists, setLists] = useState([]);
+
+    //モーダルに表示する商品
     const [items, setItems] = useState([]);
-    //モーダル表示するかどうかの関数
+
+    //モーダル表示状態
     const [showModal, setShowModal] = useState(false);
 
-    //指定された買い物リストの商品を取得する
-    const getItems = (ShoppingListid) => {
+    //買い物リスト一覧を取得する
+    const getShoppingLists = () => {
+         axios.get("http://localhost:8080/shopping/list")
+         .then((response) => {
 
-        axios.get("http://localhost:8080/shopping/item/" + ShoppingListid)
+            setLists(response.data);
+         })
+
+         .catch((error) => {
+
+            console.log(error);
+         });
+    };
+
+    //画面表示時に一覧取得
+    useEffect(() => {
+        getShoppingLists();
+
+    }, []);
+
+    //クリックされたリストの商品取得
+    const getItems = (shoppingListId) => {
+
+        axios.get(
+            "http://localhost:8080/shopping/item/" + shoppingListId
+        )
         .then((response) => {
 
-             setItems(response.data);
+            setItems(response.data);
 
-             setShowModal(true);
-
+            setShowModal(true);
         })
         .catch((error) => {
 
             console.log(error);
-
-        });
+         });
     };
-
-    useEffect(() => {
-
-        axios.get("http://localhost;8080/shopping/list")
-        .then((response) => {
-
-             setLists(response.data);
-        })
-        .catch((error) => {
-
-             console.log(error);
-        });
-
-    },[]);
 
     return (
         <>
+
             <h2>買い物リスト一覧</h2>
 
             {Lists.map((list) => (
-                <div key={list.ShoppingListid}
 
-                    //リストをクリックしたらそのリストの商品を取得する
-                     onClick={() => getItems(list.ShoppingListid)}>
+                <div key={list.shoppingListid}
+                     onClick={() => getItems(list.shoppingListid)}>
 
-                    <p>
-                        作成日：{list.createDate}
+                    <p>作成日：{list.createDate}</p>
+
+                  {list.items?.map((item) => (
+                    <p key={item.shoppingItemId}>
+                    
+                    {item.itemName}
+
+                    {item.isBought === 0
+                    ? "未購入"
+                    : "購入済"}
+                    
                     </p>
 
-                    {items.map((item) => (
-                        <p key={item.shoppingItemId}>
-                            {item.itemName}
-
-                            {item.isBought === 0
-                                ? "未購入"
-                                : "購入済"}
-                        </p>
-
                     ))}
-                    
-                    {showModal && (
-                        <ShoppingModal
-                            items={items}
-                            closeModal={() => setShowModal(false)}
-                        />
-                    )}
 
                 </div>
+            
             ))}
+
+            {showModal && (
+                <ShoppingModal
+                  items={items}
+                  closeModal={() => setShowModal(false)}
+                  reload={getShoppingLists}
+                 />
+             )}  
+
         </>
     );
 }
 
-export default ShoppingList;
+export default ShoppingList
