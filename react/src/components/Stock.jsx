@@ -206,7 +206,7 @@ const Stock = () => {
 
                 let remainingDays = getRemainingDays(item.guideExDate);
 
-                if (remainingDays !== null && remainingDays <= 2) {
+                if (remainingDays !== null && remainingDays <= 3) {
 
                     if (remainingDays < 0) {
                         alerts.push(
