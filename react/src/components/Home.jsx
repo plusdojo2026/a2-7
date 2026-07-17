@@ -232,13 +232,13 @@ function Home() {
                         </select>
 
                         <p>
-                            ゴミ出し通知設定<br /><label className="switch">
+                            ゴミ出し通知設定<br /><label className="switch2">
                                 <input
                                     type="checkbox"
                                     checked={notification}
                                     onChange={(e) => setNotification(e.target.checked)}
                                 />
-                                <span className="slider"></span>
+                                <span className="slider2"></span>
                             </label>
                         </p>
                         <button onClick={saveGarbageRule}>

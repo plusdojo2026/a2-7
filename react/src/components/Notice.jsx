@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import garbageImage from "../assets/garbage.png";
 import "../css/Notice.css";
 function Notice() {
 
@@ -83,50 +84,48 @@ function Notice() {
     return (
         <div className="notice2">
 
-            <h2>お知らせ</h2>
 
-            <div className="noticeCard">
-                {/* <h3>ゴミのお知らせを表示</h3> */}
-                <p dangerouslySetInnerHTML={{ __html: garbageMessage }} />
+
+            <div className="garbageCard">
+                <div className="garbageContent">
+                    <p dangerouslySetInnerHTML={{ __html: garbageMessage }} />
+
+                    <img
+                        src={garbageImage}
+                        alt="ゴミ"
+                        className="garbageImage"
+                    />
+                </div>
             </div>
-
-            <div className="noticeCard">
-                {/* <h3>一番近い賞味期限</h3> */}
+            <div className="nearestCard">
                 <h3>{nearFoodMessage}</h3>
             </div>
-            <hr></hr>
-            <div className="noticeCard">
-                {/* <h3>他の食材の賞味期限</h3> */}
-                <div className="foodList">
-                    {foodList
-                        .filter(food => food.foodStockId !== nearestFood?.foodStockId)
-                        .map(food => {
 
-                            const today = new Date();
+            <hr />
 
-                            const expiration = new Date(food.expirationDate);
+            <div className="foodList">
+                {foodList
+                    .filter(food => food.foodStockId !== nearestFood?.foodStockId)
+                    .map(food => {
 
+                        const today = new Date();
+                        const expiration = new Date(food.expirationDate);
 
+                        const diff = Math.ceil(
+                            (expiration - today) / (1000 * 60 * 60 * 24)
+                        );
 
-                            const diff = Math.ceil(
-                                (expiration - today) / (1000 * 60 * 60 * 24)
-                            );
-
-                            return (
-                                <div className="foodCard" key={food.foodStockId}>
-                                    <div className="foodCardTitle">
-                                        {food.foodStockName}
-                                    </div>
-
-                                    <div className="foodCardBody">
-                                        {diff >= 0
-                                            ? `賞味期限まで残り${diff}日`
-                                            : "賞味期限が切れています"}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                </div>
+                        return (
+                            <div className="foodCard" key={food.foodStockId}>
+                                <h4>{food.foodStockName}</h4>
+                                <p>
+                                    {diff >= 0
+                                        ? `賞味期限まで残り${diff}日`
+                                        : "賞味期限が切れています"}
+                                </p>
+                            </div>
+                        );
+                    })}
             </div>
         </div>
     );
