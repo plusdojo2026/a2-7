@@ -7,7 +7,7 @@ import com.example.demo.entity.ShoppingList;
 public interface ShoppingListRepository extends JpaRepository<ShoppingList, Integer> {
 	
 	//新しい買い物リストを取得
-	ShoppingList findTopByOrderByCreateDateDesc();
+	ShoppingList findTopByOrderByShoppingListidDesc();
 	
 }
  

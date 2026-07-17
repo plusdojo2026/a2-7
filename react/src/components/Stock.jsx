@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-//import "../css/Stock.css";
+import "../css/Stock.css";
 import axios from "axios";
 
 const Stock = () => {
@@ -16,8 +16,33 @@ const Stock = () => {
     // API通信に失敗した場合に表示するエラーメッセージ
     let [errorMessage, setErrorMessage] = useState("");
 
+    // モーダルに編集する食材を入れる
+    let [modFood, setModFood] = useState({
+        foodStockId: 0,
+        foodStockName: "",
+        category: "",
+        addDay: "",
+        expirationDate: "",
+        status: true
+    });
 
-    //取得したJSONデータをfoodsへ保存
+    // モーダルに編集する日用品を入れる
+    let [modDailyItem, setModDailyItem] = useState({
+        dailyItemStockId: 0,
+        dailyItemStockName: "",
+        category: "",
+        addDate: "",
+        guideExDate: "",
+        status: true
+    });
+
+    // モーダルを表示するか
+    let [showModal, setShowModal] = useState(false);
+
+    // 食材と日用品のどちらを編集中か
+    let [editType, setEditType] = useState("");
+
+    //取得したJSONデータをfoodsへ保存する関数
     let refreshFoodStockList = () => {
         axios.get("http://localhost:8080/api/food_stock/")
             .then(response => {
@@ -31,10 +56,7 @@ const Stock = () => {
             });
     };
 
-    /**
-     * Spring Bootから日用品在庫を取得する関数
-     * 取得したJSONデータをdailyItemsへ保存する。
-     */
+    //日用品在庫をAPIから取得する関数
     let refreshDailyItemStockList = () => {
         axios.get("http://localhost:8080/api/daily-item-stock")
             .then(response => {
@@ -48,10 +70,7 @@ const Stock = () => {
             });
     };
 
-    /**
-     * 食材と日用品の一覧を両方最新の状態にする関数
-     * 再読み込みボタンを押した場合にも使用する
-     */
+    //食材と日用品をまとめて再取得する関数
     let refreshStockList = () => {
         // 前回表示されたエラーメッセージを消す
         setErrorMessage("");
@@ -67,27 +86,17 @@ const Stock = () => {
         refreshStockList();
     }, []);
 
-    /**
-     * 食材一覧タブを表示する関数
-     */
+    //食材一覧タブを表示する関数
     let showFoodList = () => {
         setTab("food");
     };
 
-    /**
-     * 日用品一覧タブを表示する関数
-     */
+    //日用品一覧タブを表示する関数
     let showDailyItemList = () => {
         setTab("daily");
     };
 
-    /**
-     * 「2026-07-17」のような日付を
-     * 「2026/07/17」の形に変換する関数
-     *
-     * @param {string} dateText - 変換する日付
-     * @returns {string} 画面に表示する日付
-     */
+    //日付の形を整える関数
     let formatDate = (dateText) => {
         // 日付が登録されていない場合は「未設定」と表示する。
         if (!dateText) {
@@ -98,12 +107,8 @@ const Stock = () => {
         return String(dateText).slice(0, 10).replaceAll("-", "/");
     };
 
-    /**
-     * 今日から期限までの残り日数を計算する関数
-     *
-     * @param {string} dateText - 賞味期限または交換目安日
-     * @returns {number|null} 期限までの日数
-     */
+
+    //今日から期限までの残り日数を計算する関数
     let getRemainingDays = (dateText) => {
         // 期限が登録されていない場合は計算しない
         if (!dateText) {
@@ -138,14 +143,7 @@ const Stock = () => {
         );
     };
 
-    /**
- * 日用品の交換目安日までの残り日数を、画面表示用の文字にする関数
- *
- * @param {string} guideExDate - 日用品の交換目安日
- * @returns {string} 「残り10日」「今日」「3日経過」などの文字
- */
-
-    //食材と日用品の残り日数を出す関数
+    //日用品の交換目安日までの残り日数を画面表示用の文字にする関数
     let formatRemainingDays = (guideExDate) => {
         // 交換目安日までの日数を計算する。
         let remainingDays = getRemainingDays(guideExDate);
@@ -169,62 +167,144 @@ const Stock = () => {
         return `残り${remainingDays}日`;
     };
 
-    /**
-     * 現在表示している一覧から、期限が近い商品を探す関数
-     * 期限切れ、または期限まで残り2日以内の商品を一件知らせる。
-     *
-     * @returns {string} 画面へ表示する期限警告
-     */
-    let getExpirationAlert = () => {
-        // 食材タブを表示している場合
+    //現在表示している一覧から、期限が近い商品を探す関数
+    let getExpirationAlerts = () => {
+
+        let alerts = [];
+
         if (tab === "food") {
-            // 食材を先頭から一件ずつ確認する。
+
             for (let food of foods) {
+
                 let remainingDays = getRemainingDays(food.expirationDate);
 
-                // 期限が設定されていて、残り2日以内の場合
-                if (remainingDays !== null && remainingDays <= 2) {
+                //期限三日前にお知らせ
+                if (remainingDays !== null && remainingDays <= 3) {
+
                     if (remainingDays < 0) {
-                        return `${food.foodStockName}の賞味期限が切れています。`;
+                        alerts.push(
+                            `${food.foodStockName}の賞味期限が切れています。`
+                        );
                     }
-
-                    if (remainingDays === 0) {
-                        return `${food.foodStockName}の賞味期限は今日です。`;
+                    else if (remainingDays === 0) {
+                        alerts.push(
+                            `${food.foodStockName}の賞味期限は今日です。`
+                        );
                     }
-
-                    return `${food.foodStockName}の賞味期限が残り${remainingDays}日です。`;
+                    else {
+                        alerts.push(
+                            `${food.foodStockName}の賞味期限が残り${remainingDays}日です。`
+                        );
+                    }
                 }
             }
         }
 
-        // 日用品タブを表示している場合
         if (tab === "daily") {
-            // 日用品を先頭から一件ずつ確認する
+
             for (let item of dailyItems) {
+
                 let remainingDays = getRemainingDays(item.guideExDate);
 
-                // 交換目安日が設定されていて、残り2日以内の場合
                 if (remainingDays !== null && remainingDays <= 2) {
+
                     if (remainingDays < 0) {
-                        return `${item.dailyItemStockName}の交換目安日が切れています。`;
+                        alerts.push(
+                            `${item.dailyItemStockName}の交換目安日が切れています。`
+                        );
                     }
-
-                    if (remainingDays === 0) {
-                        return `${item.dailyItemStockName}の交換目安日は今日です。`;
+                    else if (remainingDays === 0) {
+                        alerts.push(
+                            `${item.dailyItemStockName}の交換目安日は今日です。`
+                        );
                     }
-
-                    return `${item.dailyItemStockName}の交換目安日が残り${remainingDays}日です。`;
+                    else {
+                        alerts.push(
+                            `${item.dailyItemStockName}の交換目安日が残り${remainingDays}日です。`
+                        );
+                    }
                 }
             }
         }
 
-        // 警告対象の商品がない場合は空文字を返す。
-        return "";
+        return alerts;
     };
 
     // 現在表示中のタブに合わせて期限警告を作る。
-    let expirationAlert = getExpirationAlert();
+    let expirationAlerts = getExpirationAlerts();
 
+    //食材フォームの入力関数
+    let inputModFood = (e) => {
+        let inputValue = e.target.type === "checkbox"
+            ? e.target.checked
+            : e.target.value;
+
+        setModFood({
+            ...modFood,
+            [e.target.name]: inputValue
+        });
+    };
+
+    //日用品の入力関数
+    let inputModDailyItem = (e) => {
+        let inputValue = e.target.type === "checkbox"
+            ? e.target.checked
+            : e.target.value;
+
+        setModDailyItem({
+            ...modDailyItem,
+            [e.target.name]: inputValue
+        });
+    };
+
+    //食材の編集開始関数
+    let modFoodStart = (food) => {
+        setModFood({ ...food });
+        setEditType("food");
+        setShowModal(true);
+    };
+
+    //日用品の編集開始関数
+    let modDailyItemStart = (item) => {
+        setModDailyItem({ ...item });
+        setEditType("daily");
+        setShowModal(true);
+    };
+
+    //モーダルを閉じる
+    let closeModal = () => {
+        setShowModal(false);
+        setEditType("");
+    };
+
+    //更新処理
+    let updateStock = () => {
+        setErrorMessage("");
+
+        if (editType === "food") {
+            axios.post(
+                "http://localhost:8080/api/food_stock/mod/",
+                modFood
+            )
+                .then(() => {
+                    refreshFoodStockList();
+                    closeModal();
+                });
+
+            return;
+        }
+
+        if (editType === "daily") {
+            axios.post(
+                "http://localhost:8080/api/daily-item-stock",
+                modDailyItem
+            )
+                .then(() => {
+                    refreshDailyItemStockList();
+                    closeModal();
+                });
+        }
+    };
 
     // 【UIレンダリング部】
     return (
@@ -265,13 +345,22 @@ const Stock = () => {
                 <div className="stock-list-content">
 
                     {/* 2. 期限が近い商品がある場合に表示する警告 */}
-                    {expirationAlert && (
+                    {expirationAlerts.length > 0 && (
                         <div className="expiration-alert" role="status">
-                            <span
-                                className="expiration-alert-dot"
-                                aria-hidden="true"
-                            />
-                            <span>{expirationAlert}</span>
+
+                            {expirationAlerts.map((alert, index) => (
+                                <div
+                                    key={index}
+                                    className="expiration-alert-item"
+                                >
+                                    <span
+                                        className="expiration-alert-dot"
+                                        aria-hidden="true"
+                                    />
+                                    <span>{alert}</span>
+                                </div>
+                            ))}
+
                         </div>
                     )}
 
@@ -332,12 +421,142 @@ const Stock = () => {
                                                     <dt>期限まで：</dt>
                                                     <dd>{formatRemainingDays(food.expirationDate)}</dd>
                                                 </div>
+                                                <button
+                                                    type="button"
+                                                    className="stock-edit-button"
+                                                    onClick={() => modFoodStart(food)}
+                                                >
+                                                    編集
+                                                </button>
                                             </dl>
                                         </li>
                                     ))}
                                 </ul>
                             )}
                         </>
+                    )}
+
+                    {showModal && (
+                        <div className="stock-modal-overlay">
+                            <div className="stock-modal">
+
+                                <h2>
+                                    {editType === "food" ? "食材編集" : "日用品編集"}
+                                </h2>
+
+                                {editType === "food" ? (
+                                    <>
+                                        <div>
+                                            <label>商品名</label>
+                                            <input
+                                                type="text"
+                                                name="foodStockName"
+                                                value={modFood.foodStockName}
+                                                onChange={inputModFood}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label>カテゴリ</label>
+                                            <select
+                                                name="category"
+                                                value={modFood.category}
+                                                onChange={inputModFood}
+                                            >
+                                                <option value="野菜">野菜</option>
+                                                <option value="肉">肉</option>
+                                                <option value="魚">魚</option>
+                                                <option value="乳製品">乳製品</option>
+                                                <option value="飲み物">飲み物</option>
+                                                <option value="調味料">調味料</option>
+                                                <option value="冷凍食品">冷凍食品</option>
+                                                <option value="その他">その他</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label>追加日</label>
+                                            <input
+                                                type="date"
+                                                name="addDay"
+                                                value={modFood.addDay}
+                                                onChange={inputModFood}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label>賞味期限</label>
+                                            <input
+                                                type="date"
+                                                name="expirationDate"
+                                                value={modFood.expirationDate}
+                                                onChange={inputModFood}
+                                            />
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div>
+                                            <label>商品名</label>
+                                            <input
+                                                type="text"
+                                                name="dailyItemStockName"
+                                                value={modDailyItem.dailyItemStockName}
+                                                onChange={inputModDailyItem}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label>カテゴリ</label>
+                                            <select
+                                                name="category"
+                                                value={modDailyItem.category}
+                                                onChange={inputModDailyItem}
+                                            >
+                                                <option value="キッチン">キッチン</option>
+                                                <option value="洗面所">洗面所</option>
+                                                <option value="トイレ">トイレ</option>
+                                                <option value="掃除">掃除</option>
+                                                <option value="洗濯">洗濯</option>
+                                                <option value="消耗品">消耗品</option>
+                                                <option value="その他">その他</option>
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label>追加日</label>
+                                            <input
+                                                type="date"
+                                                name="addDate"
+                                                value={modDailyItem.addDate}
+                                                onChange={inputModDailyItem}
+                                            />
+                                        </div>
+
+                                        <div>
+                                            <label>交換目安日</label>
+                                            <input
+                                                type="date"
+                                                name="guideExDate"
+                                                value={modDailyItem.guideExDate}
+                                                onChange={inputModDailyItem}
+                                            />
+                                        </div>
+                                    </>
+                                )}
+
+                                <div className="stock-modal-actions">
+                                    <button onClick={updateStock}>
+                                        更新
+                                    </button>
+
+                                    <button onClick={closeModal}>
+                                        キャンセル
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
                     )}
 
                     {/* 5. 日用品一覧：dailyタブのときだけ表示する */}
@@ -387,6 +606,13 @@ const Stock = () => {
                                                     <dt>交換まで：</dt>
                                                     <dd>{formatRemainingDays(item.guideExDate)}</dd>
                                                 </div>
+                                                <button
+                                                    type="button"
+                                                    className="stock-edit-button"
+                                                    onClick={() => modDailyItemStart(item)}
+                                                >
+                                                    編集
+                                                </button>
                                             </dl>
                                         </li>
                                     ))}

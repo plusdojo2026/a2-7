@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import riceImage from "../assets/rice.png";
+import riceImage0 from "../assets/rice0.png";
+import riceImage1 from "../assets/rice1.png";
+import riceImage2 from "../assets/rice2.png";
+import riceImage3 from "../assets/rice3.png";
+import riceImage4 from "../assets/rice4.png";
+import riceImage5 from "../assets/rice5.png";
+import riceImage6 from "../assets/rice6.png";
+import riceImage7 from "../assets/rice7.png";
 import "../css/Home.css";
 
 function Home() {
@@ -64,7 +71,23 @@ function Home() {
                 console.error(err);
             });
     }, []);
+    let riceImage = riceImage0;
 
+    if (point >= 70) {
+        riceImage = riceImage7;
+    } else if (point >= 60) {
+        riceImage = riceImage6;
+    } else if (point >= 50) {
+        riceImage = riceImage5;
+    } else if (point >= 40) {
+        riceImage = riceImage4;
+    } else if (point >= 30) {
+        riceImage = riceImage3;
+    } else if (point >= 20) {
+        riceImage = riceImage2;
+    } else if (point >= 10) {
+        riceImage = riceImage1;
+    }
     function shoppingClick() {
         navigate("/shopping");
     }
@@ -77,7 +100,7 @@ function Home() {
         }
 
         try {
-            
+
 
             if (burnableDay !== "") {
                 await axios.post("/api/garbage/save", {
@@ -137,7 +160,7 @@ function Home() {
 
             {/* ポイント */}
             <div className="point">
-                <p>現在の米粒ポイント</p>
+                <h2>現在の米粒ポイント</h2>
                 <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
