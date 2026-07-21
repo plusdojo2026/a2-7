@@ -15,31 +15,22 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/api/login")
 public class UserController {
 
-    @Autowired
-    private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
+	@PostMapping
+	public boolean login(@RequestBody User user, HttpSession session) {
 
-    @PostMapping
-    public boolean login(
-            @RequestBody User user,
-            HttpSession session) {
+		User result = userRepository.findByUserIdAndPassword(user.getUserId(), user.getPassword());
 
+		if (result != null) {
 
-        User result =
-            userRepository.findByUserIdAndPassword(
-                user.getUserId(),
-                user.getPassword()
-            );
+			// ログインユーザー保存
+			session.setAttribute("loginUser", result);
 
+			return true;
+		}
 
-        if(result != null){
-
-            // ログインユーザー保存
-            session.setAttribute("loginUser", result);
-
-            return true;
-        }
-
-        return false;
-    }
+		return false;
+	}
 }
