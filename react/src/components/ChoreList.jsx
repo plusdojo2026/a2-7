@@ -93,38 +93,39 @@ function ChoreList(){
         { name: "洗濯物を畳む", category: "洗濯", time: 15 }
     ];
 
-    // ★追加:今日の家事の一覧を作る
-    // 「家事リストの設定で今日が実施日の家事」と「家事提案で追加した家事」を合流させる
+// 今日の家事の一覧を作る
+    // 「家事提案で追加した家事(最優先)」と「家事リストで今日が実施日の家事」を合流させる
     const getTodayChores = () => {
         const today = getTodayIndex();
         const list = [];
 
-        // 1. 家事リストの設定から、今日が実施日の家事を集める
+        // 1. 家事提案から追加した家事を先に入れる(最優先・リボン付き)
+        addedChores.forEach(name => {
+            list.push({
+                name: name,
+                frequency: null,          // 提案からの追加は頻度なし
+                fromSuggest: true         // 青いリボンを付ける
+            });
+        });
+
+        // 2. 家事リストの設定から、今日が実施日の家事を追加する
+        //    ただし、すでに提案側で入っている家事名は除外する(重複表示しない)
         Object.entries(settings).forEach(([name, setting]) => {
             const patternDays = getPatternDays(setting.frequency, setting.day);
             if (patternDays.includes(today)) {
-                list.push({
-                    name: name,
-                    frequency: setting.frequency,
-                    fromSuggest: false        // リボンなし
-                });
-            }
-        });
-
-        // 2. 家事提案から追加した家事を集める(設定と重複したら提案側は入れない)
-        addedChores.forEach(name => {
-            if (!list.some(item => item.name === name)) {
-                list.push({
-                    name: name,
-                    frequency: null,          // 提案からの追加は頻度なし
-                    fromSuggest: true         // 青いリボンを付ける
-                });
+                // 提案側にすでに同じ家事名があればスキップ
+                if (!list.some(item => item.name === name)) {
+                    list.push({
+                        name: name,
+                        frequency: setting.frequency,
+                        fromSuggest: false        // リボンなし
+                    });
+                }
             }
         });
 
         return list;
     };
-
     // ★追加:完了チェックの切り替え
     const toggleDone = (name) => {
         if (doneChores.includes(name)) {
@@ -276,7 +277,7 @@ function ChoreList(){
                                     >
                                         {/* 家事提案から追加した家事はリボン付き */}
                                         {chore.fromSuggest && (
-                                            <span className="ribbon">🔖</span>
+                                            <span className="ribbon"></span>
                                         )}
                                         <p className="todayName">{chore.name}</p>
                                         {chore.frequency !== null && (

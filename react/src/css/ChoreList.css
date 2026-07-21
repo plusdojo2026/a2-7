@@ -127,7 +127,7 @@
 .outlineBtn {
   border: 2px solid #7dd3a0;
   border-radius: 24px;
-  background-color: #ffffff;
+  background: #ffffff;       
   padding: 10px 34px;
   font-size: 16px;
   font-weight: bold;
@@ -136,6 +136,7 @@
   margin-top: 28px;
   margin-bottom: 4px;
   align-self: center;
+  width: auto;
 }
 
 /* ===== 家事提案:スライダー ===== */
@@ -205,7 +206,7 @@
 }
 
 /* ===== 家事提案:家事ボタン ===== */
-.selectArea {
+.modal .selectArea {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -214,17 +215,19 @@
   margin: 0 auto;
 }
 
-.selectBtn {
+.modal .selectBtn {
   border: 1px solid #d9d9d9;
   border-radius: 20px;
-  background-color: #ffffff;
+  background: #ffffff;          /* グラデーションを打ち消す */
   padding: 9px 24px;
   font-size: 14px;
+  font-weight: normal;
   color: #333333;
   cursor: pointer;
+  width: auto;                  /* 幅100%を打ち消す */
 }
 
-.selectBtn.on {
+.modal .selectBtn.on {
   background: linear-gradient(135deg, #5ecfc0 0%, #a8e6a3 100%);
   color: #ffffff;
   border-color: transparent;
@@ -391,11 +394,28 @@
 }
 
 /* 青いリボン(家事提案から追加した印) */
+/* しおり型リボン(本体) */
 .ribbon {
   position: absolute;
-  top: -4px;
-  left: 10px;
-  font-size: 16px;
+  top: 0;
+  right: 14px;
+  width: 20px;
+  height: 26px;
+  background-color: #a5d8f3; 
+}
+
+
+/* 下端のV字の切り込み */
+.ribbon::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 10px solid #a5d8f3;
+  border-right: 10px solid #a5d8f3;
+  border-bottom: 8px solid transparent;  
 }
 
 .todayName {
