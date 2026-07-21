@@ -3,6 +3,7 @@
 import { useEffect,useState } from "react";
 import axios from "axios";
 import ShoppingModal from "./ShoppingModal";
+import "../css/ShoppingList.css";
 
 function ShoppingList() {
 
@@ -54,27 +55,38 @@ function ShoppingList() {
     };
 
     return (
-        <>
+        <div className="screen">
 
             <h2>買い物リスト一覧</h2>
 
             {Lists.map((list) => (
 
-                <div key={list.shoppingListid}
+                <div className="list-card"
+                     key={list.shoppingListid}
                      onClick={() => getItems(list.shoppingListid)}>
 
-                    <p>作成日：{list.createDate}</p>
+                    <h3>{list.createDate}</h3>
 
                   {list.items?.map((item) => (
-                    <p key={item.shoppingItemId}>
+                    <div className="item"
+                         key={item.shoppingItemId}>
                     
-                    {item.itemName}
+                    <span className="item-name">
+                    ・ {item.itemName}
+                    </span>
+                    
+                    <span className={
+                    item.isBought === 0
+                    ? "not-bought"
+                    : "bought"}
+                    >
 
                     {item.isBought === 0
-                    ? "未購入"
-                    : "購入済"}
-                    
-                    </p>
+                    ? "✖"
+                    : "✔"}
+
+                    </span>
+                    </div>
 
                     ))}
 
@@ -90,7 +102,7 @@ function ShoppingList() {
                  />
              )}  
 
-        </>
+        </div>
     );
 }
 

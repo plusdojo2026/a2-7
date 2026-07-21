@@ -65,11 +65,11 @@ function ShoppingModal({ items, closeModal, reload }) {
                 </div>
             ))}
 
-            <button onClick={updateItems}>
+            <button onClick={updateItems} className="update-button">
                 更新
             </button>
 
-            <button onClick={closeModal}>
+            <button onClick={closeModal} className="close-button">
                 閉じる
             </button>
 
