@@ -3,8 +3,13 @@ import axios from "axios";
 import "../css/Refrigerator.css";
 function Refrigerator() {
     // Spring Bootから取得した在庫
+    // 在庫
     const [foods, setFoods] = useState([]);
     const [items, setItems] = useState([]);
+
+    // マスター
+    const [foodMasters, setFoodMasters] = useState([]);
+    const [dailyItemMasters, setDailyItemMasters] = useState([]);
 
     // 現在表示しているタブ
     const [tab, setTab] = useState("food");
@@ -24,6 +29,13 @@ function Refrigerator() {
                 console.error("食材の取得に失敗しました", error);
             });
     };
+    const refreshFoodMasters = () => {
+        axios
+            .get("http://localhost:8080/api/food-master")
+            .then((res) => {
+                setFoodMasters(res.data);
+            });
+    };
 
     // 日用品一覧を取得する
     const refreshDailyItems = () => {
@@ -36,35 +48,40 @@ function Refrigerator() {
                 console.error("日用品の取得に失敗しました", error);
             });
     };
+    const refreshDailyItemMasters = () => {
+        axios
+            .get("http://localhost:8080/api/daily-item-master")
+            .then((res) => {
+                setDailyItemMasters(res.data);
+            });
+    };
 
     //最初に一覧を取得
     useEffect(() => {
         refreshFoods();
         refreshDailyItems();
+
+        refreshFoodMasters();
+        refreshDailyItemMasters();
     }, []);
 
 
     //クリックで追加（食材）
     const addFoodByClick = (food) => {
-        const newFood = {
-            ...food,
 
-            // IDを消して新規登録にする
-            foodStockId: null
+        const newFood = {
+            foodStockName: food.foodName,
+            category: "その他",
+            addDay: new Date().toISOString().slice(0, 10),
+            expirationDate: "",
+            status: true
         };
 
-        axios
-            .post(
-                "http://localhost:8080/api/food_stock/add/",
-                newFood
-            )
-            .then(() => {
-                refreshFoods();
-            })
-            .catch((error) => {
-                console.error("食材の追加に失敗しました", error);
-            });
-    };
+        axios.post(
+            "http://localhost:8080/api/food_stock/add/",
+            newFood
+        );
+    }
 
     //クリックで追加（日用品）
     const addDailyItemByClick = (item) => {
@@ -216,7 +233,7 @@ function Refrigerator() {
 
                         {/* 登録候補の食材一覧 */}
                         <div className="candidate-list">
-                            {foods.map((food) => (
+                            {foodMasters.map((food) => (
                                 <div
                                     key={`candidate-${food.foodStockId}`}
                                     className="candidate-item"
@@ -305,7 +322,7 @@ function Refrigerator() {
 
                         {/* 登録候補の日用品一覧 */}
                         <div className="candidate-list">
-                            {items.map((item) => (
+                            {dailyItemMasters.map((item) => (
                                 <div
                                     key={`candidate-${item.dailyItemStockId}`}
                                     className="candidate-item"
