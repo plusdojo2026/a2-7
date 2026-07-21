@@ -47,7 +47,7 @@ function BottomMenu() {
                 label="ホーム"
                 icon={<HomeIcon />}
                 component={Link}
-                to="/"
+                to="/home"
             />
 
 
