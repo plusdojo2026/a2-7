@@ -43,6 +43,12 @@ useEffect(() => {
          setItems(newItems);
     };
 
+    const deleteItem = (index) => {
+        const newItems = [...items];
+        newItems.splice(index, 1);
+        setItems(newItems);
+    }
+
     const saveShopping = () => {
          axios.post("http://localhost:8080/shopping",items)
          .then(() => {
@@ -77,6 +83,13 @@ useEffect(() => {
 
                  }}
                 />
+
+                <button
+                 className="delete-button"
+                 onClick={() => deleteItem(index)}
+                 >
+                ✖
+                </button>
 
             </div>
         ))}

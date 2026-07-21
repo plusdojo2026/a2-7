@@ -51,3 +51,11 @@
     font-size: 20px;
     cursor: pointer;
 }
+
+.delete-button{
+    margin-left: 10px;
+    background: none;
+    border: none;
+    color:#ddd;
+    font-size: 22px;
+}
