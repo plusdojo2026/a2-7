@@ -9,7 +9,9 @@ import riceImage4 from "../assets/rice4.png";
 import riceImage5 from "../assets/rice5.png";
 import riceImage6 from "../assets/rice6.png";
 import riceImage7 from "../assets/rice7.png";
+import { FiLogOut } from "react-icons/fi";
 import "../css/Home.css";
+
 
 function Home() {
     const navigate = useNavigate();
@@ -91,7 +93,21 @@ function Home() {
     function shoppingClick() {
         navigate("/shopping");
     }
+    async function logout() {
 
+        try {
+
+            await axios.post("/api/login/logout");
+
+            navigate("/login");
+
+        } catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
     async function saveGarbageRule() {
 
         if (burnableDay === "") {
@@ -157,7 +173,11 @@ function Home() {
                     {alertMessage}
                 </div>
             )}
-
+            <div className="buttonArea3">
+                <button onClick={logout}>
+                    <FiLogOut />
+                </button>
+            </div>
             {/* ポイント */}
             <div className="point">
                 <h2>現在の米粒ポイント</h2>

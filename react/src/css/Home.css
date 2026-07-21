@@ -1,13 +1,13 @@
 .home {
     background: #F8FAFC;
     min-height: 100vh;
-    padding: 20px;
+    padding: 10px;
     text-align: center;
 }
 
 /* ポイント */
 .point {
-    margin-top: 20px;
+    margin-top: 5px;
 }
 
 .point p {
@@ -33,7 +33,7 @@
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     transition: 0.2s;
 }
 
@@ -46,7 +46,7 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
 .buttonArea2 button {
@@ -67,13 +67,39 @@
     transform: translateY(-3px);
 }
 
+.buttonArea3 {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 0;
+    margin-left: 0;
+}
+.buttonArea3 button {
+    width: 45px;
+    height: 45px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #84FAB0, #8FD3F4);
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .2s;
+    white-space: pre-line;
+}
+
+.buttonArea3 button:hover {
+    transform: translateY(-3px);
+}
+.buttonArea3 button svg {
+    font-size: 24px;
+}
 /* Tips */
 .tips {
     position: relative;
 
     width: 320px;
     min-height: 80px;
-    margin: 20px auto;
+    margin: 10px auto;
 
     padding: 18px;
 
@@ -104,13 +130,13 @@
 
 /* キャラクター */
 .rice {
-    margin-top: 30px;
+    margin-top: 20px;
     display: flex;
     justify-content: center;
 }
 
 .rice img {
-    width: 300px;
+    width: 340px;
 }
 .riceArea {
     display: flex;

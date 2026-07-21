@@ -33,4 +33,9 @@ public class UserController {
 
 		return false;
 	}
+
+	@PostMapping("/logout")
+	public void logout(HttpSession session) {
+		session.invalidate();
+	}
 }

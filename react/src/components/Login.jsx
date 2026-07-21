@@ -1,12 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-//import "../css/Login.css";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import "../css/Login.css";
 
-function Login({ setPage }) {
-
+function Login() {
+    const [rememberPassword, setRememberPassword] = useState(false);
     const [userId, setUserId] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
+    useEffect(() => {
+
+        const savedUserId = localStorage.getItem("userId");
+        const savedPassword = localStorage.getItem("password");
+        const savedRemember = localStorage.getItem("rememberPassword");
+        if (savedRemember === "true") {
+
+            setUserId(savedUserId);
+            // setPassword(savedPassword);
+            setRememberPassword(true);
+
+        }
+    }, []);
     const login = async () => {
 
         try {
@@ -23,10 +39,18 @@ function Login({ setPage }) {
             if (response.data) {
 
                 // ログイン成功
-                setPage("home");
 
+                if (rememberPassword) {
+                    localStorage.setItem("userId", userId);
+                    // localStorage.setItem("password", password);
+                    // localStorage.setItem("rememberPassword", "true");
+                } else {
+                    localStorage.removeItem("userId");
+                    // localStorage.removeItem("password");
+                    // localStorage.removeItem("rememberPassword");
+                }
+                navigate("/home");
             } else {
-
                 alert("IDまたはパスワードが違います");
 
             }
@@ -39,31 +63,50 @@ function Login({ setPage }) {
         }
 
     };
-
+    const reset = () => {
+        setUserId("");
+        setPassword("");
+        setRememberPassword(false);
+    };
     return (
         <div className="login">
 
-            <h1>ログイン</h1>
+            <h1>
+                <div>Sign</div>
+                <div>in</div>
+            </h1>
 
             <input
                 type="text"
                 placeholder="ユーザーID"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
-            />
+            /><br />
 
             <input
                 type="password"
                 placeholder="パスワード"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-            />
+            /><br />
+            <label>
+                <input
+                    type="checkbox"
+                    checked={rememberPassword}
+                    onChange={(e) => setRememberPassword(e.target.checked)}
+                />
+                ユーザーIDを記憶する
+            </label>
+            <div>
+                <button onClick={reset}>リセット</button>
+                <button onClick={login}>ログイン</button>
+            </div>
 
-            <button onClick={login}>
-                ログイン
-            </button>
-
+            <Link to="/register">
+                新規登録＞
+            </Link>
         </div>
+
     );
 }
 

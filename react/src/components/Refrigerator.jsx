@@ -3,14 +3,23 @@ import axios from "axios";
 import "../css/Refrigerator.css";
 function Refrigerator() {
     // Spring Bootから取得した在庫
+    // 在庫
     const [foods, setFoods] = useState([]);
     const [items, setItems] = useState([]);
+
+    // マスター
+    const [foodMasters, setFoodMasters] = useState([]);
+    const [dailyItemMasters, setDailyItemMasters] = useState([]);
 
     // 現在表示しているタブ
     const [tab, setTab] = useState("food");
 
+    //選択中の商品
+    const [selectedItem, setSelectedItem] = useState(null);
+
     // 画面ロード時に食材と日用品を取得
-    useEffect(() => {
+    // 食材一覧を取得する
+    const refreshFoods = () => {
         axios
             .get("http://localhost:8080/api/food_stock/")
             .then((res) => {
@@ -19,7 +28,17 @@ function Refrigerator() {
             .catch((error) => {
                 console.error("食材の取得に失敗しました", error);
             });
+    };
+    const refreshFoodMasters = () => {
+        axios
+            .get("http://localhost:8080/api/food-master")
+            .then((res) => {
+                setFoodMasters(res.data);
+            });
+    };
 
+    // 日用品一覧を取得する
+    const refreshDailyItems = () => {
         axios
             .get("http://localhost:8080/api/daily-item-stock")
             .then((res) => {
@@ -28,7 +47,104 @@ function Refrigerator() {
             .catch((error) => {
                 console.error("日用品の取得に失敗しました", error);
             });
+    };
+    const refreshDailyItemMasters = () => {
+        axios
+            .get("http://localhost:8080/api/daily-item-master")
+            .then((res) => {
+                setDailyItemMasters(res.data);
+            });
+    };
+
+    //最初に一覧を取得
+    useEffect(() => {
+        refreshFoods();
+        refreshDailyItems();
+
+        refreshFoodMasters();
+        refreshDailyItemMasters();
     }, []);
+
+
+    //クリックで追加（食材）
+    const addFoodByClick = (food) => {
+
+        const newFood = {
+            foodStockName: food.foodName,
+            category: "その他",
+            addDay: new Date().toISOString().slice(0, 10),
+            expirationDate: "",
+            status: true
+        };
+
+        axios.post(
+            "http://localhost:8080/api/food_stock/add/",
+            newFood
+        );
+    }
+
+    //クリックで追加（日用品）
+    const addDailyItemByClick = (item) => {
+        const newItem = {
+            ...item,
+
+            // IDを消して新規登録にする
+            dailyItemStockId: null
+        };
+
+        axios
+            .post(
+                "http://localhost:8080/api/daily-item-stock",
+                newItem
+            )
+            .then(() => {
+                refreshDailyItems();
+            })
+            .catch((error) => {
+                console.error("日用品の追加に失敗しました", error);
+            });
+    };
+
+    //削除
+    const deleteSelectedItem = () => {
+        if (!selectedItem) {
+            alert("削除する商品を選択してください。");
+            return;
+        }
+
+        // 食材を削除
+        if (selectedItem.type === "food") {
+            axios
+                .post(
+                    "http://localhost:8080/api/food_stock/del/",
+                    selectedItem.data
+                )
+                .then(() => {
+                    setSelectedItem(null);
+                    refreshFoods();
+                })
+                .catch((error) => {
+                    console.error("食材の削除に失敗しました", error);
+                });
+
+            return;
+        }
+
+        // 日用品を削除
+        if (selectedItem.type === "daily") {
+            axios
+                .delete(
+                    `http://localhost:8080/api/daily-item-stock/${selectedItem.data.dailyItemStockId}`
+                )
+                .then(() => {
+                    setSelectedItem(null);
+                    refreshDailyItems();
+                })
+                .catch((error) => {
+                    console.error("日用品の削除に失敗しました", error);
+                });
+        }
+    };
 
     return (
         <div className="stock-page">
@@ -75,16 +191,18 @@ function Refrigerator() {
                                 {foods.map((food, index) => (
                                     <div
                                         key={food.foodStockId}
-                                        className={`stored-item position-${index % 6}`}
+                                        className={
+                                            selectedItem?.type === "food" &&
+                                                selectedItem?.data.foodStockId === food.foodStockId
+                                                ? `stored-item position-${index % 6} selected`
+                                                : `stored-item position-${index % 6}`
+                                        }
                                         draggable
-                                        onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                "application/json",
-                                                JSON.stringify({
-                                                    type: "food",
-                                                    data: food,
-                                                })
-                                            );
+                                        onClick={() => {
+                                            setSelectedItem({
+                                                type: "food",
+                                                data: food
+                                            });
                                         }}
                                     >
                                         <img
@@ -100,9 +218,13 @@ function Refrigerator() {
                         {/* 食材用ゴミ箱 */}
                         <div
                             className="trash-area"
+
+                            onClick={deleteSelectedItem}
+
                             onDragOver={(e) => e.preventDefault()}
+
                             onDrop={(e) => {
-                                // 後で削除処理を書く
+                                // 後でドラッグ削除
                             }}
                         >
                             🗑
@@ -111,11 +233,12 @@ function Refrigerator() {
 
                         {/* 登録候補の食材一覧 */}
                         <div className="candidate-list">
-                            {foods.map((food) => (
+                            {foodMasters.map((food) => (
                                 <div
                                     key={`candidate-${food.foodStockId}`}
                                     className="candidate-item"
                                     draggable
+                                    onClick={() => addFoodByClick(food)}
                                     onDragStart={(e) => {
                                         e.dataTransfer.setData(
                                             "application/json",
@@ -157,16 +280,18 @@ function Refrigerator() {
                                 {items.map((item, index) => (
                                     <div
                                         key={item.dailyItemStockId}
-                                        className={`stored-item position-${index % 6}`}
+                                        className={
+                                            selectedItem?.type === "daily" &&
+                                                selectedItem?.data.dailyItemStockId === item.dailyItemStockId
+                                                ? `stored-item position-${index % 6} selected`
+                                                : `stored-item position-${index % 6}`
+                                        }
                                         draggable
-                                        onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                "application/json",
-                                                JSON.stringify({
-                                                    type: "daily",
-                                                    data: item,
-                                                })
-                                            );
+                                        onClick={() => {
+                                            setSelectedItem({
+                                                type: "daily",
+                                                data: item
+                                            });
                                         }}
                                     >
                                         <img
@@ -182,9 +307,13 @@ function Refrigerator() {
                         {/* 日用品用ゴミ箱 */}
                         <div
                             className="trash-area"
+
+                            onClick={deleteSelectedItem}
+
                             onDragOver={(e) => e.preventDefault()}
+
                             onDrop={(e) => {
-                                // 後で削除処理を書く
+                                // 後でドラッグ削除
                             }}
                         >
                             🗑
@@ -193,11 +322,12 @@ function Refrigerator() {
 
                         {/* 登録候補の日用品一覧 */}
                         <div className="candidate-list">
-                            {items.map((item) => (
+                            {dailyItemMasters.map((item) => (
                                 <div
                                     key={`candidate-${item.dailyItemStockId}`}
                                     className="candidate-item"
                                     draggable
+                                    onClick={() => addDailyItemByClick(item)}
                                     onDragStart={(e) => {
                                         e.dataTransfer.setData(
                                             "application/json",

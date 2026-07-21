@@ -33,7 +33,7 @@ public class ShoppingController {
 	//買い物リスト一覧を取得
 	@GetMapping("/list")
 	public List<ShoppingList> getShoppingLists() {
-		List<ShoppingList> lists = shoppingListRepository.findAll();
+		List<ShoppingList> lists = shoppingListRepository.findAllByOrderByShoppingListidDesc();
 		
 		//１件ずつ取り出す
 		for (ShoppingList list : lists) {
