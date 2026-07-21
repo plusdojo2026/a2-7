@@ -243,3 +243,37 @@
         font-size: 18px;
     }
 }
+
+/* クリックして選択した登録済み商品 */
+.stored-item.selected {
+    background: var(--accent-bg, #e9fff4);
+    outline: 3px solid var(--accent, #62efa9);
+    transform: scale(1.05);
+}
+
+/* クリック可能であることを分かりやすくする */
+.candidate-item,
+.stored-item,
+.trash-area.clickable {
+    cursor: pointer;
+}
+
+/* 商品を押したとき */
+.candidate-item:active,
+.stored-item:active {
+    transform: scale(0.95);
+}
+
+/* 選択商品があるときのゴミ箱 */
+.trash-area.clickable {
+    background: #fff0f0;
+    color: #c62828;
+}
+
+/* キーボード操作時 */
+.candidate-item:focus-visible,
+.stored-item:focus-visible,
+.trash-area:focus-visible {
+    outline: 3px solid var(--accent, #62efa9);
+    outline-offset: -3px;
+}

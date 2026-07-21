@@ -201,9 +201,13 @@ function Refrigerator() {
                         {/* 食材用ゴミ箱 */}
                         <div
                             className="trash-area"
+
+                            onClick={deleteSelectedItem}
+
                             onDragOver={(e) => e.preventDefault()}
+
                             onDrop={(e) => {
-                                // 後で削除処理を書く
+                                // 後でドラッグ削除
                             }}
                         >
                             🗑
