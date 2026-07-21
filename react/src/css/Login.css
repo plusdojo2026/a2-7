@@ -6,18 +6,16 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
+    padding-top: 50px;
+    position: relative;
 }
 
 .login h1 {
-    position: absolute;
-    top: 40px;
-    left: 30px;
-
     color: #1E293B;
     font-size: 42px;
     line-height: 1.1;
     width: 100px;
-    margin: 0;
+    margin: 0 0 50px 0;
     font-family: "Helvetica Neue", sans-serif;
 }
 
@@ -88,9 +86,9 @@
 
 .login a {
     margin-top: 20px;
-    padding-top: 20px;
+    padding-top: 60px;
 
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #afadad;
 
     color: #4F46E5;
     text-decoration: none;
@@ -100,8 +98,42 @@
     text-align: center;
 
     transition: .2s;
+    font-size: 25px;
 }
 
 .login a:hover {
     color: #84FAB0;
+}
+
+@media screen and (max-width: 600px) {
+
+
+    .login h1 {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+
+        font-size: 45px;
+        margin: 0;
+    }
+
+    .login {
+        padding-top: 50px;
+    }
+
+    .login input[type="text"],
+    .login input[type="password"] {
+        width: 85%;
+        height: 60px;
+    }
+
+    .login button {
+        width: 130px;
+        height: 45px;
+    }
+
+    .login a {
+        width: 85%;
+    }
+
 }
