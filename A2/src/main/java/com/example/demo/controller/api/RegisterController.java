@@ -19,13 +19,13 @@ public class RegisterController {
 	@PostMapping
 	public boolean register(@RequestBody User user) {
 
-		if (user.getUser_name() == null || user.getUser_name().isEmpty() || user.getPassword() == null
+		if (user.getUserName() == null || user.getUserName().isEmpty() || user.getPassword() == null
 				|| user.getPassword().isEmpty()) {
 
 			return false;
 		}
 
-		if (userRepository.existsByUser_name(user.getUser_name())) {
+		if (userRepository.existsByUserName(user.getUserName())) {
 
 			return false;
 		}
