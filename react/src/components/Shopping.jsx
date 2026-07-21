@@ -54,7 +54,7 @@ useEffect(() => {
     };
 
     return(
-    <>
+    <div className="screen">
         <h2>買い物リスト作成</h2>
 
         <div className="shopping-list">
@@ -63,6 +63,7 @@ useEffect(() => {
         {items.map((item,index) => (
             <div className="item-input" key={index}>
                 
+                <span>・</span>
                 <input
                  type="text"
                  value={item.itemName}
@@ -86,7 +87,7 @@ useEffect(() => {
 
         <button className="save-button" onClick={saveShopping}>作成</button>
 
-    </>
+    </div>
     );
 }
 

@@ -17,6 +17,7 @@
     padding: 30px;
     text-align: center;
     box-shadow: 0 0 15px gray;
+    margin: 30px;
 }
 
 .item-row{
@@ -26,15 +27,28 @@
     margin: 15px 0;
 }
 
-.modal button{
+.close-button{
+    margin: 10px;
+    padding: 6px 15px;
+    border: 2px solid #84f0c0;;
+    border-radius: 20px;
+    background: white;
+    color: #ddd;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.update-button{
     margin: 10px;
     padding: 10px 25px;
     border: none;
     border-radius: 20px;
-    background: #84f0c0;
+    background: linear-gradient(95deg, #84fab0, #8fd3f4);
     color: white;
     font-size: 16px;
     cursor: pointer;
+    font-weight: bold;
 }
 
 .modal h2 {
