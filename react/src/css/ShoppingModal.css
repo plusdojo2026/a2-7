@@ -17,20 +17,29 @@
     padding: 30px;
     text-align: center;
     box-shadow: 0 0 15px gray;
-    margin: 30px;
 }
 
 .item-row{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 15px 0;
+    margin: 8px 0;
 }
 
+.item-name{
+    font-size: 15px;
+
+}
+
+.checkbox{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
 .close-button{
     margin: 10px;
     padding: 6px 15px;
-    border: 2px solid #84f0c0;;
+    border: 2px solid #84f0c0;
     border-radius: 20px;
     background: white;
     color: #ddd;
@@ -49,6 +58,13 @@
     font-size: 16px;
     cursor: pointer;
     font-weight: bold;
+}
+
+.button-area{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
 }
 
 .modal h2 {

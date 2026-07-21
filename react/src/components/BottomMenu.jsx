@@ -24,7 +24,10 @@ function BottomMenu() {
             sx={{
                 position: "fixed",
                 bottom: 0,
-                width: "100%"
+                width: "100%",
+                "& .Mui-selected": {
+                    color: "#84FAB0",
+                },
             }}
         >
 
