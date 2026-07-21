@@ -25,10 +25,10 @@ public class RegisterController {
 			return false;
 		}
 
-		if (userRepository.existsByUser_name(user.getUser_name())) {
-
-			return false;
-		}
+//		if (userRepository.existsByUser_name(user.getUser_name())) {
+//
+//			return false;
+//		}
 
 		user.setPoint(0);
 
