@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import "../css/ChoreList.css";
 
@@ -141,12 +142,24 @@ function ChoreList(){
         setOpenModal("today");
     };
 
-    // ★追加:今日の家事の確定(完了画面へ)
+    // 今日の家事の確定(完了画面へ + ポイントをDBに加算)
     const handleTodayConfirm = () => {
-        setEarnedPoint(doneChores.length);   // 1家事=1ptで計算(仮)
+        const point = doneChores.length;   // 完了した家事の数(1家事=1pt)
+        setEarnedPoint(point);
+
+        // ポイントが1以上のときだけ、DBに加算する
+        if (point > 0) {
+            axios.post(`/api/chore/point/${point}`, {}, { withCredentials: true })
+                .then((res) => {
+                    console.log("加算後のポイント:", res.data.point);
+                })
+                .catch((err) => {
+                    console.error("ポイント加算に失敗:", err);
+                });
+        }
+
         setTodayStep("finish");
     };
-
     // 他の家事が使っている曜日を集める(自分の家事は除く)
     const getUsedDays = () => {
         const used = new Set();

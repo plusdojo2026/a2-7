@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import sinmai from "../assets/sinmai.png";
 import "../css/Top.css";
 
 function Top() {
@@ -7,22 +8,27 @@ function Top() {
 
     return (
         <div className="top">
-
+            <img
+                src={sinmai}
+                alt="新米"
+                className="topImage"
+            />
             <h1>
-                WELCOME
+                WELCOME!
             </h1>
 
-            <p>
-                毎日の暮らしを<br />
-                もっと便利に
-            </p>
 
 
-            <button
-                onClick={() => navigate("/login")}
-            >
-                NEXT
-            </button>
+
+            <div className="nextArea">
+
+                <button
+                    onClick={() => navigate("/login")}
+                >
+                    NEXT
+                </button>
+
+            </div>
 
 
         </div>

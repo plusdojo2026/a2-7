@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Garbage;
+import com.example.demo.entity.User;
 import com.example.demo.repository.GarbageRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/garbage")
@@ -30,7 +33,14 @@ public class GarbageController {
 	}
 
 	@PostMapping("/save")
-	public Garbage saveGarbage(@RequestBody Garbage garbage) {
+	public Garbage saveGarbage(@RequestBody Garbage garbage, HttpSession session) {
+
+		User user = (User) session.getAttribute("loginUser");
+		if (user == null) {
+			throw new RuntimeException("ログインしてください");
+		}
+
+		garbage.setUserId(user.getUserId());
 
 		Garbage existing = garbageRepository.findByUserIdAndGarbageType(garbage.getUserId(), garbage.getGarbageType())
 				.orElse(null);
