@@ -1,5 +1,5 @@
 -- ユーザー
-INSERT INTO User (user_name, password, point)
+INSERT INTO Users (user_name, password, point)
 VALUES
 ('田中太郎', 'pass1234', 0),
 ('佐藤花子', 'user5678', 5),

@@ -25,7 +25,7 @@ public class MealController {
 	private MealRepository repository;
 	
 	//食事内容の登録
-	@PostMapping("/meal/regist/")
+	@PostMapping("/api/meal/regist/")
 	private Meal regist(
 			@RequestParam("image") MultipartFile image,
 			@ModelAttribute Meal meal) { //JSONデータをオブジェクトに変換
@@ -58,13 +58,13 @@ public class MealController {
 	}
 	
 	//食事内容の更新
-	@PostMapping("/meal/update/")
+	@PostMapping("/api/meal/update/")
 	private Meal update(
-			@RequestParam("image") MultipartFile image,
+			@RequestParam(value ="image", required=false) MultipartFile image,
 			@ModelAttribute Meal meal) {
 		try {
 			
-			if(!image.isEmpty()) {  //画像が空じゃない＝選択されていた時は更新！
+			if(image != null && !image.isEmpty()) {  //画像が空じゃない＝選択されていた時は更新！
 				String fileName = saveImage(image); //以下の画像保存メソッドに移動
 				meal.setMealImage(fileName);  //entityに値をセット
 			}
@@ -77,7 +77,7 @@ public class MealController {
 	}
 	
 	//食事内容の一覧取得+記録日が新しい順古い順に切り替え
-	@GetMapping("/meal/") 
+	@GetMapping("/api/meal/") 
 	List<Meal> get(
 					@RequestParam(defaultValue = "0") Integer page, //一覧表示のページデータを取得(使わないかも）
 					@RequestParam(defaultValue="desc")String sort
@@ -103,7 +103,7 @@ public class MealController {
 	
 	
 	//食事タイプ＋並び替え
-	@GetMapping("/meal/type/") 
+	@GetMapping("/api/meal/type/") 
 	List<Meal>getByType(
 					@RequestParam String mealType,
 					@RequestParam(defaultValue = "0") Integer page, //一覧表示のページデータを取得(使わないかも）
