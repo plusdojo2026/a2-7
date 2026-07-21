@@ -20,11 +20,15 @@ function Top() {
 
 
 
-            <button
-                onClick={() => navigate("/login")}
-            >
-                NEXT
-            </button>
+            <div className="nextArea">
+
+                <button
+                    onClick={() => navigate("/login")}
+                >
+                    NEXT
+                </button>
+
+            </div>
 
 
         </div>

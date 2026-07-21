@@ -122,7 +122,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "燃えるゴミ",
                     garbageDay: weekNumber[burnableDay],
-                    userId: 1,
+                    
                     notification: notification
                 });
             }
@@ -131,7 +131,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "燃えないゴミ",
                     garbageDay: weekNumber[nonBurnableDay],
-                    userId: 1,
+                   
                     notification: notification
                 });
             }
@@ -140,7 +140,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "ペットボトル",
                     garbageDay: weekNumber[petBottleDay],
-                    userId: 1,
+                    
                     notification: notification
                 });
             }
@@ -149,7 +149,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "缶・びん",
                     garbageDay: weekNumber[canBottleDay],
-                    userId: 1,
+                   
                     notification: notification
                 });
             }
