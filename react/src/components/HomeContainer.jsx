@@ -3,11 +3,10 @@ import Home from "./Home";
 import Notice from "./Notice";
 import ChoreList from "./ChoreList";
 import "../css/HomeContainer.css";
-import Login from "./Login";
 function HomeContainer() {
 
-    const [page, setPage] = useState("login");
-
+    const [page, setPage] = useState("home");
+   
     return (
         <div className="homeContainer">
 
@@ -37,9 +36,7 @@ function HomeContainer() {
 
 
             {/* 画面切替 */}
-            {page === "login" && (
-                <Login setPage={setPage} />
-            )}
+            
             {page === "home" && <Home />}
 
             {page === "notice" && <Notice />}
