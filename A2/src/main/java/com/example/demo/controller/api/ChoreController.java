@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Chore;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ChoreRepository;
+import com.example.demo.repository.UserRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/chore")
@@ -22,22 +26,39 @@ public class ChoreController {
 	@Autowired
 	private ChoreRepository choreRepository;
 
-	// 家事の全件取得(家事リスト・家事提案の選択肢)
+	@Autowired
+	private UserRepository userRepository;
+
+	// ログイン中のユーザーの家事一覧を取得
 	@GetMapping("/")
-	public List<Chore> getChores() {
-		return choreRepository.findAll();
+	public List<Chore> getChores(HttpSession session) {
+		User loginUser = (User) session.getAttribute("loginUser");
+		if (loginUser == null) {
+			return null;
+		}
+		return choreRepository.findByUserId(loginUser.getUserId());
 	}
 
-	// 今日の家事を取得(status=true)
+	// ログイン中のユーザーの「今日の家事」を取得(status=true)
 	@GetMapping("/today")
-	public List<Chore> getTodayChores() {
-		return choreRepository.findByStatus(true);
+	public List<Chore> getTodayChores(HttpSession session) {
+		User loginUser = (User) session.getAttribute("loginUser");
+		if (loginUser == null) {
+			return null;
+		}
+		return choreRepository.findByUserIdAndStatus(loginUser.getUserId(), true);
 	}
 
 	// 家事提案:指定した所要時間内でできる家事をランダムで返す
 	@GetMapping("/suggest/{time}")
-	public List<Chore> getSuggestChores(@PathVariable Integer time) {
-		List<Chore> choreList = choreRepository.findAll();
+	public List<Chore> getSuggestChores(@PathVariable Integer time, HttpSession session) {
+		User loginUser = (User) session.getAttribute("loginUser");
+		if (loginUser == null) {
+			return null;
+		}
+
+		// ログインユーザーの家事だけを対象にする
+		List<Chore> choreList = choreRepository.findByUserId(loginUser.getUserId());
 		if (choreList.isEmpty()) {
 			return null;
 		}
@@ -70,5 +91,19 @@ public class ChoreController {
 	@PostMapping("/add")
 	public Chore addChore(@RequestBody Chore chore) {
 		return choreRepository.save(chore);
+	}
+
+	// ポイントを加算する(家事完了時に呼ぶ)
+	@PostMapping("/point/{addPoint}")
+	public User addPoint(@PathVariable Integer addPoint, HttpSession session) {
+		User loginUser = (User) session.getAttribute("loginUser");
+		if (loginUser == null) {
+			return null;
+		}
+		// 最新のユーザー情報をDBから取り直す
+		User user = userRepository.findById(loginUser.getUserId()).orElseThrow();
+		// 今のポイントに加算する
+		user.setPoint(user.getPoint() + addPoint);
+		return userRepository.save(user);
 	}
 }

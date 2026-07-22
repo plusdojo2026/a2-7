@@ -460,16 +460,18 @@ const Stock = () => {
                                             <label>カテゴリ</label>
                                             <select
                                                 name="category"
-                                                value={modFood.category}
+                                                value={modFood.category ?? ""}
                                                 onChange={inputModFood}
                                             >
+                                                <option value="">選択してください</option>
+                                                <option value="冷蔵">冷蔵</option>
+                                                <option value="常温">常温</option>
+                                                <option value="冷凍">冷凍</option>
                                                 <option value="野菜">野菜</option>
                                                 <option value="肉">肉</option>
                                                 <option value="魚">魚</option>
-                                                <option value="乳製品">乳製品</option>
-                                                <option value="飲み物">飲み物</option>
+                                                <option value="飲料">飲料</option>
                                                 <option value="調味料">調味料</option>
-                                                <option value="冷凍食品">冷凍食品</option>
                                                 <option value="その他">その他</option>
                                             </select>
                                         </div>

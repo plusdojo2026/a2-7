@@ -10,6 +10,12 @@
     font-family: sans-serif;
 }
 
+.page-title {
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+}
+
 .stock-app {
     width: 380px;
     margin: 20px auto;
@@ -20,11 +26,44 @@
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
 }
 
-/* Refrigerator画面全体 */
-.refrigerator-container {
-    width: 100%;
-    overflow: hidden;
+/* ==============================
+   タブ
+============================== */
+
+.stock-tabs {
+    display: flex;
+    background: #ffffff;
+    border-bottom: 1px solid #dddddd;
 }
+
+.tab-button {
+    position: relative;
+    flex: 1;
+    padding: 20px 12px;
+    border: none;
+    background: transparent;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.tab-button::after {
+    position: absolute;
+    right: 20%;
+    bottom: 0;
+    left: 20%;
+    height: 6px;
+    background: transparent;
+    content: "";
+}
+
+.tab-button.active::after {
+    background: #62efa9;
+}
+
+/* ==============================
+   冷蔵庫・倉庫
+============================== */
 
 .storage-area {
     position: relative;
@@ -33,26 +72,255 @@
     background: #eef1f6;
 }
 
+.refrigerator-area {
+    background:
+        linear-gradient(
+            90deg,
+            #dcebf7 0 14%,
+            #eef4f8 14% 86%,
+            #dcebf7 86% 100%
+        );
+}
+
+.warehouse-area {
+    background: #f0f2f6;
+}
+
+/* 棚 */
+
+.shelf {
+    position: absolute;
+    right: 6%;
+    left: 6%;
+    height: 8px;
+    background: #aaaaaa;
+}
+
+.shelf-top {
+    top: 25%;
+}
+
+.shelf-middle {
+    top: 53%;
+}
+
+.shelf-bottom {
+    top: 80%;
+}
+
+/* ==============================
+   登録済み商品
+============================== */
+
+.stored-items {
+    position: absolute;
+    inset: 0;
+}
+
+.stored-item {
+    position: absolute;
+    width: 92px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    z-index: 2;
+}
+
+/* 選択中 */
+
+.stored-item.selected {
+    padding: 4px;
+    border: 3px solid #ff9800;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.75);
+}
+
+/* 画像と数量を囲む */
+
+.stored-image-wrapper {
+    position: relative;
+    width: 65px;
+    height: 65px;
+    margin: 0 auto;
+}
+
+.stored-image-wrapper img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* 数量バッジ */
+
+.stock-count {
+    position: absolute;
+    top: -7px;
+    right: -9px;
+    z-index: 5;
+
+    display: flex !important;
+    min-width: 24px;
+    height: 24px;
+    margin: 0 !important;
+    padding: 0 5px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    background-color: #e53935;
+    color: #ffffff;
+
+    font-size: 12px !important;
+    font-weight: bold;
+    line-height: 24px;
+    white-space: nowrap;
+}
+
+/* 商品名 */
+
+.stored-item-name {
+    display: block;
+    margin-top: 4px;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    line-height: 16px;
+    white-space: nowrap;
+}
+
+/* ==============================
+   食材の棚ごとの配置
+============================== */
+
+/* 上段 */
+
+.food-top-0 {
+    top: 3%;
+    left: 7%;
+}
+
+.food-top-1 {
+    top: 3%;
+    left: 37%;
+}
+
+.food-top-2 {
+    top: 3%;
+    right: 7%;
+}
+
+/* 中段 */
+
+.food-middle-0 {
+    top: 31%;
+    left: 7%;
+}
+
+.food-middle-1 {
+    top: 31%;
+    left: 37%;
+}
+
+.food-middle-2 {
+    top: 31%;
+    right: 7%;
+}
+
+/* 下段 */
+
+.food-bottom-0 {
+    top: 58%;
+    left: 7%;
+}
+
+.food-bottom-1 {
+    top: 58%;
+    left: 37%;
+}
+
+.food-bottom-2 {
+    top: 58%;
+    right: 7%;
+}
+
+/* ==============================
+   日用品の配置
+============================== */
+
+.position-0 {
+    top: 4%;
+    left: 8%;
+}
+
+.position-1 {
+    top: 4%;
+    left: 38%;
+}
+
+.position-2 {
+    top: 4%;
+    right: 7%;
+}
+
+.position-3 {
+    top: 32%;
+    left: 8%;
+}
+
+.position-4 {
+    top: 32%;
+    left: 38%;
+}
+
+.position-5 {
+    top: 32%;
+    right: 7%;
+}
+
+/* ==============================
+   ゴミ箱
+============================== */
+
 .trash-area {
     display: flex;
     min-height: 64px;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-    background: #fff;
+    border-top: 1px solid #dddddd;
+    border-bottom: 1px solid #dddddd;
+    background: #ffffff;
+    color: #666666;
     font-size: 32px;
+    cursor: pointer;
 }
 
 .trash-area span {
     font-size: 14px;
 }
 
-/* 候補一覧 */
+.trash-area:hover {
+    background: #fff2f2;
+}
+
+/* ==============================
+   候補一覧
+============================== */
+
+.candidate-area {
+    display: flex;
+    align-items: center;
+    background: #d6d5c9;
+}
+
 .candidate-list {
     display: flex;
+    min-width: 0;
     min-height: 105px;
+    flex: 1;
     align-items: center;
     flex-wrap: nowrap;
     gap: 10px;
@@ -65,11 +333,11 @@
     background: #d6d5c9;
 
     scroll-behavior: smooth;
+    scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
 }
 
-/* 候補一覧の最後までスクロールしやすくする */
 .candidate-list::after {
     width: 8px;
     flex: 0 0 8px;
@@ -93,7 +361,12 @@
     cursor: pointer;
 }
 
+.candidate-item:hover {
+    background: #e9f8ff;
+}
+
 .candidate-item img {
+    display: block;
     width: 52px;
     height: 52px;
     object-fit: contain;
@@ -110,6 +383,43 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* スクロールボタン */
+
+.candidate-scroll-button {
+    width: 36px;
+    height: 105px;
+    flex: 0 0 36px;
+
+    border: none;
+    background: #ffffff;
+
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.candidate-scroll-button:hover {
+    background: #eeeeee;
+}
+
+/* スクロールバー */
+
+.candidate-list::-webkit-scrollbar {
+    height: 6px;
+}
+
+.candidate-list::-webkit-scrollbar-track {
+    background: #eeeeee;
+}
+
+.candidate-list::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #888888;
+}
+
+/* ==============================
+   スマートフォン
+============================== */
 
 @media (max-width: 600px) {
     .stock-page {
@@ -138,9 +448,36 @@
         font-size: 18px;
     }
 
-    /* 冷蔵庫を少し低くする */
     .storage-area {
         height: 320px;
+    }
+
+    .shelf {
+        right: 7%;
+        left: 7%;
+        height: 7px;
+    }
+
+    .stored-item {
+        width: 82px;
+    }
+
+    .stored-image-wrapper {
+        width: 58px;
+        height: 58px;
+    }
+
+    .stored-item-name {
+        font-size: 11px;
+    }
+
+    .stock-count {
+        top: -6px;
+        right: -8px;
+        min-width: 22px;
+        height: 22px;
+        font-size: 11px !important;
+        line-height: 22px;
     }
 
     .trash-area {
@@ -162,166 +499,57 @@
         width: 48px;
         height: 48px;
     }
-}
 
-.candidate-list::-webkit-scrollbar {
-    height: 6px;
-}
+    .candidate-scroll-button {
+        width: 36px;
+        height: 98px;
+        flex-basis: 36px;
+    }
 
-.candidate-list::-webkit-scrollbar-track {
-    background: #eeeeee;
-}
+    /* スマホでの食材配置 */
 
-.candidate-list::-webkit-scrollbar-thumb {
-    background: #888888;
-    border-radius: 10px;
-}
+    .food-top-0 {
+        top: 3%;
+        left: 5%;
+    }
 
-/* タブ全体 */
-.stock-tabs {
-    display: flex;
-    background: #ffffff;
-    border-bottom: 1px solid #dddddd;
-}
+    .food-top-1 {
+        top: 3%;
+        left: 36%;
+    }
 
-/* タブボタン */
-.tab-button {
-    position: relative;
-    flex: 1;
-    padding: 20px 12px;
-    border: none;
-    background: transparent;
-    font-size: 20px;
-    font-weight: 700;
-    cursor: pointer;
-}
+    .food-top-2 {
+        top: 3%;
+        right: 4%;
+    }
 
-/* タブ下側の線 */
-.tab-button::after {
-    position: absolute;
-    right: 20%;
-    bottom: 0;
-    left: 20%;
-    height: 6px;
-    background: transparent;
-    content: "";
-}
+    .food-middle-0 {
+        top: 31%;
+        left: 5%;
+    }
 
-/* 選択中タブ */
-.tab-button.active::after {
-    background: #62efa9;
-}
+    .food-middle-1 {
+        top: 31%;
+        left: 36%;
+    }
 
-/* 冷蔵庫の背景 */
-.refrigerator-area {
-    background:
-        linear-gradient(
-            90deg,
-            #dcebf7 0 14%,
-            #eef4f8 14% 86%,
-            #dcebf7 86% 100%
-        );
-}
+    .food-middle-2 {
+        top: 31%;
+        right: 4%;
+    }
 
-/* 日用品倉庫の背景 */
-.warehouse-area {
-    background: #f0f2f6;
-}
+    .food-bottom-0 {
+        top: 58%;
+        left: 5%;
+    }
 
-/* 棚 */
-.shelf {
-    position: absolute;
-    right: 6%;
-    left: 6%;
-    height: 8px;
-    background: #aaaaaa;
-}
+    .food-bottom-1 {
+        top: 58%;
+        left: 36%;
+    }
 
-.shelf-top {
-    top: 25%;
-}
-
-.shelf-middle {
-    top: 53%;
-}
-
-.shelf-bottom {
-    top: 80%;
-}
-
-/* 登録済み商品を配置する領域 */
-.stored-items {
-    position: absolute;
-    inset: 0;
-}
-
-/* 登録済み商品 */
-.stored-item {
-    position: absolute;
-    width: 92px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-}
-
-.stored-item img {
-    display: block;
-    width: 76px;
-    height: 76px;
-    margin: 0 auto;
-    object-fit: contain;
-}
-
-.stored-item span {
-    display: block;
-    margin-top: 4px;
-    font-size: 13px;
-}
-
-/* 商品の配置位置 */
-.position-0 {
-    top: 5%;
-    left: 8%;
-}
-
-.position-1 {
-    top: 29%;
-    left: 30%;
-}
-
-.position-2 {
-    top: 56%;
-    left: 10%;
-}
-
-.position-3 {
-    top: 56%;
-    left: 40%;
-}
-
-.position-4 {
-    top: 29%;
-    right: 5%;
-}
-
-.position-5 {
-    top: 56%;
-    right: 5%;
-}
-
-.candidate-area {
-    display: flex;
-    align-items: center;
-}
-
-.candidate-scroll-button {
-    width: 36px;
-    height: 96px;
-    flex-shrink: 0;
-
-    background: white;
-    border: none;
-
-    font-size: 22px;
-    cursor: pointer;
+    .food-bottom-2 {
+        top: 58%;
+        right: 4%;
+    }
 }
