@@ -180,12 +180,11 @@ const MealComponent = () =>{
             </div>
 
             {/* 新規作成ボタン→クリックすると新規作成モーダルが展開*/}
-            <div className="createBtn">
-                <button onClick={() => setShowRegistModal(true)}>新規登録</button>
+            <div className="create">
+                <button onClick={() => setShowRegistModal(true)} id="createBtn">新規作成</button>
             </div>
 
             {/* 食事一覧の表示 */}
-            {/* `/uploads/${meal.mealImg}` */}
             {/*絞り込み条件が設定されていない、または食事の種類が絞り込み条件と一致している→trueで表示*/}
             {meals
             .filter(meal =>
@@ -194,7 +193,7 @@ const MealComponent = () =>{
             .map((meal) =>
                 <div key={meal.mealId} className="mealCard" onClick={() => openUpdateModal(meal)}>
                     <div className="mealImage">
-                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` } width="150"/></div>
+                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` }/></div>
                     <div className="mealTitle">{meal.recipeTitle}</div>
                     <div className="mealdate">日付：{meal.recordDate}</div>
                     <div className="url">URL：{meal.url}</div>
