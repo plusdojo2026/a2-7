@@ -16,12 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.ShoppingItem;
 import com.example.demo.entity.ShoppingList;
+import com.example.demo.entity.User;
 import com.example.demo.repository.ShoppingItemRepository;
 import com.example.demo.repository.ShoppingListRepository;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/shopping")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173",
+		allowCredentials = "true")
 public class ShoppingController {
 	
 	@Autowired
@@ -32,8 +36,19 @@ public class ShoppingController {
 	
 	//買い物リスト一覧を取得
 	@GetMapping("/list")
-	public List<ShoppingList> getShoppingLists() {
-		List<ShoppingList> lists = shoppingListRepository.findAllByOrderByShoppingListidDesc();
+	public List<ShoppingList> getShoppingLists(HttpSession session) {
+		
+		//ログイン中のユーザーを取得
+		User loginUser = (User) session.getAttribute("loginUser");
+		
+		//ログインしていなければ空を返す
+		if(loginUser == null) {
+			return new ArrayList<>();
+		}
+		
+		//ログイン中のユーザーの買い物リストだけ取得
+		List<ShoppingList> lists = shoppingListRepository.findByUserIdOrderByShoppingListidDesc(
+				loginUser.getUserId());
 		
 		//１件ずつ取り出す
 		for (ShoppingList list : lists) {
@@ -50,14 +65,24 @@ public class ShoppingController {
 	}
 		
 	@PostMapping
-	public void saveshopping(@RequestBody List<ShoppingItem> items) {
+	public void saveshopping(@RequestBody List<ShoppingItem> items, HttpSession session) {
+		
+		//ログイン中のユーザーを取得
+		User loginUser = (User) session.getAttribute("loginUser");
+		System.out.println("loginUser = " + loginUser);
+		
+		if (loginUser == null) {
+			return;
+		}
 		
 		//新しい買い物リストの作成
 		ShoppingList shoppingList = new ShoppingList();
 		
 		//日付をセット
 		shoppingList.setCreateDate(LocalDate.now());
-		shoppingList.setUser_id(1);
+		
+		//ログインユーザーのIDをセット
+		shoppingList.setUserId(loginUser.getUserId());
 		
 		//DBへ保存
 		shoppingList = shoppingListRepository.save(shoppingList);
@@ -69,6 +94,9 @@ public class ShoppingController {
 		
 		//全部保存
 		shoppingItemRepository.saveAll(items);
+		
+		System.out.println("保存したID：" + shoppingList.getShoppingListid());
+		System.out.println("ログインユーザー：" + loginUser.getUserId());
 	
 	}
 	
