@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "../css/Refrigerator.css";
 function Refrigerator() {
+    //候補一覧のスクロール
+    const foodCandidateListRef = useRef(null);
+    const dailyCandidateListRef = useRef(null);
     // Spring Bootから取得した在庫
     // 在庫
     const [foods, setFoods] = useState([]);
@@ -134,6 +137,20 @@ function Refrigerator() {
         }
     };
 
+    //候補一覧をスクロールさせるボタン
+    const scrollCandidates = (listRef, direction) => {
+        const list = listRef.current;
+
+        if (!list) {
+            return;
+        }
+
+        list.scrollBy({
+            left: direction === "left" ? -180 : 180,
+            behavior: "smooth"
+        });
+    };
+
     return (
         <div className="stock-page">
             {/* 画面タイトル */}
@@ -219,31 +236,61 @@ function Refrigerator() {
                             <span>ここへ捨てる</span>
                         </div>
 
-                        {/* 登録候補の食材一覧 */}
-                        <div className="candidate-list">
-                            {foodMasters.map((food) => (
-                                <div
-                                    key={`candidate-${food.foodMasterId}`}
-                                    className="candidate-item"
-                                    draggable
-                                    onClick={() => addFoodByClick(food)}
-                                    onDragStart={(e) => {
-                                        e.dataTransfer.setData(
-                                            "application/json",
-                                            JSON.stringify({
-                                                type: "food",
-                                                data: food,
-                                            })
-                                        );
-                                    }}
-                                >
-                                    <img
-                                        src={`/image/${food.foodName}.png`}
-                                        alt={food.foodName}
-                                    />
-                                    <span>{food.foodName}</span>
-                                </div>
-                            ))}
+                        <div className="candidate-area">
+
+                            {/* 左へスクロール */}
+                            <button
+                                type="button"
+                                className="candidate-scroll-button"
+                                onClick={() =>
+                                    scrollCandidates(foodCandidateListRef, "left")
+                                }
+                            >
+                                ◀
+                            </button>
+
+                            {/* 食材の候補一覧 */}
+                            <div
+                                className="candidate-list"
+                                ref={foodCandidateListRef}
+                            >
+                                {foodMasters.map((food) => (
+                                    <div
+                                        key={`candidate-${food.foodMasterId}`}
+                                        className="candidate-item"
+                                        draggable
+                                        onClick={() => addFoodByClick(food)}
+                                        onDragStart={(e) => {
+                                            e.dataTransfer.setData(
+                                                "application/json",
+                                                JSON.stringify({
+                                                    type: "food",
+                                                    data: food,
+                                                })
+                                            );
+                                        }}
+                                    >
+                                        <img
+                                            src={`/image/${food.foodImg}`}
+                                            alt={food.foodName}
+                                        />
+
+                                        <span>{food.foodName}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* 右へスクロール */}
+                            <button
+                                type="button"
+                                className="candidate-scroll-button"
+                                onClick={() =>
+                                    scrollCandidates(foodCandidateListRef, "right")
+                                }
+                            >
+                                ▶
+                            </button>
+
                         </div>
                     </>
                 )}
@@ -309,30 +356,59 @@ function Refrigerator() {
                         </div>
 
                         {/* 登録候補の日用品一覧 */}
-                        <div className="candidate-list">
-                            {dailyItemMasters.map((item) => (
-                                <div
-                                    key={`candidate-${item.dailyItemMasterId}`}
-                                    className="candidate-item"
-                                    draggable
-                                    onClick={() => addDailyItemByClick(item)}
-                                    onDragStart={(e) => {
-                                        e.dataTransfer.setData(
-                                            "application/json",
-                                            JSON.stringify({
-                                                type: "daily",
-                                                data: item,
-                                            })
-                                        );
-                                    }}
-                                >
-                                    <img
-                                        src={`/image/${item.dailyItemMasterName}.png`}
-                                        alt={item.dailyItemMasterName}
-                                    />
-                                    <span>{item.dailyItemMasterName}</span>
-                                </div>
-                            ))}
+                        <div className="candidate-area">
+
+                            {/* 左へスクロール */}
+                            <button
+                                className="candidate-scroll-button"
+                                onClick={() =>
+                                    scrollCandidates(dailyCandidateListRef, "left")
+                                }
+                            >
+                                ◀
+                            </button>
+
+                            {/* 候補一覧 */}
+                            <div
+                                className="candidate-list"
+                                ref={dailyCandidateListRef}
+                            >
+                                {dailyItemMasters.map((item) => (
+                                    <div
+                                        key={`candidate-${item.dailyItemMasterId}`}
+                                        className="candidate-item"
+                                        draggable
+                                        onClick={() => addDailyItemByClick(item)}
+                                        onDragStart={(e) => {
+                                            e.dataTransfer.setData(
+                                                "application/json",
+                                                JSON.stringify({
+                                                    type: "daily",
+                                                    data: item,
+                                                })
+                                            );
+                                        }}
+                                    >
+                                        <img
+                                            src={`/image/${item.dailyItemMasterName}.png`}
+                                            alt={item.dailyItemMasterName}
+                                        />
+
+                                        <span>{item.dailyItemMasterName}</span>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* 右へスクロール */}
+                            <button
+                                className="candidate-scroll-button"
+                                onClick={() =>
+                                    scrollCandidates(dailyCandidateListRef, "right")
+                                }
+                            >
+                                ▶
+                            </button>
+
                         </div>
                     </>
                 )}
