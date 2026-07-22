@@ -19,7 +19,7 @@ public class UserController {
 	private UserRepository userRepository;
 
 	@PostMapping
-	public boolean login(@RequestBody User user, HttpSession session) {
+	public boolean login( @RequestBody User user, HttpSession session) {
 
 		User result = userRepository.findByUserIdAndPassword(user.getUserId(), user.getPassword());
 

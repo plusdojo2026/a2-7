@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/register")
 public class RegisterController {
@@ -17,7 +19,7 @@ public class RegisterController {
 	private UserRepository userRepository;
 
 	@PostMapping
-	public boolean register(@RequestBody User user) {
+	public boolean register(@Valid @RequestBody User user) {
 
 		if (user.getUserName() == null || user.getUserName().isEmpty() || user.getPassword() == null
 				|| user.getPassword().isEmpty()) {

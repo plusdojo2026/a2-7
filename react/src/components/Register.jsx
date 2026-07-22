@@ -14,17 +14,25 @@ function Register() {
 
     const register = async () => {
 
-        if (userName === "" || password === "") {
+        if (userName.trim() === "" || password.trim() === "") {
             alert("ユーザー名とパスワードを入力してください");
             return;
         }
+        if (userName.length > 20) {
+            alert("ユーザー名は20文字以内で入力してください");
+            return;
+        }
 
+        if (password.length < 8 || password.length > 20) {
+            alert("パスワードは8～20文字で入力してください");
+            return;
+        }
         try {
 
             const response = await axios.post(
                 "/api/register",
                 {
-                    user_name: userName,
+                    userName: userName,
                     password: password
                 }
             );
@@ -64,6 +72,7 @@ function Register() {
                 type="text"
                 placeholder="ユーザー名"
                 value={userName}
+                maxLength={20}
                 onChange={(e) => setUserName(e.target.value)}
             />
 
@@ -75,6 +84,8 @@ function Register() {
                 type="password"
                 placeholder="パスワード"
                 value={password}
+                minLength={8}
+                maxLength={20}
                 onChange={(e) => setPassword(e.target.value)}
             />
 
