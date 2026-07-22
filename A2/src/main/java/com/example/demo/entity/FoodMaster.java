@@ -21,5 +21,6 @@ public class FoodMaster {
 	private Integer foodMasterId;
 	private String foodName;
 	private Integer expirationDate;
-	private String foodImg;
+	private String category;
+    private String foodImg;
 }

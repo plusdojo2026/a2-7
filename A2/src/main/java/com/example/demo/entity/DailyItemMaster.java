@@ -22,6 +22,7 @@ public class DailyItemMaster {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer dailyItemMasterId;
 	private String dailyItemMasterName;
-	private LocalDateTime guideExDate; 
+	private LocalDateTime guideExDate; 	
+	private String category;
 	private String dailyItemImage;
 }
