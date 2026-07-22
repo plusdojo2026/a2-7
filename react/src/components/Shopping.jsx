@@ -50,7 +50,8 @@ useEffect(() => {
     }
 
     const saveShopping = () => {
-         axios.post("http://localhost:8080/shopping",items)
+         axios.post("http://localhost:8080/shopping",items
+         )
          .then(() => {
             alert("買い物リストを作成しました");
          })

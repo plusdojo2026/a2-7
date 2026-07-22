@@ -12,6 +12,7 @@ public interface ShoppingListRepository extends JpaRepository<ShoppingList, Inte
 	ShoppingList findTopByOrderByShoppingListidDesc();
 
 	List<ShoppingList> findAllByOrderByShoppingListidDesc();
-	
-}
+
+	List<ShoppingList> findByUserIdOrderByShoppingListidDesc(Integer userId);
  
+}

@@ -31,7 +31,7 @@ public class ShoppingList {
 	private LocalDate createDate;
 	
 	//ユーザーID
-	private Integer user_id;
+	private Integer userId;
 	
 	@Transient
 	private List<ShoppingItem> items;
