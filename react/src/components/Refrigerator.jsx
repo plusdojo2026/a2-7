@@ -66,36 +66,24 @@ function Refrigerator() {
     }, []);
 
 
-    //クリックで追加（食材）
+    //クリックで在庫へ追加（食材）
     const addFoodByClick = (food) => {
-
-        const newFood = {
-            foodStockName: food.foodName,
-            category: "その他",
-            addDay: new Date().toISOString().slice(0, 10),
-            expirationDate: "",
-            status: true
-        };
-
-        axios.post(
-            "http://localhost:8080/api/food_stock/add/",
-            newFood
-        );
-    }
-
-    //クリックで追加（日用品）
-    const addDailyItemByClick = (item) => {
-        const newItem = {
-            ...item,
-
-            // IDを消して新規登録にする
-            dailyItemStockId: null
-        };
-
         axios
             .post(
-                "http://localhost:8080/api/daily-item-stock",
-                newItem
+                `http://localhost:8080/api/food_stock/add-master/${food.foodMasterId}`
+            )
+            .then(() => {
+                refreshFoods();
+            })
+            .catch((error) => {
+                console.error("食材の追加に失敗しました", error);
+            });
+    };
+    //クリックで在庫へ追加（日用品）
+    const addDailyItemByClick = (item) => {
+        axios
+            .post(
+                `http://localhost:8080/api/daily-item-stock/add-master/${item.dailyItemMasterId}`
             )
             .then(() => {
                 refreshDailyItems();
@@ -235,7 +223,7 @@ function Refrigerator() {
                         <div className="candidate-list">
                             {foodMasters.map((food) => (
                                 <div
-                                    key={`candidate-${food.foodStockId}`}
+                                    key={`candidate-${food.foodMasterId}`}
                                     className="candidate-item"
                                     draggable
                                     onClick={() => addFoodByClick(food)}
@@ -250,10 +238,10 @@ function Refrigerator() {
                                     }}
                                 >
                                     <img
-                                        src={`/image/${food.foodStockName}.png`}
-                                        alt={food.foodStockName}
+                                        src={`/image/${food.foodName}.png`}
+                                        alt={food.foodName}
                                     />
-                                    <span>{food.foodStockName}</span>
+                                    <span>{food.foodName}</span>
                                 </div>
                             ))}
                         </div>
@@ -324,7 +312,7 @@ function Refrigerator() {
                         <div className="candidate-list">
                             {dailyItemMasters.map((item) => (
                                 <div
-                                    key={`candidate-${item.dailyItemStockId}`}
+                                    key={`candidate-${item.dailyItemMasterId}`}
                                     className="candidate-item"
                                     draggable
                                     onClick={() => addDailyItemByClick(item)}
@@ -339,10 +327,10 @@ function Refrigerator() {
                                     }}
                                 >
                                     <img
-                                        src={`/image/${item.dailyItemStockName}.png`}
-                                        alt={item.dailyItemStockName}
+                                        src={`/image/${item.dailyItemMasterName}.png`}
+                                        alt={item.dailyItemMasterName}
                                     />
-                                    <span>{item.dailyItemStockName}</span>
+                                    <span>{item.dailyItemMasterName}</span>
                                 </div>
                             ))}
                         </div>
