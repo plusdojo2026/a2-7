@@ -97,6 +97,7 @@ function Notice() {
         } catch (err) {
             console.error(err);
         }
+
     }
     return (
         <div className="notice2">
@@ -130,11 +131,23 @@ function Notice() {
 
                         const diff = Math.ceil(
                             (expiration - today) / (1000 * 60 * 60 * 24)
+
+
                         );
+                        let colorClass = "";
+
+                        if (diff < 0) {
+                            colorClass = "expired";
+                        } else if (diff <= 3) {
+                            colorClass = "warning";
+                        } else {
+                            colorClass = "safe";
+                        }
+
 
                         return (
                             <div
-                                className="foodCard"
+                                className={`foodCard ${colorClass}`}
                                 key={food.foodStockId}
                                 onClick={() => readNotice(food.foodStockId)}
                             >
