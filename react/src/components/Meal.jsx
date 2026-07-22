@@ -82,24 +82,46 @@ const MealComponent = () =>{
         setSelectedMeal(meal); //selectedMealに取得したデータを保存
         setShowUpdateModal(true);  //編集モーダルを開く
     }
-    //モーダル内の食事情報(更新内容)をmodBookに保存(reactのstateに保存)
+    //モーダル内の食事情報(更新内容)を保存(reactのstateに保存)
     let inputSelectedMeal = (e) => {
         if(e.target.name === "mealImage"){
-            setSelectedMeal({...selectedMeal, mealImage:e.target.files[0].name});
+            setSelectedMeal({...selectedMeal, mealImage:e.target.files[0]});
         }else{
             setSelectedMeal({ ...selectedMeal, [e.target.name]: e.target.value });
         }
     }
 
     //更新
-    let updateMeal = () =>{
-        let updateMeals = meals.map((meal) => meal.mealId === selectedMeal.mealId ? selectedMeal : meal);
+    let updateMeal = () => {
+
+        let formData = new FormData();
+
+        formData.append("mealId", selectedMeal.mealId);
+        formData.append("recipeTitle", selectedMeal.recipeTitle);
+        formData.append("recordDate", selectedMeal.recordDate);
+        formData.append("mealType", selectedMeal.mealType);
+        formData.append("url", selectedMeal.url);
+        formData.append("recipeMemo", selectedMeal.recipeMemo);
+        
+        if(selectedMeal.mealImage instanceof File){ // 画像が選択されている場合だけ送信
+            formData.append("image", selectedMeal.mealImage);
+        }
+
+        axios.post(
+        "/api/meal/update/",
+        formData
+        )
+        .then(response => {
+
+        refreshMealList();
 
         setMessage("更新しました");
-        setTimeout(() => {setMessage("");},3000);
+        setTimeout(() => {
+        setMessage("");
+        }, 3000);
 
-        setMeals(updateMeals); //mealsの中身をupdatedMealsに書き換え
         setShowUpdateModal(false);
+        });
     }
     let selectUpdateMealType = (mealType) =>{
         setSelectedMeal({ ...selectedMeal, mealType:mealType });

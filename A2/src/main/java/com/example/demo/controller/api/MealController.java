@@ -73,14 +73,33 @@ public class MealController {
 	private Meal update(
 			@RequestParam(value ="image", required=false) MultipartFile image,
 			@ModelAttribute Meal meal) {
+		
+		Integer userId = 1;  //ログイン中のユーザーのｉｄ取得→１は仮置き
+		meal.setUserId(userId);  //mealオブジェクトのuserIdに値をセット
+		
 		try {
-			
-			if(image != null && !image.isEmpty()) {  //画像が空じゃない＝選択されていた時は更新！
-				String fileName = saveImage(image); //以下の画像保存メソッドに移動
-				meal.setMealImage(fileName);  //entityに値をセット
-			}
-			repository.save(meal);  //DB保存
-			return meal;
+			//DBに保存されている既存の食事データを取得
+			Meal dbMeal =
+					repository.findById(meal.getMealId())
+					.orElseThrow();
+					
+					dbMeal.setUserId(userId); //仮のログインユーザーIDをセット
+					//更新画面で入力された値で上書き
+					dbMeal.setRecipeTitle(meal.getRecipeTitle());
+					dbMeal.setRecordDate(meal.getRecordDate());
+					dbMeal.setMealType(meal.getMealType());
+					dbMeal.setUrl(meal.getUrl());
+					dbMeal.setRecipeMemo(meal.getRecipeMemo());
+					//新しい画像が選択されている場合のみ画像を更新
+					if(image != null && !image.isEmpty()) {
+						//upLoadsフォルダへ画像保存
+					String fileName = saveImage(image);
+						//ファイル名セット
+					dbMeal.setMealImage(fileName);
+					}
+					
+			repository.save(dbMeal);  //DB保存
+			return dbMeal;
 		
 		} catch (IOException e) {
 			throw new RuntimeException(e);
