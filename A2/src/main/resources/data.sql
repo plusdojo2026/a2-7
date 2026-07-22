@@ -1,11 +1,16 @@
 -- ユーザー
 INSERT INTO Users (user_name, password, point)
 VALUES
-('田中太郎', 'pass1234', 0),
-('佐藤花子', 'user5678', 5),
-('鈴木一郎', 'home0001', 10),
-('高橋美咲', 'life2026', 20),
-('山本健太', 'test1234', 30);
+('tanaka', 'pass1234', 0),
+('sato', 'user5678', 5),
+('suzuki', 'home0001', 10),
+('takahashi', 'life2026', 20),
+('yamamoto', 'test1234', 30),
+('ito', 'ito12345', 15),
+('watanabe', 'watanabe01', 25),
+('kobayashi', 'kobayashi8', 40),
+('kato', 'kato2026', 35),
+('yoshida', 'yoshida99', 50);
 
 -- 家事
 INSERT INTO chores
