@@ -50,10 +50,21 @@ public class MealController {
 	private String saveImage(MultipartFile file) 
 		throws IOException{
 		String fileName =
-				System.currentTimeMillis() + "_" + file.getOriginalFilename(); //fileNameが取得してきた画像名に
-		file.transferTo(
-				new File("uploads/"+ fileName)
-		);
+				System.currentTimeMillis() + "_" + file.getOriginalFilename(); //現在時刻＋fileNameが取得してきた画像名に
+		
+		String uploadDir =
+				System.getProperty("user.dir")  //プロジェクトの中にあるupladsフォルダの場所を作って、その住所をuplpadDirという変数に入れてる
+				+ "\\uploads\\";
+			
+				System.out.println("保存先：" + uploadDir);
+		
+		File dir = new File(uploadDir); //upLoadsフォルダを表すオブジェクトを作る
+		if(!dir.exists()) { //uploadsフォルダがない場合
+			dir.mkdirs(); //フォルダ作る
+			
+		}
+		File saveFile = new File(dir, fileName); //保存する画像のパスを作成
+		file.transferTo(saveFile); //フォルダへ保存
 		return fileName;  //fileName = saveImage(image)へ戻る
 	}
 	

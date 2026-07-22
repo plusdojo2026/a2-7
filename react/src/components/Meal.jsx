@@ -166,7 +166,8 @@ const MealComponent = () =>{
             )
             .map((meal) =>
                 <div key={meal.mealId} className="mealCard" onClick={() => openUpdateModal(meal)}>
-                    <div className="mealImage">{meal.mealImage}</div>
+                    <div className="mealImage">
+                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` } width="150"/></div>
                     <div className="mealTitle">{meal.recipeTitle}</div>
                     <div className="mealdate">日付：{meal.recordDate}</div>
                     <div className="url">URL：{meal.url}</div>
