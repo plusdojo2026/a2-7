@@ -5,11 +5,11 @@
 
 /* タブ */
 .menu {
-     display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 16px 8px 0;
-  background-color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 16px 8px 0;
+    background-color: #ffffff; 
 }
 .menu button {
     flex: 1;
@@ -27,7 +27,7 @@
 
 /* 選択中 */
 .menu .active {
-    border-bottom: 4px solid #7ED957;
+    border-bottom: 4px solid #84f0c0;
     font-weight: bold;
     color: #333;
 }
