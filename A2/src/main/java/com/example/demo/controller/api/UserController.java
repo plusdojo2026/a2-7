@@ -19,9 +19,9 @@ public class UserController {
 	private UserRepository userRepository;
 
 	@PostMapping
-	public boolean login( @RequestBody User user, HttpSession session) {
+	public boolean login(@RequestBody User user, HttpSession session) {
 
-		User result = userRepository.findByUserIdAndPassword(user.getUserId(), user.getPassword());
+		User result = userRepository.findByUserNameAndPassword(user.getUserName(), user.getPassword());
 
 		if (result != null) {
 
@@ -33,8 +33,9 @@ public class UserController {
 
 		return false;
 	}
+
 	@PostMapping("/logout")
-	public void logout(HttpSession session){
+	public void logout(HttpSession session) {
 		session.invalidate();
 	}
 }

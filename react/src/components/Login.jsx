@@ -6,18 +6,18 @@ import "../css/Login.css";
 
 function Login() {
     const [rememberPassword, setRememberPassword] = useState(false);
-    const [userId, setUserId] = useState("");
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
     useEffect(() => {
 
-        const savedUserId = localStorage.getItem("userId");
+        const savedUserName = localStorage.getItem("userName");
         const savedPassword = localStorage.getItem("password");
         const savedRemember = localStorage.getItem("rememberPassword");
         if (savedRemember === "true") {
 
-            setUserId(savedUserId);
+            setUserName(savedUserName);
             // setPassword(savedPassword);
             setRememberPassword(true);
 
@@ -30,7 +30,7 @@ function Login() {
             const response = await axios.post(
                 "/api/login",
                 {
-                    userId: userId,
+                    userName: userName,
                     password: password
                 }
             );
@@ -41,11 +41,11 @@ function Login() {
                 // ログイン成功
 
                 if (rememberPassword) {
-                    localStorage.setItem("userId", userId);
+                    localStorage.setItem("userName", userName);
                     // localStorage.setItem("password", password);
                     // localStorage.setItem("rememberPassword", "true");
                 } else {
-                    localStorage.removeItem("userId");
+                    localStorage.removeItem("userName");
                     // localStorage.removeItem("password");
                     // localStorage.removeItem("rememberPassword");
                 }
@@ -64,7 +64,7 @@ function Login() {
 
     };
     const reset = () => {
-        setUserId("");
+        setUserName("");
         setPassword("");
         setRememberPassword(false);
     };
@@ -78,9 +78,9 @@ function Login() {
 
             <input
                 type="text"
-                placeholder="ユーザーID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
+                placeholder="ユーザー名"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
             /><br />
 
             <input
@@ -95,7 +95,7 @@ function Login() {
                     checked={rememberPassword}
                     onChange={(e) => setRememberPassword(e.target.checked)}
                 />
-                ユーザーIDを記憶する
+                ユーザー名を記憶する
             </label>
             <div>
                 <button onClick={reset}>リセット</button>
