@@ -18,7 +18,8 @@ function ShoppingList() {
 
     //買い物リスト一覧を取得する
     const getShoppingLists = () => {
-         axios.get("http://localhost:8080/shopping/list")
+         axios.get("http://localhost:8080/shopping/list"
+         )
          .then((response) => {
 
             setLists(response.data);
