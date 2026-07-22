@@ -7,8 +7,6 @@
   font-family: sans-serif;
 }
 
-
-
 /* ===== 家事忘れ防止通知 ===== */
 .notice {
   padding: 20px 20px 0;
@@ -63,27 +61,25 @@
 .choreBtn:nth-child(3) {
   background: linear-gradient(135deg, #7ab8f5 0%, #a8e6a3 100%);
 }
-/* モーダル背景 */
-.overlay {
+
+/* ===== モーダル背景 ===== */
+.choreOverlay {
   position: fixed;
-  top: 72px;              
-  bottom: 64px;           
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 375px;
-  background-color: #eef1f7;
+  top: 72px;
+  bottom: 64px;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
   z-index: 10;
 }
 
 /* ===== モーダル本体 ===== */
-.modal {
+.choreModal {
   position: fixed;
-  top: 45%;              
-  left: 43%;
-  transform: translate(-50%, -50%);
-  width: calc(100% - 56px);  
-  max-width: 300px;
+  top: 92px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 290px;
   height: auto;
   max-height: calc(100vh - 176px);
   background-color: #ffffff;
@@ -98,6 +94,7 @@
   flex-direction: column;
   align-items: center;
 }
+
 .modalTitle {
   font-size: 15px;
   font-weight: bold;
@@ -127,7 +124,7 @@
 .outlineBtn {
   border: 2px solid #7dd3a0;
   border-radius: 24px;
-  background: #ffffff;       
+  background-color: #ffffff;
   padding: 10px 34px;
   font-size: 16px;
   font-weight: bold;
@@ -136,11 +133,9 @@
   margin-top: 28px;
   margin-bottom: 4px;
   align-self: center;
-  width: auto;
 }
 
 /* ===== 家事提案:スライダー ===== */
-
 .slider {
   width: 70%;
   margin: 0 auto 10px;
@@ -161,7 +156,6 @@
 }
 
 /* Chrome・Edge */
-
 .slider::-webkit-slider-runnable-track {
   height: 4px;
   background: transparent;
@@ -170,19 +164,15 @@
 .slider::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-
   width: 18px;
   height: 18px;
-
   border-radius: 50%;
   background: #ffffff;
   border: 3px solid #333333;
-
   margin-top: -7px;
 }
 
 /* Firefox */
-
 .slider::-moz-range-track {
   height: 4px;
   background: transparent;
@@ -191,7 +181,6 @@
 .slider::-moz-range-thumb {
   width: 18px;
   height: 18px;
-
   border-radius: 50%;
   background: #ffffff;
   border: 3px solid #333333;
@@ -206,7 +195,7 @@
 }
 
 /* ===== 家事提案:家事ボタン ===== */
-.modal .selectArea {
+.selectArea {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -215,19 +204,17 @@
   margin: 0 auto;
 }
 
-.modal .selectBtn {
+.selectBtn {
   border: 1px solid #d9d9d9;
   border-radius: 20px;
-  background: #ffffff;          /* グラデーションを打ち消す */
+  background-color: #ffffff;
   padding: 9px 24px;
   font-size: 14px;
-  font-weight: normal;
   color: #333333;
   cursor: pointer;
-  width: auto;                  /* 幅100%を打ち消す */
 }
 
-.modal .selectBtn.on {
+.selectBtn.on {
   background: linear-gradient(135deg, #5ecfc0 0%, #a8e6a3 100%);
   color: #ffffff;
   border-color: transparent;
@@ -277,27 +264,32 @@
   align-items: center;
 }
 
+.resultTime {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: #63a9ff;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
 .resultName {
   width: 74px;
   min-height: 58px;
-
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-
   background: #ececec;
   border-radius: 6px;
-
   font-size: 12px;
   font-weight: bold;
   line-height: 1.4;
-
   padding: 8px 4px;
   box-sizing: border-box;
   overflow-wrap: break-word;
   word-break: normal;
 }
+
 .checkLabel {
   display: flex;
   align-items: center;
@@ -377,7 +369,7 @@
 /* ===== 今日の家事:カード一覧 ===== */
 .todayGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;   /* 2列 */
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   width: 100%;
   margin-bottom: 16px;
@@ -393,19 +385,16 @@
   min-height: 64px;
 }
 
-/* 青いリボン(家事提案から追加した印) */
-/* しおり型リボン(本体) */
+/* しおり型リボン(家事提案から追加した印) */
 .ribbon {
   position: absolute;
   top: 0;
   right: 14px;
   width: 20px;
   height: 26px;
-  background-color: #a5d8f3; 
+  background-color: #a5d8f3;
 }
 
-
-/* 下端のV字の切り込み */
 .ribbon::after {
   content: "";
   position: absolute;
@@ -415,7 +404,7 @@
   height: 0;
   border-left: 10px solid #a5d8f3;
   border-right: 10px solid #a5d8f3;
-  border-bottom: 8px solid transparent;  
+  border-bottom: 8px solid transparent;
 }
 
 .todayName {
@@ -448,5 +437,5 @@
 }
 
 .check.on {
-  background-color: #2f6fd6;   /* チェック済みは青 */
+  background-color: #2f6fd6;
 }

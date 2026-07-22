@@ -279,8 +279,8 @@ function ChoreList() {
             {/* ===== 今日の家事モーダル ===== */}
             {openModal === "today" && (
                 <>
-                    <div className="overlay" onClick={() => setOpenModal(null)}></div>
-                    <div className="modal">
+                    <div className="choreOverlay" onClick={() => setOpenModal(null)}></div>
+                    <div className="choreModal">
                         <h2 className="modalTitle">今日の家事</h2>
 
                         {/* 家事カード一覧 */}
@@ -335,8 +335,8 @@ function ChoreList() {
             {/* ===== 家事提案モーダル ===== */}
             {openModal === "suggest" && (
                 <>
-                    <div className="overlay" onClick={() => setOpenModal(null)}></div>
-                    <div className="modal">
+                    <div className="choreOverlay" onClick={() => setOpenModal(null)}></div>
+                    <div className="choreModal">
                         <h2 className="modalTitle">家事提案</h2>
 
                         {/* 条件設定 */}
@@ -415,8 +415,8 @@ function ChoreList() {
             {/* ===== 家事リストモーダル ===== */}
             {openModal === "list" && (
                 <>
-                    <div className="overlay" onClick={() => setOpenModal(null)}></div>
-                    <div className="modal">
+                    <div className="choreOverlay" onClick={() => setOpenModal(null)}></div>
+                    <div className="choreModal">
                         <h2 className="modalTitle">家事リスト</h2>
 
                         {/* 一覧 */}
