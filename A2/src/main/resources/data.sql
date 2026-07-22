@@ -29,7 +29,7 @@ VALUES
 
 -- 食材マスター
 INSERT INTO Food_Master
-(food_name, category, expiration_days, food_img)
+(food_name, category, expiration_date, food_img)
 VALUES
 ('卵',       '冷蔵', 14, 'egg.png'),
 ('牛乳',     '冷蔵', 7,  'milk.png'),
