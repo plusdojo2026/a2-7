@@ -24,7 +24,5 @@ public class DailyItemMaster {
 	private String dailyItemMasterName;
 	private LocalDateTime guideExDate; 	
 	private String category;
-	// 登録日から交換目安までの日数
-	private Integer guideExpirationDays;
 	private String dailyItemImage;
 }

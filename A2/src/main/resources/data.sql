@@ -27,15 +27,15 @@ VALUES
 ('2026-07-15', '朝食', NULL, 'https://example.com/recipe4', 'バナナは最後に盛り付ける', 'フルーツヨーグルト', 2),
 ('2026-07-15', '昼食', NULL, 'https://example.com/recipe5', 'パスタはアルデンテに', 'ナポリタン', 2);
 
--- 食材マスタ
+-- 食材マスター
 INSERT INTO Food_Master
-(food_name, expiration_date, food_img)
+(food_name, category, expiration_days, food_img)
 VALUES
-('卵', 14, 'egg.png'),
-('牛乳', 7, 'milk.png'),
-('食パン', 5, 'bread.png'),
-('にんじん', 14, 'carrot.png'),
-('鶏むね肉', 3, 'chicken.png');
+('卵',       '冷蔵', 14, 'egg.png'),
+('牛乳',     '冷蔵', 7,  'milk.png'),
+('食パン',   '常温', 5,  'bread.png'),
+('にんじん', '野菜', 14, 'carrot.png'),
+('鶏むね肉', '冷蔵', 3,  'chicken.png');
 
 -- 食材在庫
 INSERT INTO Food_Stock
@@ -49,13 +49,13 @@ VALUES
 
 -- 日用品マスタ
 INSERT INTO Daily_Item_Master
-(daily_item_master_name, guide_ex_date, daily_item_image)
+(daily_item_master_name,category,guide_expiration_days,daily_item_image)
 VALUES
-('トイレットペーパー', '2026-08-15 00:00:00', 'toilet_paper.png'),
-('ティッシュ', '2026-08-01 00:00:00', 'tissue.png'),
-('歯磨き粉', '2026-09-01 00:00:00', 'toothpaste.png'),
-('シャンプー', '2026-09-15 00:00:00', 'shampoo.png'),
-('洗剤', '2026-10-01 00:00:00', 'detergent.png');
+('トイレットペーパー','生活用品',30,'toilet_paper.png'),
+('ティッシュ','生活用品',20,'tissue.png'),
+('歯磨き粉','衛生用品',90,'toothpaste.png'),
+('シャンプー','衛生用品',120,'shampoo.png'),
+('洗剤','掃除用品',180,'detergent.png');
 
 -- 日用品在庫
 INSERT INTO Daily_Item_Stock
