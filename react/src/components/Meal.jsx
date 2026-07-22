@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import '../css/Meal.css'
-
+import axios from "axios";
 
 
 const MealComponent = () =>{
@@ -34,7 +34,7 @@ const MealComponent = () =>{
     //入力フォームの値をnewMealに保存(reactのstateに保存)
     let inputNewMeal = (e) => {
         if(e.target.name === "mealImage"){
-            setNewMeal({...newMeal, mealImage:e.target.files[0].name});
+            setNewMeal({...newMeal, mealImage:e.target.files[0]});
         }else{
             setNewMeal({ ...newMeal, [e.target.name]: e.target.value });
         }
@@ -45,14 +45,31 @@ const MealComponent = () =>{
             alert("画像と日付は必須です");
             return;
         }
-        setMeals([...meals, newMeal]);
-        console.log(newMeal);
+        //setMeals([...meals, newMeal]);
+        let formData = new FormData();
 
-        setMessage("記録しました");
-        setTimeout(() => {setMessage("");},3000);
-    
-        setNewMeal({recipeTitle:'', mealImage:'', recordDate:'', url:'', recipeMemo:'',mealType:''});//入力フォームを空欄に
-        setShowRegistModal(false);
+        formData.append("recipeTitle", newMeal.recipeTitle);
+        formData.append("recordDate", newMeal.recordDate);
+        formData.append("mealType", newMeal.mealType);
+        formData.append("url", newMeal.url);
+        formData.append("recipeMemo", newMeal.recipeMemo);
+
+        formData.append("image", newMeal.mealImage);
+
+        console.log(newMeal);
+        axios.post(
+            "/api/meal/regist/",
+            formData
+        )
+
+        .then(response =>{
+            refreshMealList();
+            setMessage("記録しました");
+            setTimeout(() => {setMessage("");},3000);
+        
+            setNewMeal({recipeTitle:'', mealImage:'', recordDate:'', url:'', recipeMemo:'',mealType:''});//入力フォームを空欄に
+            setShowRegistModal(false);
+        });
     };
     //朝昼夜ボタン
     let selectMealType = (mealType) =>{
@@ -65,24 +82,46 @@ const MealComponent = () =>{
         setSelectedMeal(meal); //selectedMealに取得したデータを保存
         setShowUpdateModal(true);  //編集モーダルを開く
     }
-    //モーダル内の食事情報(更新内容)をmodBookに保存(reactのstateに保存)
+    //モーダル内の食事情報(更新内容)を保存(reactのstateに保存)
     let inputSelectedMeal = (e) => {
         if(e.target.name === "mealImage"){
-            setSelectedMeal({...selectedMeal, mealImage:e.target.files[0].name});
+            setSelectedMeal({...selectedMeal, mealImage:e.target.files[0]});
         }else{
             setSelectedMeal({ ...selectedMeal, [e.target.name]: e.target.value });
         }
     }
 
     //更新
-    let updateMeal = () =>{
-        let updateMeals = meals.map((meal) => meal.mealId === selectedMeal.mealId ? selectedMeal : meal);
+    let updateMeal = () => {
+
+        let formData = new FormData();
+
+        formData.append("mealId", selectedMeal.mealId);
+        formData.append("recipeTitle", selectedMeal.recipeTitle);
+        formData.append("recordDate", selectedMeal.recordDate);
+        formData.append("mealType", selectedMeal.mealType);
+        formData.append("url", selectedMeal.url);
+        formData.append("recipeMemo", selectedMeal.recipeMemo);
+        
+        if(selectedMeal.mealImage instanceof File){ // 画像が選択されている場合だけ送信
+            formData.append("image", selectedMeal.mealImage);
+        }
+
+        axios.post(
+        "/api/meal/update/",
+        formData
+        )
+        .then(response => {
+
+        refreshMealList();
 
         setMessage("更新しました");
-        setTimeout(() => {setMessage("");},3000);
+        setTimeout(() => {
+        setMessage("");
+        }, 3000);
 
-        setMeals(updateMeals); //mealsの中身をupdatedMealsに書き換え
         setShowUpdateModal(false);
+        });
     }
     let selectUpdateMealType = (mealType) =>{
         setSelectedMeal({ ...selectedMeal, mealType:mealType });
@@ -149,7 +188,8 @@ const MealComponent = () =>{
             )
             .map((meal) =>
                 <div key={meal.mealId} className="mealCard" onClick={() => openUpdateModal(meal)}>
-                    <div className="mealImage">{meal.mealImage}</div>
+                    <div className="mealImage">
+                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` } width="150"/></div>
                     <div className="mealTitle">{meal.recipeTitle}</div>
                     <div className="mealdate">日付：{meal.recordDate}</div>
                     <div className="url">URL：{meal.url}</div>
