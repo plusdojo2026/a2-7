@@ -10,7 +10,7 @@ VALUES
 ('watanabe', 'watanabe01', 25),
 ('kobayashi', 'kobayashi8', 40),
 ('kato', 'kato2026', 35),
-('yoshida', 'yoshida99', 50);
+('yoshida', 'yoshida99', 55);
 
 -- 家事
 INSERT INTO chores
