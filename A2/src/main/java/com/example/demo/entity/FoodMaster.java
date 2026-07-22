@@ -22,7 +22,5 @@ public class FoodMaster {
 	private String foodName;
 	private Integer expirationDate;
 	private String category;
-	// 登録日から何日後を期限にするか
-	private Integer expirationDays;
-	private String foodImg;
+    private String foodImg;
 }

@@ -77,6 +77,7 @@ public class DailyItemStockController {
                 today.plusDays(master.getGuideExpirationDays())
         );
 
+        
         stock.setStatus(true);
 
         return repository.save(stock);

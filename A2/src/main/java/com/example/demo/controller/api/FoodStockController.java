@@ -59,28 +59,37 @@ public class FoodStockController {
             @PathVariable Integer foodMasterId
     ) {
 
-        // IDを使ってFood_Masterから食材を取得
         FoodMaster master = foodMasterRepository
                 .findById(foodMasterId)
                 .orElseThrow(() ->
-                        new RuntimeException("食材マスターが見つかりません")
+                        new RuntimeException(
+                                "食材マスターが見つかりません"
+                        )
                 );
+
+        if (master.getExpirationDate() == null) {
+            throw new RuntimeException(
+                    "期限日数が設定されていません"
+            );
+        }
 
         LocalDate today = LocalDate.now();
 
-        // Food_Stockへ登録するデータを作成
         FoodStock stock = new FoodStock();
 
         stock.setFoodStockName(master.getFoodName());
         stock.setCategory(master.getCategory());
         stock.setAddDay(today);
 
-        // 今日の日付にマスターの期限日数を加算
         stock.setExpirationDate(
-                today.plusDays(master.getExpirationDays())
+                today.plusDays(master.getExpirationDate())
         );
 
         stock.setStatus(true);
+        stock.setNoticeRead(false);
+
+        // food_master_idを設定
+        stock.setFoodMaster(master);
 
         return repository.save(stock);
     }

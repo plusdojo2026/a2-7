@@ -104,3 +104,28 @@
     margin: 0;
     color: #666;
 }
+.expired {
+    color: red;
+    font-weight: bold;
+}
+
+.warning {
+    color: orange;
+    font-weight: bold;
+}
+
+.safe {
+    color: green;
+}
+
+.foodCard.expired {
+    border-left: 6px solid red;
+}
+
+.foodCard.warning {
+    border-left: 6px solid orange;
+}
+
+.foodCard.safe {
+    border-left: 6px solid green;
+}
