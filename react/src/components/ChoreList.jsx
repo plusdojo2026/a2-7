@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/ChoreList.css";
 
 // 曜日のリスト(0=月曜 〜 6=日曜)
@@ -15,7 +15,7 @@ const getTodayIndex = () => {
 const getPatternDays = (frequency, dayIndex) => {
 
     if (frequency === "毎日") {
-        return [0,1,2,3,4,5,6];
+        return [0, 1, 2, 3, 4, 5, 6];
     }
 
     if (frequency === "週2回") {
@@ -32,7 +32,7 @@ const getPatternDays = (frequency, dayIndex) => {
     return [];
 };
 
-function ChoreList(){
+function ChoreList() {
 
     // どのモーダルが開いているか
     const [openModal, setOpenModal] = useState(null);
@@ -56,7 +56,7 @@ function ChoreList(){
     const [result, setResult] = useState([]);
 
     // 全家事の設定を保存する箱
-    // 例:{ "掃除機": { frequency: "週1回", day: 0 } }
+    // 例:{ "掃除機をかける": { frequency: "週1回", day: 0 } }
     const [settings, setSettings] = useState({});
 
     // 設定画面で今選んでいる頻度
@@ -65,36 +65,37 @@ function ChoreList(){
     // 設定画面で今選んでいる曜日(未選択は null)
     const [day, setDay] = useState(null);
 
-    // ★追加:家事提案から「今日の家事」に追加した家事名のリスト
+    // 家事提案から「今日の家事」に追加した家事名のリスト
     const [addedChores, setAddedChores] = useState([]);
 
-    // ★追加:提案結果を追加するかのチェック状態
+    // 提案結果を追加するかのチェック状態
     const [addCheck, setAddCheck] = useState(false);
 
-    // ★追加:今日の家事で完了チェックした家事名のリスト
+    // 今日の家事で完了チェックした家事名のリスト
     const [doneChores, setDoneChores] = useState([]);
 
-    // ★追加:今日の家事モーダルの段階("list" / "finish")
+    // 今日の家事モーダルの段階("list" / "finish")
     const [todayStep, setTodayStep] = useState("list");
 
-    // ★追加:今回獲得したポイント
+    // 今回獲得したポイント
     const [earnedPoint, setEarnedPoint] = useState(0);
 
-    // 家事データ(仮。後でAPIから取得する)
-    const chores = [
-        // 掃除
-        { name: "掃除機", category: "掃除", time: 10 },
-        { name: "お風呂掃除", category: "掃除", time: 20 },
-        { name: "トイレ掃除", category: "掃除", time: 30 },
-        // 洗い物
-        { name: "食器洗い", category: "洗い物", time: 10 },
-        { name: "シンク掃除", category: "洗い物", time: 15 },
-        // 洗濯
-        { name: "洗濯", category: "洗濯", time: 30 },
-        { name: "洗濯物を畳む", category: "洗濯", time: 15 }
-    ];
+    // 家事データ(APIから取得する)
+    const [chores, setChores] = useState([]);
 
-// 今日の家事の一覧を作る
+    // 画面を開いたときに、ログインユーザーの家事をAPIから取得する
+    useEffect(() => {
+        axios.get("/api/chore/", { withCredentials: true })
+            .then((res) => {
+                setChores(res.data);
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.error("家事一覧取得失敗", err);
+            });
+    }, []);
+
+    // 今日の家事の一覧を作る
     // 「家事提案で追加した家事(最優先)」と「家事リストで今日が実施日の家事」を合流させる
     const getTodayChores = () => {
         const today = getTodayIndex();
@@ -127,7 +128,8 @@ function ChoreList(){
 
         return list;
     };
-    // ★追加:完了チェックの切り替え
+
+    // 完了チェックの切り替え
     const toggleDone = (name) => {
         if (doneChores.includes(name)) {
             setDoneChores(doneChores.filter(item => item !== name));
@@ -136,7 +138,7 @@ function ChoreList(){
         }
     };
 
-    // ★追加:今日の家事モーダルを開く
+    // 今日の家事モーダルを開く
     const openToday = () => {
         setTodayStep("list");
         setOpenModal("today");
@@ -160,6 +162,7 @@ function ChoreList(){
 
         setTodayStep("finish");
     };
+
     // 他の家事が使っている曜日を集める(自分の家事は除く)
     const getUsedDays = () => {
         const used = new Set();
@@ -225,16 +228,19 @@ function ChoreList(){
 
     // 確定 → 提案を作る → 読み込み → 結果
     const handleSuggest = () => {
+        // 選択したカテゴリの家事だけに絞る
         const filtered = chores.filter(chore =>
             selected.includes(chore.category)
         );
+        // 順番をランダムにシャッフルする
         const shuffled = [...filtered].sort(() => Math.random() - 0.5);
+        // 合計が所要時間以内に収まるように上から詰める
         const suggestList = [];
         let total = 0;
         for (const chore of shuffled) {
-            if (total + chore.time <= time) {
+            if (total + chore.estimatedTime <= time) {
                 suggestList.push(chore);
-                total += chore.time;
+                total += chore.estimatedTime;
             }
         }
         setResult(suggestList);
@@ -244,11 +250,11 @@ function ChoreList(){
         }, 1500);
     };
 
-    // ★追加:家事提案の終了(チェックが入っていたら今日の家事に追加)
+    // 家事提案の終了(チェックが入っていたら今日の家事に追加)
     const handleSuggestClose = () => {
         if (addCheck) {
             // 提案結果の家事名を addedChores に追加(重複は除く)
-            const names = result.map(chore => chore.name);
+            const names = result.map(chore => chore.choresName);
             const merged = [...new Set([...addedChores, ...names])];
             setAddedChores(merged);
         }
@@ -258,279 +264,282 @@ function ChoreList(){
     return (
         <div className="chore">
 
-    {/* 家事忘れ防止通知 */}
-    <div className="notice">
-        <p>トイレ掃除を行ってから1週間<br />以上経過しています。</p>
-    </div>
+            {/* 家事忘れ防止通知 */}
+            <div className="notice">
+                <p>トイレ掃除を行ってから1週間<br />以上経過しています。</p>
+            </div>
 
-    {/* メニューボタン */}
-    <div className="buttonArea">
-        <button className="choreBtn" onClick={openToday}>今日の<br />家事</button>
-        <button className="choreBtn" onClick={openSuggest}>家事<br />提案</button>
-        <button className="choreBtn" onClick={() => { setSettingChore(null); setOpenModal("list"); }}>家事<br />リスト</button>
-    </div>
+            {/* メニューボタン */}
+            <div className="buttonArea">
+                <button className="choreBtn" onClick={openToday}>今日の<br />家事</button>
+                <button className="choreBtn" onClick={openSuggest}>家事<br />提案</button>
+                <button className="choreBtn" onClick={() => { setSettingChore(null); setOpenModal("list"); }}>家事<br />リスト</button>
+            </div>
 
-    {/* ===== 今日の家事モーダル ===== */}
-    {openModal === "today" && (
-        <>
-            <div className="overlay" onClick={() => setOpenModal(null)}></div>
-            <div className="modal">
-                <h2 className="modalTitle">今日の家事</h2>
+            {/* ===== 今日の家事モーダル ===== */}
+            {openModal === "today" && (
+                <>
+                    <div className="overlay" onClick={() => setOpenModal(null)}></div>
+                    <div className="modal">
+                        <h2 className="modalTitle">今日の家事</h2>
 
-                {/* 家事カード一覧 */}
-                {todayStep === "list" && (
-                    <>
-                        {getTodayChores().length > 0 ? (
-                            <div className="todayGrid">
-                                {getTodayChores().map(chore => (
-                                    <div
-                                        className="todayCard"
-                                        key={chore.name}
-                                        onClick={() => toggleDone(chore.name)}
+                        {/* 家事カード一覧 */}
+                        {todayStep === "list" && (
+                            <>
+                                {getTodayChores().length > 0 ? (
+                                    <div className="todayGrid">
+                                        {getTodayChores().map(chore => (
+                                            <div
+                                                className="todayCard"
+                                                key={chore.name}
+                                                onClick={() => toggleDone(chore.name)}
+                                            >
+                                                {/* 家事提案から追加した家事はリボン付き */}
+                                                {chore.fromSuggest && (
+                                                    <span className="ribbon"></span>
+                                                )}
+                                                <p className="todayName">{chore.name}</p>
+                                                {chore.frequency !== null && (
+                                                    <p className="todayFreq">
+                                                        {chore.frequency === "週2回" ? "2日に1回" : chore.frequency}
+                                                    </p>
+                                                )}
+                                                {/* チェックマーク */}
+                                                <span className={doneChores.includes(chore.name) ? "check on" : "check"}>✓</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="resultText">今日の家事は<br />まだありません。</p>
+                                )}
+
+                                <button className="confirmBtn" onClick={handleTodayConfirm}>確定</button>
+                            </>
+                        )}
+
+                        {/* 完了画面 */}
+                        {todayStep === "finish" && (
+                            <>
+                                <p className="resultText">今日も家事お疲れさまです。</p>
+                                <p className="resultText">
+                                    家事を<b>{doneChores.length}つ</b>クリアしたので、<br />
+                                    米粒ポイント<b>{earnedPoint}pt</b> 獲得しました🎉
+                                </p>
+                                <button className="outlineBtn" onClick={() => setOpenModal(null)}>終了</button>
+                            </>
+                        )}
+                    </div>
+                </>
+            )}
+
+            {/* ===== 家事提案モーダル ===== */}
+            {openModal === "suggest" && (
+                <>
+                    <div className="overlay" onClick={() => setOpenModal(null)}></div>
+                    <div className="modal">
+                        <h2 className="modalTitle">家事提案</h2>
+
+                        {/* 条件設定 */}
+                        {step === "input" && (
+                            <>
+                                <p className="label">所要時間</p>
+                                <input
+                                    type="range"
+                                    min="10"
+                                    max="60"
+                                    step="10"
+                                    value={time}
+                                    onChange={(e) => setTime(Number(e.target.value))}
+                                    className="slider"
+                                    style={{ "--progress": `${((time - 10) / (60 - 10)) * 100}%` }}
+                                />
+                                <p className="timeText">{time}分</p>
+
+                                <div className="selectArea">
+                                    {["掃除", "洗い物", "洗濯"].map(name => (
+                                        <button
+                                            key={name}
+                                            className={selected.includes(name) ? "selectBtn on" : "selectBtn"}
+                                            onClick={() => toggleSelect(name)}
+                                        >
+                                            {name}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <button className="outlineBtn" onClick={handleSuggest}>確定</button>
+                            </>
+                        )}
+
+                        {/* 読み込み */}
+                        {step === "loading" && (
+                            <div className="loading">
+                                <div className="spinner"></div>
+                            </div>
+                        )}
+
+                        {/* 結果 */}
+                        {step === "result" && (
+                            <>
+                                <p className="resultText">所要時間:{time}分でできる家事<br />いかがでしょうか?</p>
+
+                                {result.length > 0 ? (
+                                    <div className="resultArea">
+                                        {result.map((chore) => (
+                                            <div className="resultItem" key={chore.choresId}>
+                                                <p className="resultTime">{chore.estimatedTime}分</p>
+                                                <p className="resultName">{chore.choresName}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="resultText">条件に合う家事が<br />見つかりませんでした。</p>
+                                )}
+
+                                <label className="checkLabel">
+                                    <input
+                                        type="checkbox"
+                                        checked={addCheck}
+                                        onChange={(e) => setAddCheck(e.target.checked)}
+                                    />
+                                    今日の家事に追加する
+                                </label>
+
+                                <button className="outlineBtn" onClick={handleSuggestClose}>終了</button>
+                            </>
+                        )}
+                    </div>
+                </>
+            )}
+
+            {/* ===== 家事リストモーダル ===== */}
+            {openModal === "list" && (
+                <>
+                    <div className="overlay" onClick={() => setOpenModal(null)}></div>
+                    <div className="modal">
+                        <h2 className="modalTitle">家事リスト</h2>
+
+                        {/* 一覧 */}
+                        {settingChore === null && (
+                            <>
+                                <div className="listArea">
+                                    {chores.map((chore) => (
+                                        <div
+                                            className="listRow"
+                                            key={chore.choresId}
+                                            onClick={() => openSetting(chore.choresName)}
+                                        >
+                                            <span>{chore.choresName}</span>
+                                            <span className="arrow">›</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <button className="confirmBtn" onClick={() => setOpenModal(null)}>確定</button>
+                            </>
+                        )}
+
+                        {/* 設定画面 */}
+                        {settingChore !== null && (
+                            <>
+                                <h3 className="settingTitle">{settingChore} -設定-</h3>
+
+                                {/* 頻度の選択 */}
+                                <div className="settingItem">
+                                    <p className="label">家事を行う頻度</p>
+                                    <select
+                                        className="select"
+                                        value={frequency}
+                                        onChange={(e) => {
+                                            setFrequency(e.target.value);
+                                            setDay(null);
+                                        }}
                                     >
-                                        {/* 家事提案から追加した家事はリボン付き */}
-                                        {chore.fromSuggest && (
-                                            <span className="ribbon"></span>
-                                        )}
-                                        <p className="todayName">{chore.name}</p>
-                                        {chore.frequency !== null && (
-                                            <p className="todayFreq">
-                                                {chore.frequency === "週2回" ? "2日に1回" : chore.frequency}
+                                        <option>毎日</option>
+                                        <option>週2回</option>
+                                        <option>週1回</option>
+                                    </select>
+                                </div>
+
+                                {/* 週2回のとき:開始曜日を表示 */}
+                                {frequency === "週2回" && (
+                                    <div className="settingItem">
+                                        <p className="label">開始曜日</p>
+                                        <select
+                                            className="select"
+                                            value={day === null ? "" : day}
+                                            onChange={(e) => setDay(Number(e.target.value))}
+                                        >
+                                            <option value="" disabled>選択してください</option>
+                                            {DAYS.map((name, index) => (
+                                                <option
+                                                    key={name}
+                                                    value={index}
+                                                    disabled={isConflict(index)}
+                                                >
+                                                    {name}{isConflict(index) ? "(使用中)" : ""}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {day !== null && (
+                                            <p className="label">
+                                                実施日:{getPatternDays("週2回", day).map(d => DAYS[d].charAt(0)).join("・")}
                                             </p>
                                         )}
-                                        {/* チェックマーク */}
-                                        <span className={doneChores.includes(chore.name) ? "check on" : "check"}>✓</span>
                                     </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="resultText">今日の家事は<br />まだありません。</p>
-                        )}
-
-                        <button className="confirmBtn" onClick={handleTodayConfirm}>確定</button>
-                    </>
-                )}
-
-                {/* 完了画面 */}
-                {todayStep === "finish" && (
-                    <>
-                        <p className="resultText">今日も家事お疲れさまです。</p>
-                        <p className="resultText">
-                            家事を<b>{doneChores.length}つ</b>クリアしたので、<br />
-                            米粒ポイント<b>{earnedPoint}pt</b> 獲得しました🎉
-                        </p>
-                        <button className="outlineBtn" onClick={() => setOpenModal(null)}>終了</button>
-                    </>
-                )}
-            </div>
-        </>
-    )}
-
-    {/* ===== 家事提案モーダル ===== */}
-    {openModal === "suggest" && (
-        <>
-            <div className="overlay" onClick={() => setOpenModal(null)}></div>
-            <div className="modal">
-                <h2 className="modalTitle">家事提案</h2>
-
-                {/* 条件設定 */}
-                {step === "input" && (
-                    <>
-                        <p className="label">所要時間</p>
-                        <input
-                            type="range"
-                            min="10"
-                            max="60"
-                            step="10"
-                            value={time}
-                            onChange={(e) => setTime(Number(e.target.value))}
-                            className="slider"
-                            style={{"--progress": `${((time - 10) / (60 - 10)) * 100}%`
-                             }}
-                        />
-                        <p className="timeText">{time}分</p>
-
-                        <div className="selectArea">
-                            {["掃除", "洗い物", "洗濯"].map(name => (
-                                <button
-                                    key={name}
-                                    className={selected.includes(name) ? "selectBtn on" : "selectBtn"}
-                                    onClick={() => toggleSelect(name)}
-                                >
-                                    {name}
-                                </button>
-                            ))}
-                        </div>
-
-                        <button className="outlineBtn" onClick={handleSuggest}>確定</button>
-                    </>
-                )}
-
-                {/* 読み込み */}
-                {step === "loading" && (
-                    <div className="loading">
-                        <div className="spinner"></div>
-                    </div>
-                )}
-
-                {/* 結果 */}
-                {step === "result" && (
-                    <>
-                        <p className="resultText">所要時間:{time}分でできる家事<br />いかがでしょうか?</p>
-
-                        {result.length > 0 ? (
-                            <div className="resultArea">
-                                {result.map(chore => (
-                                    <div className="resultItem" key={chore.name}>
-                                        <p className="resultTime">{chore.time}分</p>
-                                        <p className="resultName">{chore.name}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="resultText">条件に合う家事が<br />見つかりませんでした。</p>
-                        )}
-
-                        <label className="checkLabel">
-                            <input
-                                type="checkbox"
-                                checked={addCheck}
-                                onChange={(e) => setAddCheck(e.target.checked)}
-                            />
-                            今日の家事に追加する
-                        </label>
-
-                        <button className="outlineBtn" onClick={handleSuggestClose}>終了</button>
-                    </>
-                )}
-            </div>
-        </>
-    )}
-
-    {/* ===== 家事リストモーダル ===== */}
-    {openModal === "list" && (
-        <>
-            <div className="overlay" onClick={() => setOpenModal(null)}></div>
-            <div className="modal">
-                <h2 className="modalTitle">家事リスト</h2>
-
-                {/* 一覧 */}
-                {settingChore === null && (
-                    <>
-                        <div className="listArea">
-                            {["掃除機", "お風呂掃除", "洗濯", "洗い物", "トイレ掃除"].map(name => (
-                                <div className="listRow" key={name} onClick={() => openSetting(name)}>
-                                    <span>{name}</span>
-                                    <span className="arrow">›</span>
-                                </div>
-                            ))}
-                        </div>
-                        <button className="confirmBtn" onClick={() => setOpenModal(null)}>確定</button>
-                    </>
-                )}
-
-                {/* 設定画面 */}
-                {settingChore !== null && (
-                    <>
-                        <h3 className="settingTitle">{settingChore} -設定-</h3>
-
-                        {/* 頻度の選択 */}
-                        <div className="settingItem">
-                            <p className="label">家事を行う頻度</p>
-                            <select
-                                className="select"
-                                value={frequency}
-                                onChange={(e) => {
-                                    setFrequency(e.target.value);
-                                    setDay(null);
-                                }}
-                            >
-                                <option>毎日</option>
-                                <option>週2回</option>
-                                <option>週1回</option>
-                            </select>
-                        </div>
-
-                        {/* 週2回のとき:開始曜日を表示 */}
-                        {frequency === "週2回" && (
-                            <div className="settingItem">
-                                <p className="label">開始曜日</p>
-                                <select
-                                    className="select"
-                                    value={day === null ? "" : day}
-                                    onChange={(e) => setDay(Number(e.target.value))}
-                                >
-                                    <option value="" disabled>選択してください</option>
-                                    {DAYS.map((name, index) => (
-                                        <option
-                                            key={name}
-                                            value={index}
-                                            disabled={isConflict(index)}
-                                        >
-                                            {name}{isConflict(index) ? "(使用中)" : ""}
-                                        </option>
-                                    ))}
-                                </select>
-                                {day !== null && (
-                                    <p className="label">
-                                        実施日:{getPatternDays("週2回", day).map(d => DAYS[d].charAt(0)).join("・")}
-                                    </p>
                                 )}
-                            </div>
-                        )}
 
-                        {/* 週1回のとき:曜日を表示 */}
-                        {frequency === "週1回" && (
-                            <div className="settingItem">
-                                <p className="label">曜日</p>
-                                <select
-                                    className="select"
-                                    value={day === null ? "" : day}
-                                    onChange={(e) => setDay(Number(e.target.value))}
-                                >
-                                    <option value="" disabled>選択してください</option>
-                                    {DAYS.map((name, index) => (
-                                        <option
-                                            key={name}
-                                            value={index}
-                                            disabled={isConflict(index)}
+                                {/* 週1回のとき:曜日を表示 */}
+                                {frequency === "週1回" && (
+                                    <div className="settingItem">
+                                        <p className="label">曜日</p>
+                                        <select
+                                            className="select"
+                                            value={day === null ? "" : day}
+                                            onChange={(e) => setDay(Number(e.target.value))}
                                         >
-                                            {name}{isConflict(index) ? "(使用中)" : ""}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                                            <option value="" disabled>選択してください</option>
+                                            {DAYS.map((name, index) => (
+                                                <option
+                                                    key={name}
+                                                    value={index}
+                                                    disabled={isConflict(index)}
+                                                >
+                                                    {name}{isConflict(index) ? "(使用中)" : ""}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                <div className="settingItem">
+                                    <p className="label">家事忘れ防止通知</p>
+                                    <select className="select">
+                                        <option>ON</option>
+                                        <option>OFF</option>
+                                    </select>
+                                </div>
+
+                                <div className="settingItem">
+                                    <p className="label">マイ家事登録</p>
+                                    <select className="select">
+                                        <option>する</option>
+                                        <option>しない</option>
+                                    </select>
+                                </div>
+
+                                <button className="confirmBtn" onClick={handleSaveSetting}>確定</button>
+                            </>
                         )}
+                    </div>
+                </>
+            )}
 
-                        <div className="settingItem">
-                            <p className="label">家事忘れ防止通知</p>
-                            <select className="select">
-                                <option>ON</option>
-                                <option>OFF</option>
-                            </select>
-                        </div>
+            {/* アラート */}
+            {alert !== "" && (
+                <div className="alertBox">{alert}</div>
+            )}
 
-                        <div className="settingItem">
-                            <p className="label">マイ家事登録</p>
-                            <select className="select">
-                                <option>する</option>
-                                <option>しない</option>
-                            </select>
-                        </div>
-
-                        <button className="confirmBtn" onClick={handleSaveSetting}>確定</button>
-                    </>
-                )}
-            </div>
-        </>
-    )}
-
-    {/* アラート */}
-    {alert !== "" && (
-        <div className="alertBox">{alert}</div>
-    )}
-
-</div>
+        </div>
     )
 }
 

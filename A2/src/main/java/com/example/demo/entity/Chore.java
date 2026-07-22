@@ -38,4 +38,11 @@ public class Chore {
 	private Boolean status;
 
 	private LocalDateTime createdAt;
+
+	// カテゴリ(掃除/洗い物/洗濯)
+	@Column(length = 20)
+	private String category;
+
+	// 所有ユーザーのID
+	private Integer userId;
 }
