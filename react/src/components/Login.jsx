@@ -1,12 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-//import "../css/Login.css";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import "../css/Login.css";
 
-function Login({ setPage }) {
-
-    const [userId, setUserId] = useState("");
+function Login() {
+    const [rememberPassword, setRememberPassword] = useState(false);
+    const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
+    useEffect(() => {
+
+        const savedUserName = localStorage.getItem("userName");
+        const savedPassword = localStorage.getItem("password");
+        const savedRemember = localStorage.getItem("rememberPassword");
+        if (savedRemember === "true") {
+
+            setUserName(savedUserName);
+            // setPassword(savedPassword);
+            setRememberPassword(true);
+
+        }
+    }, []);
     const login = async () => {
 
         try {
@@ -14,7 +30,7 @@ function Login({ setPage }) {
             const response = await axios.post(
                 "/api/login",
                 {
-                    userId: userId,
+                    userName: userName,
                     password: password
                 }
             );
@@ -23,10 +39,18 @@ function Login({ setPage }) {
             if (response.data) {
 
                 // ログイン成功
-                setPage("home");
 
+                if (rememberPassword) {
+                    localStorage.setItem("userName", userName);
+                    // localStorage.setItem("password", password);
+                    // localStorage.setItem("rememberPassword", "true");
+                } else {
+                    localStorage.removeItem("userName");
+                    // localStorage.removeItem("password");
+                    // localStorage.removeItem("rememberPassword");
+                }
+                navigate("/home");
             } else {
-
                 alert("IDまたはパスワードが違います");
 
             }
@@ -39,31 +63,50 @@ function Login({ setPage }) {
         }
 
     };
-
+    const reset = () => {
+        setUserName("");
+        setPassword("");
+        setRememberPassword(false);
+    };
     return (
         <div className="login">
 
-            <h1>ログイン</h1>
+            <h1>
+                <div>Sign</div>
+                <div>in</div>
+            </h1>
 
             <input
                 type="text"
-                placeholder="ユーザーID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
-            />
+                placeholder="ユーザー名"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+            /><br />
 
             <input
                 type="password"
                 placeholder="パスワード"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-            />
+            /><br />
+            <label>
+                <input
+                    type="checkbox"
+                    checked={rememberPassword}
+                    onChange={(e) => setRememberPassword(e.target.checked)}
+                />
+                ユーザー名を記憶する
+            </label>
+            <div>
+                <button onClick={reset}>リセット</button>
+                <button onClick={login}>ログイン</button>
+            </div>
 
-            <button onClick={login}>
-                ログイン
-            </button>
-
+            <Link to="/register">
+                新規登録＞
+            </Link>
         </div>
+
     );
 }
 

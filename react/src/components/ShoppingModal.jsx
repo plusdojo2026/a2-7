@@ -53,25 +53,28 @@ function ShoppingModal({ items, closeModal, reload }) {
                 className="item-row"
                 key={item.shoppingItemId}>
 
-                    <span>
+                    <span className="item-name">
                         {item.itemName}
                     </span>
 
                     <input
                     type="checkbox"
+                    className="checkbox"
                     checked={item.isBought === 1}
                     onChange={() => changeBought(index)}
                     />
                 </div>
             ))}
 
-            <button onClick={updateItems}>
+            <div className="button-area">
+            <button onClick={updateItems} className="update-button">
                 更新
             </button>
 
-            <button onClick={closeModal}>
+            <button onClick={closeModal} className="close-button">
                 閉じる
             </button>
+            </div>
 
         </div>
     

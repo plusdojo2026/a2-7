@@ -1,0 +1,139 @@
+.login {
+    min-height: 100vh;
+    background: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    padding-top: 50px;
+    position: relative;
+}
+
+.login h1 {
+    color: #1E293B;
+    font-size: 42px;
+    line-height: 1.1;
+    width: 100px;
+    margin: 0 0 50px 0;
+    font-family: "Helvetica Neue", sans-serif;
+}
+
+.login h1 div {
+    width: 100px;
+    text-align: left;
+}
+
+.login input[type="text"],
+.login input[type="password"] {
+    width: 280px;
+    height: 70px;
+
+    border: 2px solid #E5E7EB;
+    border-radius: 70px;
+
+    padding: 0 20px;
+
+    font-size: 20px;
+
+    outline: none;
+    margin-bottom: 0px;
+}
+
+.login input[type="checkbox"] {
+    width: auto;
+    height: auto;
+    margin-right: 8px;
+    transform: scale(1.2);
+}
+
+.login input:focus {
+    border-color: #84FAB0;
+}
+
+
+.login label {
+    margin: 0px 0 10px;
+    color: #555;
+}
+
+
+.login button {
+    width: 150px;
+    height: 50px;
+
+    border: none;
+    border-radius: 25px;
+
+    background: linear-gradient(135deg, #84FAB0, #8FD3F4);
+
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    margin: 5px;
+
+    transition: .2s;
+}
+
+
+.login button:hover {
+    transform: translateY(-3px);
+}
+
+
+.login a {
+    margin-top: 20px;
+    padding-top: 60px;
+
+    border-top: 1px solid #afadad;
+
+    color: #4F46E5;
+    text-decoration: none;
+    font-weight: bold;
+
+    width: 280px;
+    text-align: center;
+
+    transition: .2s;
+    font-size: 25px;
+}
+
+.login a:hover {
+    color: #84FAB0;
+}
+
+@media screen and (max-width: 600px) {
+
+
+    .login h1 {
+        position: absolute;
+        top: 30px;
+        left: 30px;
+
+        font-size: 45px;
+        margin: 0;
+    }
+
+    .login {
+        padding-top: 65px;
+    }
+
+    .login input[type="text"],
+    .login input[type="password"] {
+        width: 85%;
+        height: 60px;
+    }
+
+    .login button {
+        width: 130px;
+        height: 45px;
+    }
+
+    .login a {
+        width: 85%;
+    }
+
+}

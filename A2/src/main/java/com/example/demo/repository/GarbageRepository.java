@@ -9,17 +9,9 @@ import com.example.demo.entity.Garbage;
 
 public interface GarbageRepository extends JpaRepository<Garbage, Integer> {
 
-    List<Garbage> findByUserIdAndGarbageDay(
-            Integer userId,
-            Integer garbageDay
-    );
+	List<Garbage> findByUserIdAndGarbageDay(Integer userId, Integer garbageDay);
 
-    List<Garbage> findByUserIdAndNotificationTrue(
-            Integer userId
-    );
+	List<Garbage> findByUserIdAndNotificationTrue(Integer userId);
 
-    Optional<Garbage> findByUserIdAndGarbageType(
-            Integer userId,
-            String garbageType
-    );
+	Optional<Garbage> findByUserIdAndGarbageType(Integer userId, String garbageType);
 }

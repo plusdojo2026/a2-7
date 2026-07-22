@@ -9,33 +9,33 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/login")
-public class UserController {
+@RequestMapping("/api/register")
+public class RegisterController {
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@PostMapping
-	public boolean login(@RequestBody User user, HttpSession session) {
+	public boolean register(@Valid @RequestBody User user) {
 
-		User result = userRepository.findByUserNameAndPassword(user.getUserName(), user.getPassword());
+		if (user.getUserName() == null || user.getUserName().isEmpty() || user.getPassword() == null
+				|| user.getPassword().isEmpty()) {
 
-		if (result != null) {
-
-			// ログインユーザー保存
-			session.setAttribute("loginUser", result);
-
-			return true;
+			return false;
 		}
 
-		return false;
-	}
+		if (userRepository.existsByUserName(user.getUserName())) {
 
-	@PostMapping("/logout")
-	public void logout(HttpSession session) {
-		session.invalidate();
+			return false;
+		}
+
+		user.setPoint(0);
+
+		userRepository.save(user);
+
+		return true;
 	}
 }

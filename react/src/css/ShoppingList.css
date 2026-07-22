@@ -1,0 +1,39 @@
+.screen{
+    background-color: #F8FAFC;
+    min-height: 100vh;
+    padding: 30px;
+}
+.list-card{
+    margin: 30px auto;
+    background: white;
+    border: 2px solid #d9d9d9;
+    padding: 30px;
+    padding-bottom: 50px;
+}
+
+.list-card h3{
+    margin-top: 15px;
+    font-size: 18px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+}
+
+.item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0;
+}
+.item-name{
+    font-size: 17px;
+}
+
+.bought{
+    font-size: 24px;
+    font-weight: bold;
+    color: #84FAB0;
+}
+.not-bought{
+    font-size: 24px;
+    font-weight: bold;
+}

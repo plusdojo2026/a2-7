@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.FoodStock;
 import com.example.demo.entity.Garbage;
+import com.example.demo.entity.User;
 import com.example.demo.repository.FoodStockRepository;
 import com.example.demo.repository.GarbageRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/notice")
@@ -26,14 +29,16 @@ public class NoticeController {
 	private FoodStockRepository foodStockRepository;
 
 	@GetMapping("/garbage")
-	public List<Garbage> getGarbageNotice() {
-		return garbageRepository.findByUserIdAndNotificationTrue(1);
+	public List<Garbage> getGarbageNotice(HttpSession session) {
+		User user = (User) session.getAttribute("loginUser");
+
+		return garbageRepository.findByUserIdAndNotificationTrue(user.getUserId());
 	}
 
 	@GetMapping("/food")
-	public List<FoodStock> getFoodNotice() {
-
-		List<FoodStock> foods = foodStockRepository.findAll();
+	public List<FoodStock> getFoodNotice(HttpSession session) {
+		User user = (User) session.getAttribute("loginUser");
+		List<FoodStock> foods = foodStockRepository.findByUserUserId(user.getUserId());
 
 		for (FoodStock food : foods) {
 
@@ -48,14 +53,20 @@ public class NoticeController {
 
 		return foods;
 	}
-	
+
 	@PutMapping("/food/read/{id}")
-	public void readFood(@PathVariable Integer id) {
+	public void readFood(@PathVariable Integer id, HttpSession session) {
 
-	    FoodStock food = foodStockRepository.findById(id).orElseThrow();
+		User user = (User) session.getAttribute("loginUser");
 
-	    food.setNoticeRead(true);
+		FoodStock food = foodStockRepository.findById(id).orElseThrow();
 
-	    foodStockRepository.save(food);
+		if (!food.getUser().getUserId().equals(user.getUserId())) {
+			return;
+		}
+
+		food.setNoticeRead(true);
+
+		foodStockRepository.save(food);
 	}
 }
