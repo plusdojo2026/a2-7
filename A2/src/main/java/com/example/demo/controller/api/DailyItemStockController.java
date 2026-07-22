@@ -47,22 +47,22 @@ public class DailyItemStockController {
         repository.deleteById(id);
     }
 
-    // 日用品マスターから在庫へ追加
+    //マスターから在庫へ登録
     @PostMapping("/api/daily-item-stock/add-master/{dailyItemMasterId}")
     public DailyItemStock addFromMaster(
             @PathVariable Integer dailyItemMasterId
     ) {
 
-        // IDを使ってDaily_Item_Masterから取得
         DailyItemMaster master = dailyItemMasterRepository
                 .findById(dailyItemMasterId)
                 .orElseThrow(() ->
-                        new RuntimeException("日用品マスターが見つかりません")
+                        new RuntimeException(
+                                "日用品マスターが見つかりません"
+                        )
                 );
 
         LocalDate today = LocalDate.now();
 
-        // Daily_Item_Stockへ登録するデータを作成
         DailyItemStock stock = new DailyItemStock();
 
         stock.setDailyItemStockName(
@@ -72,12 +72,16 @@ public class DailyItemStockController {
         stock.setCategory(master.getCategory());
         stock.setAddDate(today);
 
-        // 今日の日付に交換目安日数を加算
         stock.setGuideExDate(
-                today.plusDays(master.getGuideExpirationDays())
+                today.plusDays(
+                        master.getGuideExpirationDays()
+                )
         );
 
         stock.setStatus(true);
+
+        // 元の日用品マスターIDを保存
+        stock.setDailyItemMaster(master);
 
         return repository.save(stock);
     }
