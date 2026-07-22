@@ -68,6 +68,53 @@ function Refrigerator() {
         refreshDailyItemMasters();
     }, []);
 
+    // 同じ名前の食材を1つにまとめる
+    const groupedFoods = Object.values(
+        foods.reduce((groups, food) => {
+            const key = food.foodStockName;
+
+            if (!groups[key]) {
+                groups[key] = {
+                    foodStockName: food.foodStockName,
+                    category: food.category,
+                    stocks: []
+                };
+            }
+
+            groups[key].stocks.push(food);
+
+            return groups;
+        }, {})
+    );
+    // 上段に置く食材
+    const topFoods = groupedFoods.filter((food) =>
+        ["冷蔵", "乳製品", "飲料"].includes(food.category)
+    );
+
+    // 中段に置く食材
+    const middleFoods = groupedFoods.filter((food) =>
+        ["野菜", "果物", "常温"].includes(food.category)
+    );
+
+    // 下段に置く食材
+    const bottomFoods = groupedFoods.filter((food) =>
+        ["肉", "魚", "冷凍"].includes(food.category)
+    );
+
+    // どのカテゴリーにも当てはまらない食材
+    const otherFoods = groupedFoods.filter((food) =>
+        ![
+            "冷蔵",
+            "乳製品",
+            "飲料",
+            "野菜",
+            "果物",
+            "常温",
+            "肉",
+            "魚",
+            "冷凍"
+        ].includes(food.category)
+    );
 
     //クリックで在庫へ追加（食材）
     const addFoodByClick = (food) => {
@@ -193,16 +240,17 @@ function Refrigerator() {
 
                             {/* 登録済み食材 */}
                             <div className="stored-items">
-                                {foods.map((food, index) => (
+
+                                {/* 上段 */}
+                                {topFoods.map((food, index) => (
                                     <div
-                                        key={food.foodStockId}
+                                        key={food.foodStockName}
                                         className={
                                             selectedItem?.type === "food" &&
-                                                selectedItem?.data.foodStockId === food.foodStockId
-                                                ? `stored-item position-${index % 6} selected`
-                                                : `stored-item position-${index % 6}`
+                                                selectedItem?.data.foodStockName === food.foodStockName
+                                                ? `stored-item food-top-${index % 3} selected`
+                                                : `stored-item food-top-${index % 3}`
                                         }
-                                        draggable
                                         onClick={() => {
                                             setSelectedItem({
                                                 type: "food",
@@ -210,13 +258,86 @@ function Refrigerator() {
                                             });
                                         }}
                                     >
-                                        <img
-                                            src={`/image/${food.foodStockName}.png`}
-                                            alt={food.foodStockName}
-                                        />
+                                        <div className="stored-image-wrapper">
+                                            <img
+                                                src={`/image/${food.foodStockName}.png`}
+                                                alt={food.foodStockName}
+                                            />
+
+                                            <span className="stock-count">
+                                                ×{food.stocks.length}
+                                            </span>
+                                        </div>
+
                                         <span>{food.foodStockName}</span>
                                     </div>
                                 ))}
+
+                                {/* 中段 */}
+                                {/* 中段 */}
+                                {[...middleFoods, ...otherFoods].map((food, index) => (
+                                    <div
+                                        key={food.foodStockName}
+                                        className={
+                                            selectedItem?.type === "food" &&
+                                                selectedItem?.data.foodStockName === food.foodStockName
+                                                ? `stored-item food-middle-${index % 3} selected`
+                                                : `stored-item food-middle-${index % 3}`
+                                        }
+                                        onClick={() => {
+                                            setSelectedItem({
+                                                type: "food",
+                                                data: food
+                                            });
+                                        }}
+                                    >
+                                        <div className="stored-image-wrapper">
+                                            <img
+                                                src={`/image/${food.foodStockName}.png`}
+                                                alt={food.foodStockName}
+                                            />
+
+                                            <span className="stock-count">
+                                                ×{food.stocks.length}
+                                            </span>
+                                        </div>
+
+                                        <span>{food.foodStockName}</span>
+                                    </div>
+                                ))}
+
+                                {/* 下段 */}
+                                {bottomFoods.map((food, index) => (
+                                    <div
+                                        key={food.foodStockName}
+                                        className={
+                                            selectedItem?.type === "food" &&
+                                                selectedItem?.data.foodStockName === food.foodStockName
+                                                ? `stored-item food-bottom-${index % 3} selected`
+                                                : `stored-item food-bottom-${index % 3}`
+                                        }
+                                        onClick={() => {
+                                            setSelectedItem({
+                                                type: "food",
+                                                data: food
+                                            });
+                                        }}
+                                    >
+                                        <div className="stored-image-wrapper">
+                                            <img
+                                                src={`/image/${food.foodStockName}.png`}
+                                                alt={food.foodStockName}
+                                            />
+
+                                            <span className="stock-count">
+                                                ×{food.stocks.length}
+                                            </span>
+                                        </div>
+
+                                        <span>{food.foodStockName}</span>
+                                    </div>
+                                ))}
+
                             </div>
                         </div>
 
