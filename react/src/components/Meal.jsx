@@ -184,7 +184,7 @@ const MealComponent = () =>{
             {/* 絞り込み */}
             <div className="filter">
                 <select onChange={(e) => sortMeal(e.target.value)}>
-                        <option value="" >並び替え</option>
+                        <option value="" disabled>並び替え</option>
                         <option value="new">新しい順</option>
                         <option value="old">古い順</option>
                 </select>
@@ -234,11 +234,11 @@ const MealComponent = () =>{
                             <button onClick={() => setShowRegistModal(false)} id="registCancelButton">×</button><br />
                         </div>
                         <div className='formArea'>
-                            タイトル：<input type ="text" name="recipeTitle" value={newMeal.recipeTitle} onChange={inputNewMeal}/><br />
-                            <span className='red'>(必須)</span>画像ファイル：<input type ="file" name="mealImage" onChange={inputNewMeal}/><br />
-                            <span className='red'>(必須)</span>日付：<input type ="date" name="recordDate" value={newMeal.recordDate} onChange={inputNewMeal}/><br />
-                            参考URL：<input type ="text" name="url" value={newMeal.url} onChange={inputNewMeal}/><br />
-                            レシピ：<textarea name="recipeMemo" value={newMeal.recipeMemo} onChange={inputNewMeal}/><br />
+                            <span className='backcolor'>タイトル：</span><input type ="text" name="recipeTitle" value={newMeal.recipeTitle} onChange={inputNewMeal}/><br />
+                            <span className='backcolor'><span className='red'>(必須)</span>画像ファイル：</span><input type ="file" name="mealImage" onChange={inputNewMeal}/><br />
+                            <span className='backcolor'><span className='red'>(必須)</span>日付：</span><input type ="date" name="recordDate" value={newMeal.recordDate} onChange={inputNewMeal}/><br />
+                            <span className='backcolor'>参考URL：</span><input type ="text" name="url" value={newMeal.url} onChange={inputNewMeal}/><br />
+                            <span className='backcolor'>レシピ：</span><textarea name="recipeMemo" value={newMeal.recipeMemo} onChange={inputNewMeal}/><br />
                             <div className="charCount">
                                 {newMeal.recipeMemo.length}/255文字
                             </div>
@@ -268,11 +268,11 @@ const MealComponent = () =>{
                             <button  onClick={() => setShowUpdateModal(false)} id="updateCancelButton">×</button><br />
                         </div>
                         <div className='formArea'>
-                            タイトル：<input type ="text" name="recipeTitle" value={selectedMeal.recipeTitle} onChange={inputSelectedMeal}/><br />
-                            画像ファイル：<input type ="file" name="mealImage" onChange={inputSelectedMeal}/><br />
-                            日付：<input type ="date" name="recordDate"value={selectedMeal.recordDate}  onChange={inputSelectedMeal}/><br />
-                            参考URL：<input type ="text" name="url" value={selectedMeal.url} onChange={inputSelectedMeal}/><br />
-                            レシピ：<textarea name="recipeMemo" value={selectedMeal.recipeMemo} onChange={inputSelectedMeal}/><br />
+                            <span className='backcolor'>タイトル：</span><input type ="text" name="recipeTitle" value={selectedMeal.recipeTitle} onChange={inputSelectedMeal}/><br />
+                            <span className='backcolor'>画像ファイル：</span><input type ="file" name="mealImage" onChange={inputSelectedMeal}/><br />
+                            <span className='backcolor'>日付：</span><input type ="date" name="recordDate"value={selectedMeal.recordDate}  onChange={inputSelectedMeal}/><br />
+                            <span className='backcolor'>参考URL：</span><input type ="text" name="url" value={selectedMeal.url} onChange={inputSelectedMeal}/><br />
+                            <span className='backcolor'>レシピ：</span><textarea name="recipeMemo" value={selectedMeal.recipeMemo} onChange={inputSelectedMeal}/><br />
                             <div className="charCount">
                                 {selectedMeal.recipeMemo.length}/255文字
                             </div>

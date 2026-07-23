@@ -37,6 +37,7 @@ public class MealController {
 			fileName = saveImage(image); // 以下の画像保存メソッドに移動
 			meal.setMealImage(fileName); // entityに値をセット
 
+			//セッションから」ユーザー情報を取得
 			User loginUser = (User) session.getAttribute("loginUser");
 			if (loginUser == null) {
 			    throw new RuntimeException("ログインしてください");
@@ -129,7 +130,7 @@ public class MealController {
 
 		// ページング情報
 		Pageable pageable = PageRequest.of(page, // 何ページ目を取得するか
-				30, // 一ページ当たり３０件
+				5, // 一ページ当たり３０件
 				sortOrder // 並び順
 		);
 		return repository.findByUserId(userId, pageable) // userIdが一致する食事記録の取得、ページングの条件
@@ -154,7 +155,7 @@ public class MealController {
 
 		// ページング情報
 		Pageable pageable = PageRequest.of(page, // 何ページ目を取得するか
-				30, // 一ページ当たり３０件
+				5, // 一ページ当たり３０件
 				sortOrder // 並び順
 		);
 		return repository.findByUserIdAndMealType(userId, mealType, pageable).getContent(); // Page<mear>をList<meal>に変換

@@ -230,8 +230,7 @@ body{
 
     cursor: pointer;
 }
-
-
+    /* 複数適用*/
 textarea{
     width: 80%;
     height: 80px;
@@ -246,6 +245,9 @@ textarea{
 }
 .red{
     color: red;
+}
+.backcolor{
+    background-color: #cfcfcf6f;
 }
 
 
