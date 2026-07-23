@@ -54,13 +54,14 @@ VALUES
 
 -- 日用品マスタ
 INSERT INTO Daily_Item_Master
-(daily_item_master_name,category,guide_expiration_days,daily_item_image)
+(daily_item_master_name, category, guide_expiration_days, daily_item_image)
 VALUES
 ('トイレットペーパー','生活用品',30,'toilet_paper.png'),
 ('ティッシュ','生活用品',20,'tissue.png'),
 ('歯磨き粉','衛生用品',90,'toothpaste.png'),
 ('シャンプー','衛生用品',120,'shampoo.png'),
-('洗剤','掃除用品',180,'detergent.png');
+('洗剤','掃除用品',180,'detergent.png'),
+('電池','その他',365,'battery.png');
 
 -- 日用品在庫
 INSERT INTO Daily_Item_Stock
