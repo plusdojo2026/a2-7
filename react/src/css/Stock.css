@@ -472,3 +472,54 @@
         padding: 20px;
     }
 }
+
+/* ==============================
+   カテゴリアイコン
+============================== */
+
+/* カテゴリアイコンの枠 */
+.stock-list-image {
+    flex-shrink: 0;
+
+    width: 72px;
+    height: 72px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* 食材・日用品共通のカテゴリ画像 */
+.stock-list-image img {
+    display: block;
+
+    width: 64px;
+    height: 64px;
+
+    object-fit: contain;
+}
+
+
+/* 日用品も食材と同じ表示にする */
+.stock-list-image.daily {
+    width: 72px;
+    height: 72px;
+
+    margin: 0;
+
+    border: none;
+    background: transparent;
+}
+
+
+/* 日用品画像 */
+.stock-list-image.daily img {
+    width: 64px;
+    height: 64px;
+
+    max-width: none;
+    max-height: none;
+
+    object-fit: contain;
+}

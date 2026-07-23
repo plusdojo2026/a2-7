@@ -14,7 +14,7 @@ function Shopping() {
 
 useEffect(() => {
 
-        axios.get("http://localhost:8080/shopping/latest")
+        axios.get("/api/shopping/latest")
         .then((response) => {
 
             if(response.data.length > 0){
@@ -51,7 +51,7 @@ useEffect(() => {
     }
 
     const saveShopping = () => {
-         axios.post("http://localhost:8080/shopping",items
+         axios.post("/api/shopping",items
          )
          .then(() => {
             alert("買い物リストを作成しました");
@@ -90,7 +90,7 @@ useEffect(() => {
                  className="delete-button"
                  onClick={() => deleteItem(index)}
                  >
-                :heavy_multiplication_x:
+                ✖
                 </button>
 
             </div>
