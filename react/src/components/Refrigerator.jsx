@@ -81,7 +81,7 @@ function Refrigerator() {
     // 同じ名前の食材をまとめる
     const groupedFoods = Object.values(
         foods.reduce((groups, food) => {
-            const key = food.foodStockName;
+            const key = `${food.foodStockName}_${food.category}`;
 
             if (!groups[key]) {
                 groups[key] = {
@@ -107,7 +107,7 @@ function Refrigerator() {
     // 同じ名前の日用品をまとめる
     const groupedItems = Object.values(
         items.reduce((groups, item) => {
-            const key = item.dailyItemStockName;
+            const key = `${item.dailyItemStockName}_${item.category}`;
 
             if (!groups[key]) {
                 groups[key] = {

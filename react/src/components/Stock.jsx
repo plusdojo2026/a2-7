@@ -42,6 +42,12 @@ const Stock = () => {
     // 食材と日用品のどちらを編集中か
     let [editType, setEditType] = useState("");
 
+    // 編集画面で新しく選択した画像ファイル
+    let [selectedImage, setSelectedImage] = useState(null);
+
+    // 編集画面に表示する画像プレビューのURL
+    let [imagePreview, setImagePreview] = useState("");
+
     //取得したJSONデータをfoodsへ保存する関数
     let refreshFoodStockList = () => {
         axios.get("http://localhost:8080/api/food_stock/")
@@ -260,6 +266,17 @@ const Stock = () => {
     //食材の編集開始関数
     let modFoodStart = (food) => {
         setModFood({ ...food });
+
+        // 前回選択した画像をリセットする
+        setSelectedImage(null);
+
+        // すでに画像が登録されている場合は現在の画像を表示する
+        setImagePreview(
+            food.foodImage
+                ? `http://localhost:8080/uploads/${food.foodImage}`
+                : foodCategoryImages[food.category] ?? foodCategoryImages["その他"]
+        );
+
         setEditType("food");
         setShowModal(true);
     };
@@ -267,14 +284,54 @@ const Stock = () => {
     //日用品の編集開始関数
     let modDailyItemStart = (item) => {
         setModDailyItem({ ...item });
+
+        // 前回選択した画像をリセットする
+        setSelectedImage(null);
+
+        // すでに画像が登録されている場合は現在の画像を表示する
+        setImagePreview(
+            item.dailyItemImage
+                ? `http://localhost:8080/uploads/${item.dailyItemImage}`
+                : dailyCategoryImages[item.category] ?? dailyCategoryImages["その他"]
+        );
+
         setEditType("daily");
         setShowModal(true);
     };
 
+    //画像ファイルを選択したときの処理
+    let selectImage = (e) => {
+        let file = e.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        // 画像ファイル以外は受け付けない
+        if (!file.type.startsWith("image/")) {
+            setErrorMessage("画像ファイルを選択してください。");
+            e.target.value = "";
+            return;
+        }
+
+        setErrorMessage("");
+        setSelectedImage(file);
+
+        // 選択した画像をモーダル内へ一時表示する
+        setImagePreview(URL.createObjectURL(file));
+    };
+
     //モーダルを閉じる
     let closeModal = () => {
+        // createObjectURLで作成した一時URLを解放する
+        if (selectedImage && imagePreview.startsWith("blob:")) {
+            URL.revokeObjectURL(imagePreview);
+        }
+
         setShowModal(false);
         setEditType("");
+        setSelectedImage(null);
+        setImagePreview("");
     };
 
     //更新処理
@@ -282,26 +339,68 @@ const Stock = () => {
         setErrorMessage("");
 
         if (editType === "food") {
+
+            // JSONデータと画像を同時に送るためFormDataを使用する
+            let formData = new FormData();
+
+            let foodJson = new Blob(
+                [JSON.stringify(modFood)],
+                { type: "application/json" }
+            );
+
+            // Spring Boot側の@RequestPart("food")と名前を合わせる
+            formData.append("food", foodJson);
+
+            // 新しい画像が選択されている場合だけ追加する
+            if (selectedImage) {
+                formData.append("image", selectedImage);
+            }
+
             axios.post(
-                "http://localhost:8080/api/food_stock/mod/",
-                modFood
+                "http://localhost:8080/api/food_stock/mod-image",
+                formData
             )
                 .then(() => {
                     refreshFoodStockList();
                     closeModal();
+                })
+                .catch(error => {
+                    console.error("食材在庫の更新に失敗しました", error);
+                    setErrorMessage("食材在庫を更新できませんでした。");
                 });
 
             return;
         }
 
         if (editType === "daily") {
+
+            // JSONデータと画像を同時に送るためFormDataを使用する
+            let formData = new FormData();
+
+            let dailyItemJson = new Blob(
+                [JSON.stringify(modDailyItem)],
+                { type: "application/json" }
+            );
+
+            // Spring Boot側の@RequestPart("item")と名前を合わせる
+            formData.append("item", dailyItemJson);
+
+            // 新しい画像が選択されている場合だけ追加する
+            if (selectedImage) {
+                formData.append("image", selectedImage);
+            }
+
             axios.post(
-                "http://localhost:8080/api/daily-item-stock",
-                modDailyItem
+                "http://localhost:8080/api/daily-item-stock/mod-image",
+                formData
             )
                 .then(() => {
                     refreshDailyItemStockList();
                     closeModal();
+                })
+                .catch(error => {
+                    console.error("日用品在庫の更新に失敗しました", error);
+                    setErrorMessage("日用品在庫を更新できませんでした。");
                 });
         }
     };
@@ -416,8 +515,12 @@ const Stock = () => {
                                             {/* 商品名と同じ名前の画像を表示する */}
                                             <div className="stock-list-image food">
                                                 <img
-                                                    src={foodCategoryImages[food.category]}
-                                                    alt={food.category}
+                                                    src={
+                                                        food.foodImage
+                                                            ? `http://localhost:8080/uploads/${food.foodImage}`
+                                                            : foodCategoryImages[food.category] ?? foodCategoryImages["その他"]
+                                                    }
+                                                    alt={food.foodStockName}
                                                     className="stock-icon"
                                                 />
                                             </div>
@@ -564,12 +667,32 @@ const Stock = () => {
                                     </>
                                 )}
 
+                                {/* 食材・日用品で共通の画像編集欄 */}
+                                <div className="stock-modal-image-field">
+                                    <label htmlFor="stock-image">画像</label>
+
+                                    <input
+                                        id="stock-image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={selectImage}
+                                    />
+
+                                    {imagePreview && (
+                                        <img
+                                            src={imagePreview}
+                                            alt="選択画像のプレビュー"
+                                            className="stock-image-preview"
+                                        />
+                                    )}
+                                </div>
+
                                 <div className="stock-modal-actions">
-                                    <button onClick={updateStock}>
+                                    <button type="button" onClick={updateStock}>
                                         更新
                                     </button>
 
-                                    <button onClick={closeModal}>
+                                    <button type="button" onClick={closeModal}>
                                         キャンセル
                                     </button>
                                 </div>
@@ -599,8 +722,12 @@ const Stock = () => {
                                             {/* 商品名と同じ名前の画像を表示する */}
                                             <div className="stock-list-image daily">
                                                 <img
-                                                    src={dailyCategoryImages[item.category]}
-                                                    alt={item.category}
+                                                    src={
+                                                        item.dailyItemImage
+                                                            ? `http://localhost:8080/uploads/${item.dailyItemImage}`
+                                                            : dailyCategoryImages[item.category] ?? dailyCategoryImages["その他"]
+                                                    }
+                                                    alt={item.dailyItemStockName}
                                                     className="stock-icon"
                                                 />
                                             </div>
