@@ -5,104 +5,105 @@ import "../css/Shopping.css";
 
 function Shopping() {
 
-    const [items, setItems] = useState([
-        {
-            itemName: "",
-            isBought: 0
-        }
-    ]);
+    const [items, setItems] = useState([
+        {
+            itemName: "",
+            isBought: 0
+        }
+    ]);
 
 useEffect(() => {
 
-        axios.get("http://localhost:8080/shopping/latest")
-        .then((response) => {
+        axios.get("http://localhost:8080/shopping/latest")
+        .then((response) => {
 
-            if(response.data.length > 0){
+            if(response.data.length > 0){
 
-                setItems(response.data);
+                setItems(response.data);
 
-            }
-        })
+            }
+        })
 
-        .catch((error) => {
-             
-            console.log(error);
-        });
+        .catch((error) => {
 
-    },[]);
+            console.log(error);
+        });
+
+    },[]);
 
 
-    {/*ボタンが押されたら実行する処理*/}
-    const addItem = () => {
-         const newItems = [...items];
-         newItems.push({
-            itemName: "",
-            isBought: 0
-         });
 
-         setItems(newItems);
-    };
+    {/*ボタンが押されたら実行する処理*/}
+    const addItem = () => {
+         const newItems = [...items];
+         newItems.push({
+            itemName: "",
+            isBought: 0
+         });
 
-    const deleteItem = (index) => {
-        const newItems = [...items];
-        newItems.splice(index, 1);
-        setItems(newItems);
-    }
+         setItems(newItems);
+    };
 
-    const saveShopping = () => {
-         axios.post("http://localhost:8080/shopping",items
-         )
-         .then(() => {
-            alert("買い物リストを作成しました");
-         })
-         .catch((error) => {
-            console.log(error);
-         });
-    };
+    const deleteItem = (index) => {
+        const newItems = [...items];
+        newItems.splice(index, 1);
+        setItems(newItems);
+    }
 
-    return(
-    <div className="screen">
-        <h2>買い物リスト作成</h2>
+    const saveShopping = () => {
+         axios.post("http://localhost:8080/shopping",items
+         )
+         .then(() => {
+            alert("買い物リストを作成しました");
+         })
+         .catch((error) => {
+            console.log(error);
+         });
+    };
 
-        <div className="shopping-list">
+    return(
+    <div className="screen">
+        <h2>買い物リスト作成</h2>
 
-        {/*itemsの中身を1件ずつ取り出す*/}
-        {items.map((item,index) => (
-            <div className="item-input" key={index}>
-                
-                <span>・</span>
-                <input
-                 type="text"
-                 value={item.itemName}
+        <div className="shopping-list">
 
-                 //文字が変わるたびに処理が実行
-                 onChange={(e) => {
+        {/*itemsの中身を1件ずつ取り出す*/}
+        {items.map((item,index) => (
+            <div className="item-input" key={index}>
 
-                    const newItems = [...items];
-                    newItems[index].itemName = e.target.value;
-                    setItems(newItems);
+                <span>・</span>
+                <input
+                 type="text"
+                 value={item.itemName}
 
-                 }}
-                />
+                 //文字が変わるたびに処理が実行
+                 onChange={(e) => {
 
-                <button
-                 className="delete-button"
-                 onClick={() => deleteItem(index)}
-                 >
-                ✖
-                </button>
+                    const newItems = [...items];
+                    newItems[index].itemName = e.target.value;
+                    setItems(newItems);
 
-            </div>
-        ))}
+                 }}
+                />
 
-        <button className="add-button" onClick={addItem}>+</button>
+                <button
+                 className="delete-button"
+                 onClick={() => deleteItem(index)}
+                 >
+                :heavy_multiplication_x:
+                </button>
 
-        </div>
+            </div>
+        ))}
 
-        <button className="save-button" onClick={saveShopping}>作成</button>
+        <button className="add-button" onClick={addItem}>+</button>
 
-    </div>
-    );
+        </div>
+
+        <button className="save-button" onClick={saveShopping}>作成</button>
+
+    </div>
+    );
 }
 
 export default Shopping
