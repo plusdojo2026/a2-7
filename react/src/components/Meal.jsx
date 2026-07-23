@@ -188,14 +188,14 @@ const MealComponent = () =>{
                         <option value="new">新しい順</option>
                         <option value="old">古い順</option>
                 </select>
-                    <button onClick={() => toggleMealType("朝")}>
-                        <img src={filterMealType ==="朝" ?"/img/asa2.png" :"/img/asa1.png"}/>
+                    <button className="cloudyBtn" onClick={() => toggleMealType("朝")}>
+                        <img src={filterMealType ==="朝" ?"/img/cloudy_active.png" :"/img/cloudy.png"}/>
                     </button>
-                    <button onClick={() => toggleMealType("昼")}>
-                        <img src={filterMealType ==="昼" ?"/img/hiru2.png" :"/img/hiru1.png"}/>
+                    <button className="sunBtn" onClick={() => toggleMealType("昼")}>
+                        <img src={filterMealType ==="昼" ?"/img/sun_active.png" :"/img/sun.png"}/>
                     </button>
-                    <button onClick={() => toggleMealType("夜")}>
-                        <img src={filterMealType ==="夜" ?"/img/yoru2.png" :"/img/yoru1.png"}/>
+                    <button className="moonBtn" onClick={() => toggleMealType("夜")}>
+                        <img src={filterMealType ==="夜" ?"/img/moon_active.png" :"/img/moon.png"}/>
                     </button>
             </div>
 
@@ -212,12 +212,15 @@ const MealComponent = () =>{
             )
             .map((meal) =>
                 <div key={meal.mealId} className="mealCard" onClick={() => openUpdateModal(meal)}>
-                    <div className="mealTitle"><strong>{meal.recipeTitle}</strong></div>
+                    <div className="mealTitle" id="mealtitle"><strong>{meal.recipeTitle}</strong></div>
                     <div className="mealImage">
-                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` }/></div>
-                    <div className="mealdate"><b>日付</b>：{meal.recordDate}</div>
-                    <div className="url"><b>URL</b>：{meal.url}</div>
-                    <div className="recipe"><b>レシピ</b>：{meal.recipeMemo}</div>
+                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` }/>
+                    </div>
+                    <div id="mealinformation">
+                        <div className="mealdate"><b>日付</b>：{meal.recordDate}</div>
+                        <div className="url"><b>URL</b>：{meal.url}</div>
+                        <div className="recipe"><b>レシピ</b>：{meal.recipeMemo}</div>
+                    </div>
                 </div>
             )
             }
@@ -232,22 +235,22 @@ const MealComponent = () =>{
                         </div>
                         <div className='formArea'>
                             タイトル：<input type ="text" name="recipeTitle" value={newMeal.recipeTitle} onChange={inputNewMeal}/><br />
-                            (必須)画像ファイル：<input type ="file" name="mealImage" onChange={inputNewMeal}/><br />
-                            (必須)日付：<input type ="date" name="recordDate" value={newMeal.recordDate} onChange={inputNewMeal}/><br />
+                            <span className='red'>(必須)</span>画像ファイル：<input type ="file" name="mealImage" onChange={inputNewMeal}/><br />
+                            <span className='red'>(必須)</span>日付：<input type ="date" name="recordDate" value={newMeal.recordDate} onChange={inputNewMeal}/><br />
                             参考URL：<input type ="text" name="url" value={newMeal.url} onChange={inputNewMeal}/><br />
                             レシピ：<textarea name="recipeMemo" value={newMeal.recipeMemo} onChange={inputNewMeal}/><br />
                             <div className="charCount">
                                 {newMeal.recipeMemo.length}/255文字
                             </div>
                             <div className="mealtype">
-                                <button type="button" onClick={()=> selectMealType("朝")}>
-                                    <img src={newMeal.mealType ==="朝" ?"/img/asa2.png" :"/img/asa1.png"}/>
+                                <button type="button" className="cloudyBtn" onClick={()=> selectMealType("朝")}>
+                                    <img src={newMeal.mealType ==="朝" ?"/img/cloudy_active.png" :"/img/cloudy.png"}/>
                                 </button>
-                                <button type="button" onClick={()=> selectMealType("昼")}>
-                                    <img src={newMeal.mealType ==="昼" ?"/img/hiru2.png" :"/img/hiru1.png"}/>
+                                <button type="button" className="sunBtn" onClick={()=> selectMealType("昼")}>
+                                    <img src={newMeal.mealType ==="昼" ?"/img/sun_active.png" :"/img/sun.png"}/>
                                 </button>
-                                <button type="button" onClick={()=> selectMealType("夜")}>
-                                    <img src={newMeal.mealType ==="夜" ?"/img/yoru2.png" :"/img/yoru1.png"}/>
+                                <button type="button" className="moonBtn" onClick={()=> selectMealType("夜")}>
+                                    <img src={newMeal.mealType ==="夜" ?"/img/moon_active.png" :"/img/moon.png"}/>
                                 </button>
                             </div>
                         </div>
@@ -274,14 +277,14 @@ const MealComponent = () =>{
                                 {selectedMeal.recipeMemo.length}/255文字
                             </div>
                             <div className="mealtype">
-                                <button onClick={()=> selectUpdateMealType("朝")}>
-                                    <img src={selectedMeal.mealType ==="朝" ?"/img/asa2.png" :"/img/asa1.png"}/>
+                                <button className="cloudyBtn" onClick={()=> selectUpdateMealType("朝")}>
+                                    <img src={selectedMeal.mealType ==="朝" ?"/img/cloudy_active.png" :"/img/cloudy.png"}/>
                                 </button>
-                                <button onClick={()=> selectUpdateMealType("昼")}>
-                                    <img src={selectedMeal.mealType ==="昼" ?"/img/hiru2.png" :"/img/hiru1.png"}/>
+                                <button className="sunBtn" onClick={()=> selectUpdateMealType("昼")}>
+                                    <img src={selectedMeal.mealType ==="昼" ?"/img/sun_active.png" :"/img/sun.png"}/>
                                 </button>
-                                <button onClick={()=> selectUpdateMealType("夜")}>
-                                    <img src={selectedMeal.mealType ==="夜" ?"/img/yoru2.png" :"/img/yoru1.png"}/>
+                                <button className="moonBtn" onClick={()=> selectUpdateMealType("夜")}>
+                                    <img src={selectedMeal.mealType ==="夜" ?"/img/moon_active.png" :"/img/moon.png"}/>
                                 </button>
                             </div>
                         </div>

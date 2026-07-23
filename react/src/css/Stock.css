@@ -523,3 +523,19 @@
 
     object-fit: contain;
 }
+
+.stock-modal-image-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.stock-image-preview {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+}
