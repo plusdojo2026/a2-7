@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../css/Meal.css'
 import axios from "axios";
 
@@ -20,7 +20,12 @@ const MealComponent = () =>{
     let [filterMealType, setFilterMealType] = useState("");
 
     //セッション
+    let isRedirectingRef = useRef(false);
     let sessionError =()=>{
+        if(isRedirectingRef.current){
+            return;
+        }
+        isRedirectingRef.current = true;
         alert("セッションがきれました。再ログインしてください");
         window.location.href ="/login";
     }
@@ -221,27 +226,32 @@ const MealComponent = () =>{
             {showRegistModal &&
                 <div className="overlay">
                     <div id="newRegistModal">
-                        <button onClick={() => setShowRegistModal(false)} id="registCancelButton">×</button><br />
-                        <div className='title'>新規作成<br /></div>
+                        <div className='modalHeader'>
+                            <div className='title'>新規作成<br /></div>
+                            <button onClick={() => setShowRegistModal(false)} id="registCancelButton">×</button><br />
+                        </div>
                         <div className='formArea'>
                             タイトル：<input type ="text" name="recipeTitle" value={newMeal.recipeTitle} onChange={inputNewMeal}/><br />
                             (必須)画像ファイル：<input type ="file" name="mealImage" onChange={inputNewMeal}/><br />
                             (必須)日付：<input type ="date" name="recordDate" value={newMeal.recordDate} onChange={inputNewMeal}/><br />
                             参考URL：<input type ="text" name="url" value={newMeal.url} onChange={inputNewMeal}/><br />
-                            レシピ：<input type ="text" name="recipeMemo" value={newMeal.recipeMemo} onChange={inputNewMeal}/><br />
+                            レシピ：<textarea name="recipeMemo" value={newMeal.recipeMemo} onChange={inputNewMeal}/><br />
+                            <div className="charCount">
+                                {newMeal.recipeMemo.length}/255文字
+                            </div>
                             <div className="mealtype">
-                                <button type="button" onClick={()=> newMeal.mealType("朝")}>
-                                    <img src={filterMealType ==="朝" ?"/img/asa2.png" :"/img/asa1.png"}/>
+                                <button type="button" onClick={()=> selectMealType("朝")}>
+                                    <img src={newMeal.mealType ==="朝" ?"/img/asa2.png" :"/img/asa1.png"}/>
                                 </button>
-                                <button type="button" onClick={()=> newMeal.mealType("昼")}>
-                                    <img src={filterMealType ==="昼" ?"/img/hiru2.png" :"/img/hiru1.png"}/>
+                                <button type="button" onClick={()=> selectMealType("昼")}>
+                                    <img src={newMeal.mealType ==="昼" ?"/img/hiru2.png" :"/img/hiru1.png"}/>
                                 </button>
-                                <button type="button" onClick={()=> newMeal.mealType("夜")}>
-                                    <img src={filterMealType ==="夜" ?"/img/yoru2.png" :"/img/yoru1.png"}/>
+                                <button type="button" onClick={()=> selectMealType("夜")}>
+                                    <img src={newMeal.mealType ==="夜" ?"/img/yoru2.png" :"/img/yoru1.png"}/>
                                 </button>
                             </div>
                         </div>
-                        <button onClick={registMeal}>記録</button>
+                        <button onClick={registMeal} id='registButton'>記録</button>
                     </div>
                 </div>   
             }
@@ -250,21 +260,32 @@ const MealComponent = () =>{
             {showUpdateModal &&
                 <div className="overlay">
                     <div id="updateModal">
-                        <button  onClick={() => setShowUpdateModal(false)} id="updateCancelButton">×</button><br />
-                        <div className='title'>編集<br /></div>
+                        <div className='modalHeader'>
+                            <div className='title'>編集<br /></div>
+                            <button  onClick={() => setShowUpdateModal(false)} id="updateCancelButton">×</button><br />
+                        </div>
                         <div className='formArea'>
                             タイトル：<input type ="text" name="recipeTitle" value={selectedMeal.recipeTitle} onChange={inputSelectedMeal}/><br />
-                            画像ファイル:<input type ="file" name="mealImage" onChange={inputSelectedMeal}/><br />
-                            日付:<input type ="date" name="recordDate"value={selectedMeal.recordDate}  onChange={inputSelectedMeal}/><br />
+                            画像ファイル：<input type ="file" name="mealImage" onChange={inputSelectedMeal}/><br />
+                            日付：<input type ="date" name="recordDate"value={selectedMeal.recordDate}  onChange={inputSelectedMeal}/><br />
                             参考URL：<input type ="text" name="url" value={selectedMeal.url} onChange={inputSelectedMeal}/><br />
-                            レシピ：<input type ="text" name="recipeMemo" value={selectedMeal.recipeMemo} onChange={inputSelectedMeal}/><br />
+                            レシピ：<textarea name="recipeMemo" value={selectedMeal.recipeMemo} onChange={inputSelectedMeal}/><br />
+                            <div className="charCount">
+                                {selectedMeal.recipeMemo.length}/255文字
+                            </div>
                             <div className="mealtype">
-                                <button onClick={()=> selectUpdateMealType("朝")}>朝</button>
-                                <button onClick={()=> selectUpdateMealType("昼")}>昼</button>
-                                <button onClick={()=> selectUpdateMealType("夜")}>夜</button>
+                                <button onClick={()=> selectUpdateMealType("朝")}>
+                                    <img src={selectedMeal.mealType ==="朝" ?"/img/asa2.png" :"/img/asa1.png"}/>
+                                </button>
+                                <button onClick={()=> selectUpdateMealType("昼")}>
+                                    <img src={selectedMeal.mealType ==="昼" ?"/img/hiru2.png" :"/img/hiru1.png"}/>
+                                </button>
+                                <button onClick={()=> selectUpdateMealType("夜")}>
+                                    <img src={selectedMeal.mealType ==="夜" ?"/img/yoru2.png" :"/img/yoru1.png"}/>
+                                </button>
                             </div>
                         </div>
-                        <button onClick={updateMeal}>更新</button>
+                        <button onClick={updateMeal} id="updateButton">更新</button>
                     </div>
                 </div>
             }
