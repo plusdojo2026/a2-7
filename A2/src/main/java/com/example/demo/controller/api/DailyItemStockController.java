@@ -55,7 +55,6 @@ public class DailyItemStockController {
     }
 
     // 日用品マスターから在庫へ追加
- // 日用品マスターから在庫へ追加
     @PostMapping("/api/daily-item-stock/add-master/{dailyItemMasterId}")
     public DailyItemStock addFromMaster(
             @PathVariable Integer dailyItemMasterId
@@ -90,7 +89,8 @@ public class DailyItemStockController {
 
         return repository.save(stock);
     }
-    
+
+    //// 画像付きで日用品在庫を更新
     @PostMapping("/api/daily-item-stock/mod-image")
     public DailyItemStock modImage(
             @RequestPart("item") DailyItemStock item,
@@ -134,8 +134,7 @@ public class DailyItemStockController {
                 UUID.randomUUID().toString() + extension;
 
         // 保存先フォルダ
-        Path uploadDir =
-                Paths.get("uploads", "images");
+        Path uploadDir = Paths.get("uploads");
 
         // フォルダがなければ作成
         Files.createDirectories(uploadDir);

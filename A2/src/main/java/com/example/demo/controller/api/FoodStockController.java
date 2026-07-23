@@ -143,8 +143,7 @@ public class FoodStockController {
         String fileName =
                 UUID.randomUUID().toString() + extension;
 
-        Path uploadDir =
-                Paths.get("uploads", "images");
+        Path uploadDir = Paths.get("uploads");
 
         Files.createDirectories(uploadDir);
 
