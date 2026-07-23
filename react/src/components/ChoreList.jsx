@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/ChoreList.css";
 
 // 曜日のリスト(0=月曜 〜 6=日曜)
@@ -80,20 +80,19 @@ function ChoreList(){
     // ★追加:今回獲得したポイント
     const [earnedPoint, setEarnedPoint] = useState(0);
 
-    // 家事データ(仮。後でAPIから取得する)
-    const chores = [
-        // 掃除
-        { name: "掃除機", category: "掃除", time: 10 },
-        { name: "お風呂掃除", category: "掃除", time: 20 },
-        { name: "トイレ掃除", category: "掃除", time: 30 },
-        // 洗い物
-        { name: "食器洗い", category: "洗い物", time: 10 },
-        { name: "シンク掃除", category: "洗い物", time: 15 },
-        // 洗濯
-        { name: "洗濯", category: "洗濯", time: 30 },
-        { name: "洗濯物を畳む", category: "洗濯", time: 15 }
-    ];
+    // 家事データ(APIから取得する)
+    const [chores, setChores] = useState([]);
 
+    useEffect(() => {
+    axios.get("/api/chore/")
+        .then((res) => {
+            setChores(res.data);
+            console.log(res.data);
+        })
+        .catch((err) => {
+            console.error("家事一覧取得失敗", err);
+        });
+    }, []);
 // 今日の家事の一覧を作る
     // 「家事提案で追加した家事(最優先)」と「家事リストで今日が実施日の家事」を合流させる
     const getTodayChores = () => {
@@ -226,15 +225,15 @@ function ChoreList(){
     // 確定 → 提案を作る → 読み込み → 結果
     const handleSuggest = () => {
         const filtered = chores.filter(chore =>
-            selected.includes(chore.category)
+            selected.includes(chore.priority)
         );
         const shuffled = [...filtered].sort(() => Math.random() - 0.5);
         const suggestList = [];
         let total = 0;
         for (const chore of shuffled) {
-            if (total + chore.time <= time) {
+            if (total + chore.estimatedTime <= time) {
                 suggestList.push(chore);
-                total += chore.time;
+                total += chore.estimatedTime;
             }
         }
         setResult(suggestList);
@@ -248,7 +247,7 @@ function ChoreList(){
     const handleSuggestClose = () => {
         if (addCheck) {
             // 提案結果の家事名を addedChores に追加(重複は除く)
-            const names = result.map(chore => chore.name);
+            const names = result.map(chore => chore.choresName);
             const merged = [...new Set([...addedChores, ...names])];
             setAddedChores(merged);
         }
@@ -285,7 +284,7 @@ function ChoreList(){
                                 {getTodayChores().map(chore => (
                                     <div
                                         className="todayCard"
-                                        key={chore.name}
+                                        key={chore.choresId}
                                         onClick={() => toggleDone(chore.name)}
                                     >
                                         {/* 家事提案から追加した家事はリボン付き */}
@@ -380,12 +379,12 @@ function ChoreList(){
 
                         {result.length > 0 ? (
                             <div className="resultArea">
-                                {result.map(chore => (
-                                    <div className="resultItem" key={chore.name}>
-                                        <p className="resultTime">{chore.time}分</p>
-                                        <p className="resultName">{chore.name}</p>
-                                    </div>
-                                ))}
+                        {result.map((chore) => (
+                        <div className="resultItem" key={chore.choresId}>
+                        <p className="resultTime">{chore.estimatedTime}分</p>
+                        <p className="resultName">{chore.choresName}</p>
+                        </div>
+                        ))}
                             </div>
                         ) : (
                             <p className="resultText">条件に合う家事が<br />見つかりませんでした。</p>
