@@ -18,10 +18,10 @@ function ShoppingList() {
 
     //買い物リスト一覧を取得する
     const getShoppingLists = () => {
-         axios.get("http://localhost:8080/shopping/list"
-         )
+         axios.get("/api/shopping/list/")
          .then((response) => {
 
+            console.log(response.data);
             setLists(response.data);
          })
 
@@ -41,7 +41,7 @@ function ShoppingList() {
     const getItems = (shoppingListId) => {
 
         axios.get(
-            "http://localhost:8080/shopping/item/" + shoppingListId
+            "/api/shopping/item/" + shoppingListId
         )
         .then((response) => {
 
@@ -83,8 +83,8 @@ function ShoppingList() {
                     >
 
                     {item.isBought === 0
-                    ? ":heavy_multiplication_x:"
-                    : ":heavy_check_mark:"}
+                    ? "✖"
+                    : "✔"}
 
                     </span>
                     </div>

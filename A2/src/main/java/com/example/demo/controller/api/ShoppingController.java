@@ -23,7 +23,7 @@ import com.example.demo.repository.ShoppingListRepository;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/shopping")
+@RequestMapping("/api/shopping")
 @CrossOrigin(origins = "http://localhost:5173",
 		allowCredentials = "true")
 public class ShoppingController {
@@ -38,17 +38,26 @@ public class ShoppingController {
 	@GetMapping("/list")
 	public List<ShoppingList> getShoppingLists(HttpSession session) {
 		
+		System.out.println("実行された");
+		
 		//ログイン中のユーザーを取得
-		User loginUser = (User) session.getAttribute("loginUser");
+		User user = (User) session.getAttribute("loginUser");
 		
 		//ログインしていなければ空を返す
-		if(loginUser == null) {
+		if(user == null) {
 			return new ArrayList<>();
 		}
 		
 		//ログイン中のユーザーの買い物リストだけ取得
 		List<ShoppingList> lists = shoppingListRepository.findByUserIdOrderByShoppingListidDesc(
-				loginUser.getUserId());
+				user.getUserId());
+		
+		//ログ
+		System.out.println("取得したリスト数：" + lists.size()); 
+		for(ShoppingList list : lists)
+		{ System.out.println( "ID=" + list.getShoppingListid() + " userId=" + list.getUserId()
+		);
+		}
 		
 		//１件ずつ取り出す
 		for (ShoppingList list : lists) {
@@ -68,10 +77,10 @@ public class ShoppingController {
 	public void saveshopping(@RequestBody List<ShoppingItem> items, HttpSession session) {
 		
 		//ログイン中のユーザーを取得
-		User loginUser = (User) session.getAttribute("loginUser");
-		System.out.println("loginUser = " + loginUser);
+		User user = (User) session.getAttribute("loginUser");
+		System.out.println("loginUser = " + user);
 		
-		if (loginUser == null) {
+		if (user == null) {
 			return;
 		}
 		
@@ -82,7 +91,7 @@ public class ShoppingController {
 		shoppingList.setCreateDate(LocalDate.now());
 		
 		//ログインユーザーのIDをセット
-		shoppingList.setUserId(loginUser.getUserId());
+		shoppingList.setUserId(user.getUserId());
 		
 		//DBへ保存
 		shoppingList = shoppingListRepository.save(shoppingList);
@@ -96,7 +105,7 @@ public class ShoppingController {
 		shoppingItemRepository.saveAll(items);
 		
 		System.out.println("保存したID：" + shoppingList.getShoppingListid());
-		System.out.println("ログインユーザー：" + loginUser.getUserId());
+		System.out.println("ログインユーザー：" + user.getUserId());
 	
 	}
 	
@@ -118,11 +127,14 @@ public class ShoppingController {
 	//最新リストの未購入商品を取得
 	//latest==訳：最新の
 	@GetMapping("/latest")
-	public List<ShoppingItem> getLatestItems() {
+	public List<ShoppingItem> getLatestItems(HttpSession session) {
+		
+		User user = (User) session.getAttribute("loginUser");
 		
 		//最新の買い物リスト取得
 		ShoppingList latestList =
-				shoppingListRepository.findTopByOrderByShoppingListidDesc();
+				shoppingListRepository.findTopByUserIdOrderByShoppingListidDesc(
+						user.getUserId());
 		
 		if (latestList == null) {
 			return new ArrayList<>();
@@ -149,8 +161,22 @@ public class ShoppingController {
 	//モーダルに表示する商品一覧を取得
 	@GetMapping("/item/{shoppingListId}")
 	public List<ShoppingItem> getShoppingItems(
-			@PathVariable Integer shoppingListId) {
+			@PathVariable Integer shoppingListId, HttpSession session) {
 		
+		User user = (User) session.getAttribute("loginUser");
+		
+		if (user == null) {
+			return new ArrayList<>();
+		}
+		
+		ShoppingList list =
+		shoppingListRepository.findByShoppingListid(shoppingListId);
+
+		if (list == null || !list.getUserId().equals(user.getUserId())) {
+		return new ArrayList<>();
+				}
+
 		return shoppingItemRepository.findByShoppingListId(shoppingListId);
+
 	}
 }
