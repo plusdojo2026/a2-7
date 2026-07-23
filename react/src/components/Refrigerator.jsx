@@ -301,6 +301,7 @@ function Refrigerator() {
 
     // まとめた食材を表示する
     const renderFood = (food, positionClass) => {
+        console.log(food.foodStockName, food.category);
         const isSelected =
             selectedItem?.type === "food" &&
             selectedItem?.data.foodStockName === food.foodStockName;
@@ -321,14 +322,18 @@ function Refrigerator() {
                 }}
             >
                 <div className="stored-image-wrapper">
+
+                    {/* カテゴリ画像を表示 */}
                     <img
-                        src={`/image/${food.foodImg}`}
-                        alt={food.foodStockName}
+                        className="stored-main-image"
+                        src={foodCategoryImages[food.category]}
+                        alt={food.category}
                     />
 
                     <span className="stock-count">
                         ×{food.stocks.length}
                     </span>
+
                 </div>
 
                 <span className="stored-item-name">
@@ -361,14 +366,18 @@ function Refrigerator() {
                 }}
             >
                 <div className="stored-image-wrapper">
+
+                    {/* カテゴリ画像を表示 */}
                     <img
-                        src={`/image/${item.dailyItemImage}`}
-                        alt={item.dailyItemStockName}
+                        className="stored-main-image"
+                        src={dailyCategoryImages[item.category]}
+                        alt={item.category}
                     />
 
                     <span className="stock-count">
                         ×{item.stocks.length}
                     </span>
+
                 </div>
 
                 <span className="stored-item-name">
@@ -377,6 +386,28 @@ function Refrigerator() {
             </div>
         );
     };
+
+    //アイコンの画像
+    const foodCategoryImages = {
+        "冷蔵": "/img/reizou.png",
+        "常温": "/img/jouonn.png",
+        "冷凍": "/img/reitou.png",
+        "野菜": "/img/yasai.png",
+        "肉": "/img/niku.png",
+        "魚": "/img/sakana.png",
+        "飲料": "/img/innryou.png",
+        "調味料": "/img/tyoumiryou.png",
+        "その他": "/img/sonota_syokuzai.png"
+    };
+
+
+    const dailyCategoryImages = {
+        "生活用品": "/img/seikatuyouhinn.png",
+        "衛生用品": "/img/eiseiyouhinn.png",
+        "掃除用品": "/img/soujiyouhinn.png",
+        "その他": "/img/sonota_nitiyouhinn.png"
+    };
+
 
     return (
         <div className="stock-page">
@@ -470,20 +501,11 @@ function Refrigerator() {
                                     <div
                                         key={`candidate-${food.foodMasterId}`}
                                         className="candidate-item"
-                                        draggable
                                         onClick={() => addFoodByClick(food)}
-                                        onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                "application/json",
-                                                JSON.stringify({
-                                                    type: "food",
-                                                    data: food,
-                                                })
-                                            );
-                                        }}
                                     >
                                         <img
-                                            src={`/image/${food.foodImg}`}
+                                            className="candidate-image"
+                                            src={foodCategoryImages[food.category]}
                                             alt={food.foodName}
                                         />
 
@@ -582,20 +604,11 @@ function Refrigerator() {
                                     <div
                                         key={`candidate-${item.dailyItemMasterId}`}
                                         className="candidate-item"
-                                        draggable
                                         onClick={() => addDailyItemByClick(item)}
-                                        onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                "application/json",
-                                                JSON.stringify({
-                                                    type: "daily",
-                                                    data: item,
-                                                })
-                                            );
-                                        }}
                                     >
                                         <img
-                                            src={`/image/${item.dailyItemMasterName}.png`}
+                                            className="candidate-image"
+                                            src={dailyCategoryImages[item.category]}
                                             alt={item.dailyItemMasterName}
                                         />
 
