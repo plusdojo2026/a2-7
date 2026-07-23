@@ -306,6 +306,27 @@ const Stock = () => {
         }
     };
 
+    //食材のアイコン
+    const foodCategoryImages = {
+        "冷蔵": "/img/reizou.png",
+        "飲料": "/img/innryou.png",
+        "野菜": "/img/yasai.png",
+        "常温": "/img/jouonn.png",
+        "調味料": "/img/tyoumiryou.png",
+        "肉": "/img/niku.png",
+        "魚": "/img/sakana.png",
+        "冷凍": "/img/reitou.png",
+        "その他": "/img/sonota_syokuzai.png",
+    };
+
+    //日用品のアイコン
+    const dailyCategoryImages = {
+        "生活用品": "/img/seikatuyouhinn.png",
+        "衛生用品": "/img/eiseiyouhinn.png",
+        "掃除用品": "/img/soujiyouhinn.png",
+        "その他": "/img/sonota_nitiyouhinn.png",
+    };
+
     // 【UIレンダリング部】
     return (
         <div className="stock-list-page">
@@ -395,11 +416,9 @@ const Stock = () => {
                                             {/* 商品名と同じ名前の画像を表示する */}
                                             <div className="stock-list-image food">
                                                 <img
-                                                    src={`/image/${food.foodStockName}.png`}
-                                                    alt={food.foodStockName}
-                                                    onError={(e) => {
-                                                        e.currentTarget.style.visibility = "hidden";
-                                                    }}
+                                                    src={foodCategoryImages[food.category]}
+                                                    alt={food.category}
+                                                    className="stock-icon"
                                                 />
                                             </div>
 
@@ -580,11 +599,9 @@ const Stock = () => {
                                             {/* 商品名と同じ名前の画像を表示する */}
                                             <div className="stock-list-image daily">
                                                 <img
-                                                    src={`/image/${item.dailyItemStockName}.png`}
-                                                    alt={item.dailyItemStockName}
-                                                    onError={(e) => {
-                                                        e.currentTarget.style.visibility = "hidden";
-                                                    }}
+                                                    src={dailyCategoryImages[item.category]}
+                                                    alt={item.category}
+                                                    className="stock-icon"
                                                 />
                                             </div>
 
