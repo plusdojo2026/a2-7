@@ -6,5 +6,5 @@ import com.example.demo.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 	User findByUserNameAndPassword(String userName, String password);
-	 boolean existsByUserName(String userName);
+	boolean existsByUserName(String userName);
 }

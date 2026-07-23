@@ -7,104 +7,104 @@ import "../css/ShoppingList.css";
 
 function ShoppingList() {
 
-    //買い物リスト一覧
-    const [Lists, setLists] = useState([]);
+    //買い物リスト一覧
+    const [Lists, setLists] = useState([]);
 
-    //モーダルに表示する商品
-    const [items, setItems] = useState([]);
+    //モーダルに表示する商品
+    const [items, setItems] = useState([]);
 
-    //モーダル表示状態
-    const [showModal, setShowModal] = useState(false);
+    //モーダル表示状態
+    const [showModal, setShowModal] = useState(false);
 
-    //買い物リスト一覧を取得する
-    const getShoppingLists = () => {
-         axios.get("http://localhost:8080/shopping/list"
-         )
-         .then((response) => {
+    //買い物リスト一覧を取得する
+    const getShoppingLists = () => {
+         axios.get("http://localhost:8080/shopping/list"
+         )
+         .then((response) => {
 
-            setLists(response.data);
-         })
+            setLists(response.data);
+         })
 
-         .catch((error) => {
+         .catch((error) => {
 
-            console.log(error);
-         });
-    };
+            console.log(error);
+         });
+    };
 
-    //画面表示時に一覧取得
-    useEffect(() => {
-        getShoppingLists();
+    //画面表示時に一覧取得
+    useEffect(() => {
+        getShoppingLists();
 
-    }, []);
+    }, []);
 
-    //クリックされたリストの商品取得
-    const getItems = (shoppingListId) => {
+    //クリックされたリストの商品取得
+    const getItems = (shoppingListId) => {
 
-        axios.get(
-            "http://localhost:8080/shopping/item/" + shoppingListId
-        )
-        .then((response) => {
+        axios.get(
+            "http://localhost:8080/shopping/item/" + shoppingListId
+        )
+        .then((response) => {
 
-            setItems(response.data);
+            setItems(response.data);
 
-            setShowModal(true);
-        })
-        .catch((error) => {
+            setShowModal(true);
+        })
+        .catch((error) => {
 
-            console.log(error);
-         });
-    };
+            console.log(error);
+         });
+    };
 
-    return (
-        <div className="screen">
+    return (
+        <div className="screen">
 
-            <h2>買い物リスト一覧</h2>
+            <h2>買い物リスト一覧</h2>
 
-            {Lists.map((list) => (
+            {Lists.map((list) => (
 
-                <div className="list-card"
-                     key={list.shoppingListid}
-                     onClick={() => getItems(list.shoppingListid)}>
+                <div className="list-card"
+                     key={list.shoppingListid}
+                     onClick={() => getItems(list.shoppingListid)}>
 
-                    <h3>{list.createDate}</h3>
+                    <h3>{list.createDate}</h3>
 
-                  {list.items?.map((item) => (
-                    <div className="item"
-                         key={item.shoppingItemId}>
-                    
-                    <span className="item-name">
-                    ・ {item.itemName}
-                    </span>
-                    
-                    <span className={
-                    item.isBought === 0
-                    ? "not-bought"
-                    : "bought"}
-                    >
+                  {list.items?.map((item) => (
+                    <div className="item"
+                         key={item.shoppingItemId}>
 
-                    {item.isBought === 0
-                    ? "✖"
-                    : "✔"}
+                    <span className="item-name">
+                    ・ {item.itemName}
+                    </span>
 
-                    </span>
-                    </div>
+                    <span className={
+                    item.isBought === 0
+                    ? "not-bought"
+                    : "bought"}
+                    >
 
-                    ))}
+                    {item.isBought === 0
+                    ? ":heavy_multiplication_x:"
+                    : ":heavy_check_mark:"}
 
-                </div>
-            
-            ))}
+                    </span>
+                    </div>
 
-            {showModal && (
-                <ShoppingModal
-                  items={items}
-                  closeModal={() => setShowModal(false)}
-                  reload={getShoppingLists}
-                 />
-             )}  
+                    ))}
 
-        </div>
-    );
+                </div>
+
+            ))}
+
+            {showModal && (
+                <ShoppingModal
+                  items={items}
+                  closeModal={() => setShowModal(false)}
+                  reload={getShoppingLists}
+                 />
+             )}
+
+        </div>
+    );
 }
 
 export default ShoppingList

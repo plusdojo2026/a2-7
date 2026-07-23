@@ -512,15 +512,13 @@ const Stock = () => {
                                             <label>カテゴリ</label>
                                             <select
                                                 name="category"
-                                                value={modDailyItem.category}
+                                                value={modDailyItem.category ?? ""}
                                                 onChange={inputModDailyItem}
                                             >
-                                                <option value="キッチン">キッチン</option>
-                                                <option value="洗面所">洗面所</option>
-                                                <option value="トイレ">トイレ</option>
-                                                <option value="掃除">掃除</option>
-                                                <option value="洗濯">洗濯</option>
-                                                <option value="消耗品">消耗品</option>
+                                                <option value="">選択してください</option>
+                                                <option value="生活用品">生活用品</option>
+                                                <option value="衛生用品">衛生用品</option>
+                                                <option value="掃除用品">掃除用品</option>
                                                 <option value="その他">その他</option>
                                             </select>
                                         </div>

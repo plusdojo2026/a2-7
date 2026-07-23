@@ -36,11 +36,16 @@ VALUES
 INSERT INTO Food_Master
 (food_name, category, expiration_date, food_img)
 VALUES
-('卵',       '冷蔵', 14, 'egg.png'),
-('牛乳',     '冷蔵', 7,  'milk.png'),
-('食パン',   '常温', 5,  'bread.png'),
-('にんじん', '野菜', 14, 'carrot.png'),
-('鶏むね肉', '冷蔵', 3,  'chicken.png');
+('卵',       '冷蔵',   14, 'egg.png'),
+('牛乳',     '冷蔵',    7, 'milk.png'),
+('食パン',   '常温',    5, 'bread.png'),
+('にんじん', '野菜',   14, 'carrot.png'),
+('鶏むね肉', '肉',      3, 'chicken.png'),
+('鮭',       '魚',      4, 'salmon.png'),
+('冷凍うどん','冷凍', 180, 'udon.png'),
+('醤油',     '調味料',365, 'soy_sauce.png'),
+('オレンジジュース','飲料',30,'juice.png'),
+('缶詰',     'その他',365, 'can.png');
 
 -- 食材在庫
 INSERT INTO Food_Stock
@@ -50,17 +55,23 @@ VALUES
 ('牛乳', '冷蔵', '2026-07-15', '2026-07-22', FALSE, FALSE, 1, 2),
 ('食パン', '常温', '2026-07-16', '2026-07-21', FALSE, FALSE, 2, 3),
 ('にんじん', '野菜', '2026-07-16', '2026-07-30', TRUE, FALSE, 2, 4),
-('鶏むね肉', '冷蔵', '2026-07-17', '2026-07-20', FALSE, FALSE, 1, 5);
+('鶏むね肉', '肉', '2026-07-17', '2026-07-20', FALSE, FALSE, 1, 5),
+('鮭', '魚', '2026-07-18', '2026-07-22', FALSE, FALSE, 1, 6),
+('冷凍うどん', '冷凍', '2026-07-18', '2027-01-15', FALSE, FALSE, 2, 7),
+('醤油', '調味料', '2026-07-10', '2027-07-10', FALSE, FALSE, 1, 8),
+('オレンジジュース', '飲料', '2026-07-17', '2026-08-15', FALSE, FALSE, 2, 9),
+('缶詰', 'その他', '2026-07-12', '2027-07-12', FALSE, FALSE, 1, 10);
 
 -- 日用品マスタ
 INSERT INTO Daily_Item_Master
-(daily_item_master_name,category,guide_expiration_days,daily_item_image)
+(daily_item_master_name, category, guide_expiration_days, daily_item_image)
 VALUES
 ('トイレットペーパー','生活用品',30,'toilet_paper.png'),
 ('ティッシュ','生活用品',20,'tissue.png'),
 ('歯磨き粉','衛生用品',90,'toothpaste.png'),
 ('シャンプー','衛生用品',120,'shampoo.png'),
-('洗剤','掃除用品',180,'detergent.png');
+('洗剤','掃除用品',180,'detergent.png'),
+('電池','その他',365,'battery.png');
 
 -- 日用品在庫
 INSERT INTO Daily_Item_Stock
