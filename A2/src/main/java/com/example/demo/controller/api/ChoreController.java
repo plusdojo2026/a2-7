@@ -34,9 +34,13 @@ public class ChoreController {
 	public List<Chore> getChores(HttpSession session) {
 		User loginUser = (User) session.getAttribute("loginUser");
 		if (loginUser == null) {
+			System.out.println("★未ログインです");
 			return null;
 		}
-		return choreRepository.findByUserId(loginUser.getUserId());
+		System.out.println("★ログイン中のユーザーID: " + loginUser.getUserId());
+		List<Chore> list = choreRepository.findByUserId(loginUser.getUserId());
+		System.out.println("★取得した家事の件数: " + list.size());
+		return list;
 	}
 
 	// ログイン中のユーザーの「今日の家事」を取得(status=true)
