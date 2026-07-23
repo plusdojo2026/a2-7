@@ -42,11 +42,11 @@ body{
     height: 40px;
     border-radius: 50%;
     border:none;
-
 }
 .filter button{
     border:none;
     border-radius: 50%;
+    background-color: white;
 
 }
 
@@ -56,6 +56,7 @@ body{
 .mealContents{
     padding-top: 100px;
     background-color: #F8FAFC;
+    padding-bottom: 100px;
 }
 
  /* 新規作成ボタン */
@@ -82,10 +83,12 @@ body{
 
 .mealCard{
     border: 2px solid #F5F5F5;
-    margin-bottom: 20px;
     padding: 20px;
     border-radius: 30px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 65%;
+    margin: 0 auto 20px;
+    color: #104862;
 }
 .mealCard img{
     margin-top: 10px;
@@ -93,8 +96,14 @@ body{
     height:200px;
     object-fit: contain;  /* サイズに合わせて画像を調整 */
     border:5px solid #F5F5F5;
+}
+.mealCard .mealdate,
+.mealCard .url,
+.mealCard .recipe{
+    text-align: left;
 
 }
+
 
 .newRegistModal{
     border: 1px solid #1E293B;
@@ -104,11 +113,11 @@ body{
     border: 1px solid white;
 }
 
-
+/* モーダル */
 .overlay{
     position:fixed;
     inset: 0;   /*top: 0; right: 0; bottom: 0; left: 0;*/
-    background-color:rgba(0,0,0,0.5);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -116,13 +125,59 @@ body{
     z-index: 1000;
 }
 #newRegistModal, #updateModal{
-
     width:80%;
-    height:80%;
+    height:60%;
     background-color:white;
-    
-    align-items: center;
-    justify-content: center;
+    border: 5px solid #cfcfcf;
+    border-radius: 10%;
 
-    
+    color: #1E293B;
+    font-weight: bold;
+}
+#registCancelButton, #updateCancelButton{
+    margin: 10px 0 0 80%;
+    height: 40px;
+    width: 40px;
+
+    border: 2px solid white;
+    border-radius: 50%;
+    background: #8FD3F4;
+
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 26px;
+    text-align: center;
+
+    cursor: pointer;
+}
+.title{
+    font-size: 18px;
+    color: #1E293B;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.formArea{
+    text-align: left;
+    margin-left: 20px;
+}
+.overlay input[type=text],
+.overlay input[type=date],
+.overlay input[type=file]::file-selector-button{
+    appearance: none;
+    border: 2px solid #cfcfcf;
+    border-radius: 999px;
+    height: 28px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    margin: 5px auto;
+}
+.mealtype img{
+    width:30px;
+    height: 30px;
+}
+.mealtype button{
+    border-radius: 50%;
+    border:none;
+    background-color: white;
 }
