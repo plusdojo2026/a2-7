@@ -133,7 +133,7 @@ public class ShoppingController {
 		
 		//最新の買い物リスト取得
 		ShoppingList latestList =
-				shoppingListRepository.findTopByUserIdOrderByShoppingListidDesc(
+				shoppingListRepository.findFirstByUserIdOrderByShoppingListidDesc(
 						user.getUserId());
 		
 		if (latestList == null) {

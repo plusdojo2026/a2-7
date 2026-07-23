@@ -18,7 +18,7 @@ function ShoppingList() {
 
     //買い物リスト一覧を取得する
     const getShoppingLists = () => {
-         axios.get("/api/shopping/list/")
+         axios.get("/api/shopping/list")
          .then((response) => {
 
             console.log(response.data);

@@ -90,7 +90,7 @@ useEffect(() => {
                  className="delete-button"
                  onClick={() => deleteItem(index)}
                  >
-                :heavy_multiplication_x:
+                ✖
                 </button>
 
             </div>

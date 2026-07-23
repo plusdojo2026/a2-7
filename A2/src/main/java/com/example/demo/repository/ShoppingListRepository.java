@@ -9,7 +9,7 @@ import com.example.demo.entity.ShoppingList;
 public interface ShoppingListRepository extends JpaRepository<ShoppingList, Integer> {
 	
 	//新しい買い物リストを取得
-	ShoppingList findTopByUserIdOrderByShoppingListidDesc(Integer userId);
+	ShoppingList findFirstByUserIdOrderByShoppingListidDesc(Integer userId);
 	
 	//本人のものか確認
 	ShoppingList findByShoppingListid(Integer shoppingListid);
