@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.Tips;
 import com.example.demo.entity.User;
 import com.example.demo.repository.TipsRepository;
+import com.example.demo.repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,32 +20,49 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/api/home")
 public class HomeController {
 
-	@GetMapping("/point")
-	public Integer getPoint(HttpSession session) {
-
-		User user = (User) session.getAttribute("loginUser");
-
-		if (user == null) {
-			return 0;
-		}
-
-		return user.getPoint();
-	}
+	@Autowired
+	private UserRepository userRepository;
 
 	@Autowired
 	private TipsRepository tipsRepository;
 
+
+	// ログインユーザーのポイント取得
+	@GetMapping("/point")
+	public Integer getPoint(HttpSession session) {
+
+		// セッションからログインユーザー取得
+		User loginUser = (User) session.getAttribute("loginUser");
+
+		if (loginUser == null) {
+			return 0;
+		}
+
+		// DBから最新のユーザー情報を取得
+		User user = userRepository.findById(loginUser.getUserId())
+				.orElseThrow();
+
+		// 最新ポイントを返す
+		return user.getPoint();
+	}
+
+
+	// 今日のTips取得
 	@GetMapping("/tips")
 	public Tips getRandomTips(HttpSession session) {
 
 		LocalDate savedDate = (LocalDate) session.getAttribute("tipsDate");
 		Tips savedTips = (Tips) session.getAttribute("todayTips");
 
+
 		// 今日のTipsがセッションにあればそのまま返す
-		if (savedDate != null && savedDate.equals(LocalDate.now()) && savedTips != null) {
+		if (savedDate != null 
+				&& savedDate.equals(LocalDate.now()) 
+				&& savedTips != null) {
 
 			return savedTips;
 		}
+
 
 		List<Tips> tipsList = tipsRepository.findAll();
 
@@ -52,14 +70,17 @@ public class HomeController {
 			return null;
 		}
 
+
 		Random random = new Random();
 		int index = random.nextInt(tipsList.size());
 
 		Tips randomTips = tipsList.get(index);
 
-		// 今日の日付とTipsをセッションに保存
+
+		// 今日の日付とTipsをセッション保存
 		session.setAttribute("tipsDate", LocalDate.now());
 		session.setAttribute("todayTips", randomTips);
+
 
 		return randomTips;
 	}
