@@ -2,6 +2,18 @@ body{
     background-color: #F8FAFC;
 }
 
+/* 朝昼夜ボタンのhover */
+.cloudyBtn:hover img{
+    content:url("/img/cloudy_hover.png");
+}
+.sunBtn:hover img{
+    content:url("/img/sun_hover.png");
+}
+.moonBtn:hover img{
+    content:url("/img/moon_hover.png");
+}
+
+
 /* 並び替え */
 .filter{
     position: fixed;
@@ -20,6 +32,8 @@ body{
     gap:10px;
 
     z-index: 100;
+
+    border-bottom: 2px solid #e5e5e5;
 }
  /* 並び替えボタン */
 .filter select{
@@ -30,7 +44,7 @@ body{
     font-weight: bold;
     margin-right: 20px;
 
-    border: 2px solid #cfcfcf;
+    border: 3px solid #cfcfcf;
     border-radius: 20px;
     background-color: #F5F5F5;
     color: #555;
@@ -38,8 +52,8 @@ body{
 }
  /* 朝昼夜ボタン */
 .filter img{
-    width:40px;
-    height: 40px;
+    width:43px;
+    height: 43px;
     border-radius: 50%;
     border:none;
 }
@@ -52,9 +66,9 @@ body{
 
 
 
-
+ /* メインコンテンツ */
 .mealContents{
-    padding-top: 100px;
+    padding-top: 110px;
     background-color: #F8FAFC;
     padding-bottom: 100px;
 }
@@ -81,6 +95,7 @@ body{
     cursor: pointer;
 }
 
+/* 一覧表示 */
 .mealCard{
     border: 2px solid #F5F5F5;
     padding: 20px;
@@ -89,13 +104,21 @@ body{
     width: 65%;
     margin: 0 auto 20px;
     color: #104862;
+    background-color: white;
+}
+#mealtitle{
+    font-size: 18px;
 }
 .mealCard img{
     margin-top: 10px;
     width: 200px;
-    height:200px;
+    height:180px;
     object-fit: contain;  /* サイズに合わせて画像を調整 */
     border:5px solid #F5F5F5;
+}
+#mealinformation{
+    margin-top: 20px;
+    margin-left: 5px;
 }
 .mealCard .mealdate,
 .mealCard .url,
@@ -111,7 +134,7 @@ body{
 .overlay{
     position:fixed;
     inset: 0;   /*top: 0; right: 0; bottom: 0; left: 0;*/
-    background: transparent;
+    background: rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,8 +204,8 @@ body{
     margin-bottom: 5px;
 }
 .mealtype img{
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
 }
 .mealtype button{
     border-radius: 50%;
@@ -220,4 +243,48 @@ textarea{
 .charCount{
     text-align: right;
     margin:0 30px 0 auto;
+}
+.red{
+    color: red;
+}
+
+
+.message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 2px solid #d6d6d6;
+    border-radius: 40px;
+
+    padding: 14px 28px;
+
+
+    color: #333333;
+    font-size: 18px;
+    font-weight: bold;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+    z-index: 1000;
+
+    width: 260px;
+    height: 40px;
+}
+
+.message::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #7ee5a2;
+    display: block;
 }
