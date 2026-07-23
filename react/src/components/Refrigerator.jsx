@@ -5,6 +5,16 @@ function Refrigerator() {
     //候補一覧のスクロール
     const foodCandidateListRef = useRef(null);
     const dailyCandidateListRef = useRef(null);
+
+    // 冷蔵庫の各段
+    const foodTopShelfRef = useRef(null);
+    const foodMiddleShelfRef = useRef(null);
+    const foodBottomShelfRef = useRef(null);
+
+    // 日用品倉庫の各段
+    const dailyTopShelfRef = useRef(null);
+    const dailyMiddleShelfRef = useRef(null);
+    const dailyBottomShelfRef = useRef(null);
     // Spring Bootから取得した在庫
     // 在庫
     const [foods, setFoods] = useState([]);
@@ -71,7 +81,7 @@ function Refrigerator() {
     // 同じ名前の食材をまとめる
     const groupedFoods = Object.values(
         foods.reduce((groups, food) => {
-            const key = food.foodStockName;
+            const key = `${food.foodStockName}_${food.category}`;
 
             if (!groups[key]) {
                 groups[key] = {
@@ -97,7 +107,7 @@ function Refrigerator() {
     // 同じ名前の日用品をまとめる
     const groupedItems = Object.values(
         items.reduce((groups, item) => {
-            const key = item.dailyItemStockName;
+            const key = `${item.dailyItemStockName}_${item.category}`;
 
             if (!groups[key]) {
                 groups[key] = {
@@ -300,8 +310,7 @@ function Refrigerator() {
     };
 
     // まとめた食材を表示する
-    const renderFood = (food, positionClass) => {
-        console.log(food.foodStockName, food.category);
+    const renderFood = (food) => {
         const isSelected =
             selectedItem?.type === "food" &&
             selectedItem?.data.foodStockName === food.foodStockName;
@@ -311,8 +320,8 @@ function Refrigerator() {
                 key={food.foodStockName}
                 className={
                     isSelected
-                        ? `stored-item ${positionClass} selected`
-                        : `stored-item ${positionClass}`
+                        ? "stored-item selected"
+                        : "stored-item"
                 }
                 onClick={() => {
                     setSelectedItem({
@@ -344,7 +353,7 @@ function Refrigerator() {
     };
 
     // まとめた日用品を表示する
-    const renderDailyItem = (item, positionClass) => {
+    const renderDailyItem = (item) => {
         const isSelected =
             selectedItem?.type === "daily" &&
             selectedItem?.data.dailyItemStockName ===
@@ -355,8 +364,8 @@ function Refrigerator() {
                 key={item.dailyItemStockName}
                 className={
                     isSelected
-                        ? `stored-item ${positionClass} selected`
-                        : `stored-item ${positionClass}`
+                        ? "stored-item selected"
+                        : "stored-item"
                 }
                 onClick={() => {
                     setSelectedItem({
@@ -453,19 +462,127 @@ function Refrigerator() {
                             <div className="stored-items">
 
                                 {/* 上段 */}
-                                {topFoods.map((food, index) =>
-                                    renderFood(food, `food-top-${index % 3}`)
-                                )}
+                                <div className="shelf-scroll-controls shelf-controls-top">
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-left"
+                                        aria-label="上段を左へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(foodTopShelfRef, "left")
+                                        }
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <div
+                                        className="refrigerator-shelf-scroll"
+                                        ref={foodTopShelfRef}
+                                    >
+                                        <div className="refrigerator-shelf-items">
+                                            {topFoods.map((food) => (
+                                                <div
+                                                    key={food.foodStockName}
+                                                    className="refrigerator-shelf-slot"
+                                                >
+                                                    {renderFood(food)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-right"
+                                        aria-label="上段を右へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(foodTopShelfRef, "right")
+                                        }
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
 
                                 {/* 中段 */}
-                                {[...middleFoods, ...otherFoods].map((food, index) =>
-                                    renderFood(food, `food-middle-${index % 3}`)
-                                )}
+                                <div className="shelf-scroll-controls shelf-controls-middle">
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-left"
+                                        aria-label="中段を左へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(foodMiddleShelfRef, "left")
+                                        }
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <div
+                                        className="refrigerator-shelf-scroll"
+                                        ref={foodMiddleShelfRef}
+                                    >
+                                        <div className="refrigerator-shelf-items">
+                                            {middleFoods.map((food) => (
+                                                <div
+                                                    key={food.foodStockName}
+                                                    className="refrigerator-shelf-slot"
+                                                >
+                                                    {renderFood(food)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-right"
+                                        aria-label="中段を右へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(foodMiddleShelfRef, "right")
+                                        }
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
 
                                 {/* 下段 */}
-                                {bottomFoods.map((food, index) =>
-                                    renderFood(food, `food-bottom-${index % 3}`)
-                                )}
+                                <div className="shelf-scroll-controls shelf-controls-bottom">
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-left"
+                                        aria-label="下段を左へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(foodBottomShelfRef, "left")
+                                        }
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <div
+                                        className="refrigerator-shelf-scroll"
+                                        ref={foodBottomShelfRef}
+                                    >
+                                        <div className="refrigerator-shelf-items">
+                                            {bottomFoods.map((food) => (
+                                                <div
+                                                    key={food.foodStockName}
+                                                    className="refrigerator-shelf-slot"
+                                                >
+                                                    {renderFood(food)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-right"
+                                        aria-label="下段を右へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(foodBottomShelfRef, "right")
+                                        }
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
 
                             </div>
                         </div>
@@ -547,28 +664,128 @@ function Refrigerator() {
                             {/* 登録済み日用品 */}
                             <div className="stored-items">
 
-                                {/* 上段 */}
-                                {topDailyItems.map((item, index) =>
-                                    renderDailyItem(item, `food-top-${index % 3}`)
-                                )}
+                                {/* 上段：生活用品 */}
+                                <div className="shelf-scroll-controls shelf-controls-top">
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-left"
+                                        aria-label="上段：生活用品を左へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(dailyTopShelfRef, "left")
+                                        }
+                                    >
+                                        ◀
+                                    </button>
 
-                                {/* 中段 */}
-                                {middleDailyItems.map((item, index) =>
-                                    renderDailyItem(item, `food-middle-${index % 3}`)
-                                )}
+                                    <div
+                                        className="refrigerator-shelf-scroll"
+                                        ref={dailyTopShelfRef}
+                                    >
+                                        <div className="refrigerator-shelf-items">
+                                            {topDailyItems.map((item) => (
+                                                <div
+                                                    key={item.dailyItemStockName}
+                                                    className="refrigerator-shelf-slot"
+                                                >
+                                                    {renderDailyItem(item)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
 
-                                {/* 下段 */}
-                                {bottomDailyItems.map((item, index) =>
-                                    renderDailyItem(item, `food-bottom-${index % 3}`)
-                                )}
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-right"
+                                        aria-label="上段：生活用品を右へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(dailyTopShelfRef, "right")
+                                        }
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
 
-                                {/* その他は中段の空きへ表示 */}
-                                {otherDailyItems.map((item, index) =>
-                                    renderDailyItem(
-                                        item,
-                                        `food-middle-${(middleDailyItems.length + index) % 3}`
-                                    )
-                                )}
+                                {/* 中段：衛生用品・その他 */}
+                                <div className="shelf-scroll-controls shelf-controls-middle">
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-left"
+                                        aria-label="中段：衛生用品・その他を左へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(dailyMiddleShelfRef, "left")
+                                        }
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <div
+                                        className="refrigerator-shelf-scroll"
+                                        ref={dailyMiddleShelfRef}
+                                    >
+                                        <div className="refrigerator-shelf-items">
+                                            {[...middleDailyItems, ...otherDailyItems].map((item) => (
+                                                <div
+                                                    key={item.dailyItemStockName}
+                                                    className="refrigerator-shelf-slot"
+                                                >
+                                                    {renderDailyItem(item)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-right"
+                                        aria-label="中段：衛生用品・その他を右へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(dailyMiddleShelfRef, "right")
+                                        }
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                {/* 下段：掃除用品 */}
+                                <div className="shelf-scroll-controls shelf-controls-bottom">
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-left"
+                                        aria-label="下段：掃除用品を左へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(dailyBottomShelfRef, "left")
+                                        }
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <div
+                                        className="refrigerator-shelf-scroll"
+                                        ref={dailyBottomShelfRef}
+                                    >
+                                        <div className="refrigerator-shelf-items">
+                                            {bottomDailyItems.map((item) => (
+                                                <div
+                                                    key={item.dailyItemStockName}
+                                                    className="refrigerator-shelf-slot"
+                                                >
+                                                    {renderDailyItem(item)}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        className="shelf-scroll-button shelf-scroll-right"
+                                        aria-label="下段：掃除用品を右へスクロール"
+                                        onClick={() =>
+                                            scrollCandidates(dailyBottomShelfRef, "right")
+                                        }
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
 
                             </div>
                         </div>

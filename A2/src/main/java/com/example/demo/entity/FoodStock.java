@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -39,4 +40,7 @@ public class FoodStock {
 	 @JoinColumn(name = "food_master_id")
 	 @JsonIgnore
 	private FoodMaster foodMaster;
+	
+	@Column(length = 255)
+	private String foodImage;
 }

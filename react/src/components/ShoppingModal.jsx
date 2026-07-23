@@ -29,7 +29,7 @@ function ShoppingModal({ items, closeModal, reload }) {
         shoppingItems.map((item) => {
 
             axios.put(
-                "http://localhost:8080/shopping/item/" + item.shoppingItemId,
+                "/api/shopping/item/" + item.shoppingItemId,
                 {
                     isBought: item.isBought
                 }

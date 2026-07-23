@@ -58,7 +58,7 @@
 }
 
 
-.login button {
+.login button:not(.eye-button) {
     width: 150px;
     height: 50px;
 
@@ -79,7 +79,7 @@
 }
 
 
-.login button:hover {
+.login button:not(.eye-button):hover {
     transform: translateY(-3px);
 }
 
@@ -104,13 +104,40 @@
 .login a:hover {
     color: #84FAB0;
 }
+.password-area {
+    position: relative;
+    width: 400px;
+}
 
+.password-area input {
+    width: 100%;
+    padding-right: 45px;
+    box-sizing: border-box;
+}
+
+.eye-button {
+    position: absolute;
+    right: 1px;
+    top: 55%;
+    transform: translateY(-50%);
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 20px;
+    color: #555;
+
+    margin: 0;
+    padding: 0;
+}
 @media screen and (max-width: 600px) {
 
 
     .login h1 {
         position: absolute;
-        top: 30px;
+        top: 18px;
         left: 30px;
 
         font-size: 45px;
