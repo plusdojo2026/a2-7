@@ -9,13 +9,21 @@ function Register() {
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-const [showPassword, setShowPassword] = useState(false);
+    const [passwordConfirm, setPasswordConfirm] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const navigate = useNavigate();
 
 
     const register = async () => {
 
-        if (userName.trim() === "" || password.trim() === "") {
+        if (
+            userName.trim() === "" ||
+            password.trim() === "" ||
+            passwordConfirm.trim() === ""
+        ) {
             alert("ユーザー名とパスワードを入力してください");
             return;
         }
@@ -26,6 +34,10 @@ const [showPassword, setShowPassword] = useState(false);
 
         if (password.length < 8 || password.length > 20) {
             alert("パスワードは8～20文字で入力してください");
+            return;
+        }
+        if (password !== passwordConfirm) {
+            alert("パスワードが一致しません");
             return;
         }
         try {
@@ -82,24 +94,44 @@ const [showPassword, setShowPassword] = useState(false);
 
 
             <div className="password-area">
-    <input
-        type={showPassword ? "text" : "password"}
-        placeholder="パスワード"
-        value={password}
-        minLength={8}
-        maxLength={20}
-        onChange={(e) => setPassword(e.target.value)}
-    />
+                <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="パスワード"
+                    value={password}
+                    minLength={8}
+                    maxLength={20}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
 
-    <button
-        type="button"
-        className="eye-button"
-        onClick={() => setShowPassword(!showPassword)}
-    >
-        {showPassword ? <FaEyeSlash /> : <FaEye />}
-    </button>
-</div>
+                <button
+                    type="button"
+                    className="eye-button"
+                    onClick={() => setShowPassword(!showPassword)}
+                >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+            </div>
+            <br/>
+            <div className="password-area">
 
+                <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="パスワード確認"
+                    value={passwordConfirm}
+                    minLength={8}
+                    maxLength={20}
+                    onChange={(e) => setPasswordConfirm(e.target.value)}
+                />
+
+                <button
+                    type="button"
+                    className="eye-button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+
+            </div>
 
             <div>
 

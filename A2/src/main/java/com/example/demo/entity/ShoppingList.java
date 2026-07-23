@@ -31,6 +31,7 @@ public class ShoppingList {
 	private LocalDate createDate;
 	
 	//ユーザーID
+	@Column(name = "user_id")
 	private Integer userId;
 	
 	@Transient
