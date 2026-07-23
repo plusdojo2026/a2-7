@@ -3,12 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "../css/Login.css";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Register() {
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-
+const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
 
@@ -80,14 +81,24 @@ function Register() {
             <br />
 
 
-            <input
-                type="password"
-                placeholder="パスワード"
-                value={password}
-                minLength={8}
-                maxLength={20}
-                onChange={(e) => setPassword(e.target.value)}
-            />
+            <div className="password-area">
+    <input
+        type={showPassword ? "text" : "password"}
+        placeholder="パスワード"
+        value={password}
+        minLength={8}
+        maxLength={20}
+        onChange={(e) => setPassword(e.target.value)}
+    />
+
+    <button
+        type="button"
+        className="eye-button"
+        onClick={() => setShowPassword(!showPassword)}
+    >
+        {showPassword ? <FaEyeSlash /> : <FaEye />}
+    </button>
+</div>
 
 
             <div>

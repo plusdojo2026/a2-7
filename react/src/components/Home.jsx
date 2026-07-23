@@ -95,6 +95,12 @@ function Home() {
     }
     async function logout() {
 
+        const result = window.confirm("本当にログアウトしますか？");
+
+        if (!result) {
+            return;
+        }
+
         try {
 
             await axios.post("/api/login/logout");
@@ -122,7 +128,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "燃えるゴミ",
                     garbageDay: weekNumber[burnableDay],
-                    
+
                     notification: notification
                 });
             }
@@ -131,7 +137,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "燃えないゴミ",
                     garbageDay: weekNumber[nonBurnableDay],
-                   
+
                     notification: notification
                 });
             }
@@ -140,7 +146,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "ペットボトル",
                     garbageDay: weekNumber[petBottleDay],
-                    
+
                     notification: notification
                 });
             }
@@ -149,7 +155,7 @@ function Home() {
                 await axios.post("/api/garbage/save", {
                     garbageType: "缶・びん",
                     garbageDay: weekNumber[canBottleDay],
-                   
+
                     notification: notification
                 });
             }
