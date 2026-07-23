@@ -54,7 +54,7 @@ public class ShoppingController {
 		for (ShoppingList list : lists) {
 			
 			//そのリストIDの商品を取得する
-			List<ShoppingItem> items = 
+			List<ShoppingItem> items =
 					shoppingItemRepository.findByShoppingListId(
 							list.getShoppingListid());
 			
@@ -129,7 +129,7 @@ public class ShoppingController {
 		}
 		
 		//最新リストの商品を全部取得
-		List<ShoppingItem> items = 
+		List<ShoppingItem> items =
 				shoppingItemRepository.findByShoppingListId(
 						latestList.getShoppingListid());
 		
@@ -154,4 +154,3 @@ public class ShoppingController {
 		return shoppingItemRepository.findByShoppingListId(shoppingListId);
 	}
 }
-

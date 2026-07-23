@@ -68,7 +68,7 @@ function Refrigerator() {
         refreshDailyItemMasters();
     }, []);
 
-    // 同じ名前の食材を1つにまとめる
+    // 同じ名前の食材をまとめる
     const groupedFoods = Object.values(
         foods.reduce((groups, food) => {
             const key = food.foodStockName;
@@ -77,6 +77,13 @@ function Refrigerator() {
                 groups[key] = {
                     foodStockName: food.foodStockName,
                     category: food.category,
+
+                    // 在庫データにマスター情報が含まれている場合は画像名を取得
+                    foodImg:
+                        food.foodMaster?.foodImg ??
+                        food.foodImg ??
+                        `${food.foodStockName}.png`,
+
                     stocks: []
                 };
             }
@@ -86,17 +93,43 @@ function Refrigerator() {
             return groups;
         }, {})
     );
-    // 上段に置く食材
+
+    // 同じ名前の日用品をまとめる
+    const groupedItems = Object.values(
+        items.reduce((groups, item) => {
+            const key = item.dailyItemStockName;
+
+            if (!groups[key]) {
+                groups[key] = {
+                    dailyItemStockName: item.dailyItemStockName,
+                    category: item.category,
+
+                    // 日用品マスターの画像名を取得
+                    dailyItemImage:
+                        item.dailyItemMaster?.dailyItemImage ??
+                        item.dailyItemImage ??
+                        `${item.dailyItemStockName}.png`,
+
+                    stocks: []
+                };
+            }
+
+            groups[key].stocks.push(item);
+
+            return groups;
+        }, {})
+    );
+    // 上段：冷蔵・飲料
     const topFoods = groupedFoods.filter((food) =>
-        ["冷蔵", "乳製品", "飲料"].includes(food.category)
+        ["冷蔵", "飲料"].includes(food.category)
     );
 
-    // 中段に置く食材
+    // 中段：野菜・常温・調味料・その他
     const middleFoods = groupedFoods.filter((food) =>
-        ["野菜", "果物", "常温"].includes(food.category)
+        ["野菜", "常温", "調味料", "その他"].includes(food.category)
     );
 
-    // 下段に置く食材
+    // 下段：肉・魚・冷凍
     const bottomFoods = groupedFoods.filter((food) =>
         ["肉", "魚", "冷凍"].includes(food.category)
     );
@@ -107,13 +140,36 @@ function Refrigerator() {
             "冷蔵",
             "乳製品",
             "飲料",
+            "飲み物",
             "野菜",
             "果物",
             "常温",
+            "調味料",
             "肉",
             "魚",
-            "冷凍"
+            "冷凍",
+            "冷凍食品"
         ].includes(food.category)
+    );
+
+    // 上段：生活用品
+    const topDailyItems = groupedItems.filter(
+        (item) => item.category === "生活用品"
+    );
+
+    // 中段：衛生用品
+    const middleDailyItems = groupedItems.filter(
+        (item) => item.category === "衛生用品"
+    );
+
+    // 下段：掃除用品
+    const bottomDailyItems = groupedItems.filter(
+        (item) => item.category === "掃除用品"
+    );
+
+    // その他
+    const otherDailyItems = groupedItems.filter(
+        (item) => item.category === "その他"
     );
 
     //クリックで在庫へ追加（食材）
@@ -144,18 +200,41 @@ function Refrigerator() {
     };
 
     //削除
+    // 選択した商品を1個削除する
     const deleteSelectedItem = () => {
         if (!selectedItem) {
             alert("削除する商品を選択してください。");
             return;
         }
 
-        // 食材を削除
+        // 食材を1個削除
         if (selectedItem.type === "food") {
+            const stocks = selectedItem.data.stocks;
+
+            if (!stocks || stocks.length === 0) {
+                return;
+            }
+
+            // 賞味期限が近い順に並べる
+            const sortedStocks = [...stocks].sort((a, b) => {
+                const dateA = a.expirationDate
+                    ? new Date(a.expirationDate)
+                    : new Date("9999-12-31");
+
+                const dateB = b.expirationDate
+                    ? new Date(b.expirationDate)
+                    : new Date("9999-12-31");
+
+                return dateA - dateB;
+            });
+
+            // 一番期限が近い食材
+            const deleteTarget = sortedStocks[0];
+
             axios
                 .post(
                     "http://localhost:8080/api/food_stock/del/",
-                    selectedItem.data
+                    deleteTarget
                 )
                 .then(() => {
                     setSelectedItem(null);
@@ -168,11 +247,33 @@ function Refrigerator() {
             return;
         }
 
-        // 日用品を削除
+        // 日用品を1個削除
         if (selectedItem.type === "daily") {
+            const stocks = selectedItem.data.stocks;
+
+            if (!stocks || stocks.length === 0) {
+                return;
+            }
+
+            // 使用期限が近い順に並べる
+            const sortedStocks = [...stocks].sort((a, b) => {
+                const dateA = a.guideExDate
+                    ? new Date(a.guideExDate)
+                    : new Date("9999-12-31");
+
+                const dateB = b.guideExDate
+                    ? new Date(b.guideExDate)
+                    : new Date("9999-12-31");
+
+                return dateA - dateB;
+            });
+
+            // 一番期限が近い日用品
+            const deleteTarget = sortedStocks[0];
+
             axios
                 .delete(
-                    `http://localhost:8080/api/daily-item-stock/${selectedItem.data.dailyItemStockId}`
+                    `http://localhost:8080/api/daily-item-stock/${deleteTarget.dailyItemStockId}`
                 )
                 .then(() => {
                     setSelectedItem(null);
@@ -197,6 +298,116 @@ function Refrigerator() {
             behavior: "smooth"
         });
     };
+
+    // まとめた食材を表示する
+    const renderFood = (food, positionClass) => {
+        console.log(food.foodStockName, food.category);
+        const isSelected =
+            selectedItem?.type === "food" &&
+            selectedItem?.data.foodStockName === food.foodStockName;
+
+        return (
+            <div
+                key={food.foodStockName}
+                className={
+                    isSelected
+                        ? `stored-item ${positionClass} selected`
+                        : `stored-item ${positionClass}`
+                }
+                onClick={() => {
+                    setSelectedItem({
+                        type: "food",
+                        data: food
+                    });
+                }}
+            >
+                <div className="stored-image-wrapper">
+
+                    {/* カテゴリ画像を表示 */}
+                    <img
+                        className="stored-main-image"
+                        src={foodCategoryImages[food.category]}
+                        alt={food.category}
+                    />
+
+                    <span className="stock-count">
+                        ×{food.stocks.length}
+                    </span>
+
+                </div>
+
+                <span className="stored-item-name">
+                    {food.foodStockName}
+                </span>
+            </div>
+        );
+    };
+
+    // まとめた日用品を表示する
+    const renderDailyItem = (item, positionClass) => {
+        const isSelected =
+            selectedItem?.type === "daily" &&
+            selectedItem?.data.dailyItemStockName ===
+            item.dailyItemStockName;
+
+        return (
+            <div
+                key={item.dailyItemStockName}
+                className={
+                    isSelected
+                        ? `stored-item ${positionClass} selected`
+                        : `stored-item ${positionClass}`
+                }
+                onClick={() => {
+                    setSelectedItem({
+                        type: "daily",
+                        data: item
+                    });
+                }}
+            >
+                <div className="stored-image-wrapper">
+
+                    {/* カテゴリ画像を表示 */}
+                    <img
+                        className="stored-main-image"
+                        src={dailyCategoryImages[item.category]}
+                        alt={item.category}
+                    />
+
+                    <span className="stock-count">
+                        ×{item.stocks.length}
+                    </span>
+
+                </div>
+
+                <span className="stored-item-name">
+                    {item.dailyItemStockName}
+                </span>
+            </div>
+        );
+    };
+
+    //アイコンの画像
+    const foodCategoryImages = {
+        "冷蔵": "/img/reizou.png",
+        "常温": "/img/jouonn.png",
+        "冷凍": "/img/reitou.png",
+        "野菜": "/img/yasai.png",
+        "肉": "/img/niku.png",
+        "魚": "/img/sakana.png",
+        "飲料": "/img/innryou.png",
+        "調味料": "/img/tyoumiryou.png",
+        "その他": "/img/sonota_syokuzai.png"
+    };
+
+
+    const dailyCategoryImages = {
+        "生活用品": "/img/seikatuyouhinn.png",
+        "衛生用品": "/img/eiseiyouhinn.png",
+        "掃除用品": "/img/soujiyouhinn.png",
+        "その他": "/img/sonota_nitiyouhinn.png"
+    };
+
 
     return (
         <div className="stock-page">
@@ -242,101 +453,19 @@ function Refrigerator() {
                             <div className="stored-items">
 
                                 {/* 上段 */}
-                                {topFoods.map((food, index) => (
-                                    <div
-                                        key={food.foodStockName}
-                                        className={
-                                            selectedItem?.type === "food" &&
-                                                selectedItem?.data.foodStockName === food.foodStockName
-                                                ? `stored-item food-top-${index % 3} selected`
-                                                : `stored-item food-top-${index % 3}`
-                                        }
-                                        onClick={() => {
-                                            setSelectedItem({
-                                                type: "food",
-                                                data: food
-                                            });
-                                        }}
-                                    >
-                                        <div className="stored-image-wrapper">
-                                            <img
-                                                src={`/image/${food.foodStockName}.png`}
-                                                alt={food.foodStockName}
-                                            />
-
-                                            <span className="stock-count">
-                                                ×{food.stocks.length}
-                                            </span>
-                                        </div>
-
-                                        <span>{food.foodStockName}</span>
-                                    </div>
-                                ))}
+                                {topFoods.map((food, index) =>
+                                    renderFood(food, `food-top-${index % 3}`)
+                                )}
 
                                 {/* 中段 */}
-                                {/* 中段 */}
-                                {[...middleFoods, ...otherFoods].map((food, index) => (
-                                    <div
-                                        key={food.foodStockName}
-                                        className={
-                                            selectedItem?.type === "food" &&
-                                                selectedItem?.data.foodStockName === food.foodStockName
-                                                ? `stored-item food-middle-${index % 3} selected`
-                                                : `stored-item food-middle-${index % 3}`
-                                        }
-                                        onClick={() => {
-                                            setSelectedItem({
-                                                type: "food",
-                                                data: food
-                                            });
-                                        }}
-                                    >
-                                        <div className="stored-image-wrapper">
-                                            <img
-                                                src={`/image/${food.foodStockName}.png`}
-                                                alt={food.foodStockName}
-                                            />
-
-                                            <span className="stock-count">
-                                                ×{food.stocks.length}
-                                            </span>
-                                        </div>
-
-                                        <span>{food.foodStockName}</span>
-                                    </div>
-                                ))}
+                                {[...middleFoods, ...otherFoods].map((food, index) =>
+                                    renderFood(food, `food-middle-${index % 3}`)
+                                )}
 
                                 {/* 下段 */}
-                                {bottomFoods.map((food, index) => (
-                                    <div
-                                        key={food.foodStockName}
-                                        className={
-                                            selectedItem?.type === "food" &&
-                                                selectedItem?.data.foodStockName === food.foodStockName
-                                                ? `stored-item food-bottom-${index % 3} selected`
-                                                : `stored-item food-bottom-${index % 3}`
-                                        }
-                                        onClick={() => {
-                                            setSelectedItem({
-                                                type: "food",
-                                                data: food
-                                            });
-                                        }}
-                                    >
-                                        <div className="stored-image-wrapper">
-                                            <img
-                                                src={`/image/${food.foodStockName}.png`}
-                                                alt={food.foodStockName}
-                                            />
-
-                                            <span className="stock-count">
-                                                ×{food.stocks.length}
-                                            </span>
-                                        </div>
-
-                                        <span>{food.foodStockName}</span>
-                                    </div>
-                                ))}
+                                {bottomFoods.map((food, index) =>
+                                    renderFood(food, `food-bottom-${index % 3}`)
+                                )}
 
                             </div>
                         </div>
@@ -344,17 +473,10 @@ function Refrigerator() {
                         {/* 食材用ゴミ箱 */}
                         <div
                             className="trash-area"
-
                             onClick={deleteSelectedItem}
-
-                            onDragOver={(e) => e.preventDefault()}
-
-                            onDrop={(e) => {
-                                // 後でドラッグ削除
-                            }}
                         >
                             🗑
-                            <span>ここへ捨てる</span>
+                            <span>選択中の商品を1個削除</span>
                         </div>
 
                         <div className="candidate-area">
@@ -379,20 +501,11 @@ function Refrigerator() {
                                     <div
                                         key={`candidate-${food.foodMasterId}`}
                                         className="candidate-item"
-                                        draggable
                                         onClick={() => addFoodByClick(food)}
-                                        onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                "application/json",
-                                                JSON.stringify({
-                                                    type: "food",
-                                                    data: food,
-                                                })
-                                            );
-                                        }}
                                     >
                                         <img
-                                            src={`/image/${food.foodImg}`}
+                                            className="candidate-image"
+                                            src={foodCategoryImages[food.category]}
                                             alt={food.foodName}
                                         />
 
@@ -433,47 +546,40 @@ function Refrigerator() {
 
                             {/* 登録済み日用品 */}
                             <div className="stored-items">
-                                {items.map((item, index) => (
-                                    <div
-                                        key={item.dailyItemStockId}
-                                        className={
-                                            selectedItem?.type === "daily" &&
-                                                selectedItem?.data.dailyItemStockId === item.dailyItemStockId
-                                                ? `stored-item position-${index % 6} selected`
-                                                : `stored-item position-${index % 6}`
-                                        }
-                                        draggable
-                                        onClick={() => {
-                                            setSelectedItem({
-                                                type: "daily",
-                                                data: item
-                                            });
-                                        }}
-                                    >
-                                        <img
-                                            src={`/image/${item.dailyItemStockName}.png`}
-                                            alt={item.dailyItemStockName}
-                                        />
-                                        <span>{item.dailyItemStockName}</span>
-                                    </div>
-                                ))}
+
+                                {/* 上段 */}
+                                {topDailyItems.map((item, index) =>
+                                    renderDailyItem(item, `food-top-${index % 3}`)
+                                )}
+
+                                {/* 中段 */}
+                                {middleDailyItems.map((item, index) =>
+                                    renderDailyItem(item, `food-middle-${index % 3}`)
+                                )}
+
+                                {/* 下段 */}
+                                {bottomDailyItems.map((item, index) =>
+                                    renderDailyItem(item, `food-bottom-${index % 3}`)
+                                )}
+
+                                {/* その他は中段の空きへ表示 */}
+                                {otherDailyItems.map((item, index) =>
+                                    renderDailyItem(
+                                        item,
+                                        `food-middle-${(middleDailyItems.length + index) % 3}`
+                                    )
+                                )}
+
                             </div>
                         </div>
 
                         {/* 日用品用ゴミ箱 */}
                         <div
                             className="trash-area"
-
                             onClick={deleteSelectedItem}
-
-                            onDragOver={(e) => e.preventDefault()}
-
-                            onDrop={(e) => {
-                                // 後でドラッグ削除
-                            }}
                         >
                             🗑
-                            <span>ここへ捨てる</span>
+                            <span>選択中の商品を1個削除</span>
                         </div>
 
                         {/* 登録候補の日用品一覧 */}
@@ -498,20 +604,11 @@ function Refrigerator() {
                                     <div
                                         key={`candidate-${item.dailyItemMasterId}`}
                                         className="candidate-item"
-                                        draggable
                                         onClick={() => addDailyItemByClick(item)}
-                                        onDragStart={(e) => {
-                                            e.dataTransfer.setData(
-                                                "application/json",
-                                                JSON.stringify({
-                                                    type: "daily",
-                                                    data: item,
-                                                })
-                                            );
-                                        }}
                                     >
                                         <img
-                                            src={`/image/${item.dailyItemMasterName}.png`}
+                                            className="candidate-image"
+                                            src={dailyCategoryImages[item.category]}
                                             alt={item.dailyItemMasterName}
                                         />
 
