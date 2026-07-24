@@ -424,15 +424,14 @@ function Refrigerator() {
 
     return (
         <div className="stock-page">
-            {/* 画面タイトル */}
-            <h1 className="page-title">冷蔵庫・日用品</h1>
-
+          
             <div className="stock-app">
                 {/* タブ */}
                 <div className="stock-tabs">
                     <button
                         type="button"
                         className={tab === "food" ? "tab-button active" : "tab-button"}
+                        aria-pressed={tab === "food"}
                         onClick={() => setTab("food")}
                     >
                         冷蔵庫
@@ -441,6 +440,7 @@ function Refrigerator() {
                     <button
                         type="button"
                         className={tab === "daily" ? "tab-button active" : "tab-button"}
+                        aria-pressed={tab === "daily"}
                         onClick={() => setTab("daily")}
                     >
                         日用品倉庫
