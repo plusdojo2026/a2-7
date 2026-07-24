@@ -12,15 +12,24 @@ VALUES
 ('kato', 'kato2026', 35),
 ('yoshida', 'yoshida99', 55);
 
--- 家事
-INSERT INTO chores
-(chores_name, priority, estimated_time, point, status, created_at, category, user_id)
+-- 家事マスタ
+INSERT INTO chore_master
+(chores_name, priority, estimated_time, point, category)
 VALUES
-('掃除機をかける', '高', 30, 30, FALSE, '2026-07-14 09:00:00', '掃除', 1),
-('食器洗い', '中', 15, 15, TRUE, '2026-07-14 09:10:00', '洗い物', 1),
-('洗濯をする', '高', 60, 50, FALSE, '2026-07-14 09:20:00', '洗濯', 1),
-('ゴミ出し', '低', 10, 10, TRUE, '2026-07-14 09:30:00', '掃除', 1),
-('お風呂掃除', '中', 20, 20, FALSE, '2026-07-14 09:40:00', '掃除', 1);
+('掃除機をかける', '高', 30, 30, '掃除'),
+('食器洗い', '中', 15, 15, '洗い物'),
+('洗濯をする', '高', 60, 50, '洗濯'),
+('ゴミ出し', '低', 10, 10, '掃除'),
+('お風呂掃除', '中', 20, 20, '掃除');
+--ユーザー家事設定
+INSERT INTO user_chore
+(user_id, chore_master_id, status, frequency, day)
+VALUES
+(1, 1, TRUE, '週1回', '0'),
+(1, 2, FALSE, '毎日', NULL),
+(1, 3, TRUE, '週2回', '1,4'),
+(1, 4, TRUE, '毎日', NULL),
+(1, 5, FALSE, '週1回', '2');
 
 -- 食事
 INSERT INTO Meals

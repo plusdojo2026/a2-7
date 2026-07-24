@@ -1,7 +1,5 @@
 package com.example.demo.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,36 +11,35 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "chores")
+@Table(name = "chore_master")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chore {
+public class ChoreMaster {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer choresId;
+	private Integer choreMasterId;
 
+	// 家事名
 	@Column(nullable = false, length = 40)
 	private String choresName;
 
+	// 優先度
 	@Column(nullable = false, length = 20)
 	private String priority;
 
+	// 所要時間
 	@Column(nullable = false)
 	private Integer estimatedTime;
 
+	// 獲得ポイント
 	@Column(nullable = false)
 	private Integer point;
 
-	private Boolean status;
-
-	private LocalDateTime createdAt;
-
-	// カテゴリ(掃除/洗い物/洗濯)
+	// カテゴリ
+	// 掃除 / 洗い物 / 洗濯
 	@Column(length = 20)
 	private String category;
 
-	// 所有ユーザーのID
-	private Integer userId;
 }
