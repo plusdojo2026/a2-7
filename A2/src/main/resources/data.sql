@@ -43,22 +43,23 @@ VALUES
 
 -- 食材マスター
 INSERT INTO Food_Master
-(food_name, category, expiration_date, food_img)
+(food_name, expiration_date, category, food_img)
 VALUES
-('卵',       '冷蔵',   14, 'egg.png'),
-('牛乳',     '冷蔵',    7, 'milk.png'),
-('食パン',   '常温',    5, 'bread.png'),
-('にんじん', '野菜',   14, 'carrot.png'),
-('鶏むね肉', '肉',      3, 'chicken.png'),
-('鮭',       '魚',      4, 'salmon.png'),
-('冷凍うどん','冷凍', 180, 'udon.png'),
-('醤油',     '調味料',365, 'soy_sauce.png'),
-('オレンジジュース','飲料',30,'juice.png'),
-('缶詰',     'その他',365, 'can.png');
+('卵', 14, '冷蔵', 'egg.png'),
+('牛乳', 7, '冷蔵', 'milk.png'),
+('食パン', 5, '常温', 'bread.png'),
+('にんじん', 14, '野菜', 'carrot.png'),
+('鶏むね肉', 3, '肉', 'chicken.png'),
+('鮭', 4, '魚', 'salmon.png'),
+('冷凍うどん', 180, '冷凍', 'udon.png'),
+('醤油', 365, '調味料', 'soy_sauce.png'),
+('オレンジジュース', 30, '飲料', 'juice.png'),
+('缶詰', 365, 'その他', 'can.png');
 
 -- 食材在庫
 INSERT INTO Food_Stock
-(food_stock_name, category, add_day, expiration_date, status, notice_read, user_id, food_master_id)
+(food_stock_name, category, add_day, expiration_date,
+ status, notice_read, user_id, food_master_id)
 VALUES
 ('卵', '冷蔵', '2026-07-14', '2026-07-28', FALSE, FALSE, 1, 1),
 ('牛乳', '冷蔵', '2026-07-15', '2026-07-22', FALSE, FALSE, 1, 2),
