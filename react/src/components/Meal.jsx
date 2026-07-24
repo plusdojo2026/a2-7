@@ -18,6 +18,8 @@ const MealComponent = () =>{
     let[message, setMessage] = useState("");
     //絞り込み(朝昼夜ボタン)
     let [filterMealType, setFilterMealType] = useState("");
+    //ページ切り替え
+    let [page, setPage] = useState(0);
 
     //セッション
     let isRedirectingRef = useRef(false);
@@ -33,18 +35,34 @@ const MealComponent = () =>{
     //初回表示時に食事一覧を取得
     useEffect(() => {
         refreshMealList();
-    }, []);
+    }, [page, filterMealType]);
     let refreshMealList = () =>{
-        fetch('/api/meal/')
+
+        let url;
+
+        if(filterMealType === ""){
+            url = `/api/meal/?page=${page}`;
+        }else{
+            url = `/api/meal/type/?mealType=${filterMealType}&page=${page}`;
+        }
+
+        fetch(url)
 
         .then(response => {
+            if(response.status === 401){
+                sessionError();
+                return;
+            }
             if(!response.ok){
                 throw new Error();
             }
             return response.json();
         })
         .then(json => setMeals(json))
-        .catch(sessionError);
+        .catch(error =>{
+            console.log(error);
+            alert("一覧の取得に失敗しました。")
+        });
     }
 
 
@@ -88,8 +106,22 @@ const MealComponent = () =>{
             setNewMeal({recipeTitle:'', mealImage:'', recordDate:'', url:'', recipeMemo:'',mealType:''});//入力フォームを空欄に
             setShowRegistModal(false);
         })
-        .catch(sessionError);
+        .catch(error =>{
+            console.log(error);
+
+            if(error.response?.status === 401){
+                sessionError();
+                return;
+            }
+
+            if(error.response?.status === 413){
+                alert("画像サイズが大きすぎます");
+                return;
+            }
+            alert("登録に失敗しました。")
+        });
     };
+
     //朝昼夜ボタン
     let selectMealType = (mealType) =>{
         setNewMeal({ ...newMeal, mealType:mealType});
@@ -141,7 +173,20 @@ const MealComponent = () =>{
 
             setShowUpdateModal(false);
         })
-        .catch(sessionError);
+        .catch(error =>{
+            console.log(error);
+
+            if(error.response?.status === 401){
+                sessionError();
+                return;
+            }
+
+            if(error.response?.status === 413){
+                alert("画像サイズが大きすぎます");
+                return;
+            }
+            alert("更新に失敗しました。")
+        });
     }
     let selectUpdateMealType = (mealType) =>{
         setSelectedMeal({ ...selectedMeal, mealType:mealType });
@@ -166,8 +211,11 @@ const MealComponent = () =>{
         setMeals(sortedMeals);
     }
 
-    //朝昼夜ボタンでの絞り込み
+    //朝昼夜ボタンでの絞り込み状態をstateに保存
     let toggleMealType = (mealType) =>{
+
+        setPage(0);
+
         if(filterMealType === mealType){
             setFilterMealType("");
         }else{
@@ -205,25 +253,40 @@ const MealComponent = () =>{
             </div>
 
             {/* 食事一覧の表示 */}
-            {/*絞り込み条件が設定されていない、または食事の種類が絞り込み条件と一致している→trueで表示*/}
-            {meals
-            .filter(meal =>
-                filterMealType === "" || meal.mealType ===filterMealType
-            )
-            .map((meal) =>
-                <div key={meal.mealId} className="mealCard" onClick={() => openUpdateModal(meal)}>
-                    <div className="mealTitle" id="mealtitle"><strong>{meal.recipeTitle}</strong></div>
-                    <div className="mealImage">
-                        <img src= {`http://localhost:8080/uploads/${meal.mealImage}` }/>
+            {meals.length === 0 && page === 0?(
+                    <div className="emptyMessage">
+                        食事記録がありません。<br/>
+                        新規作成から登録してみましょう！
                     </div>
-                    <div id="mealinformation">
-                        <div className="mealdate"><b>日付</b>：{meal.recordDate}</div>
-                        <div className="url"><b>URL</b>：{meal.url}</div>
-                        <div className="recipe"><b>レシピ</b>：{meal.recipeMemo}</div>
-                    </div>
-                </div>
             )
-            }
+            :
+            (<>
+                    {meals.map((meal) =>(
+                        <div key={meal.mealId} className="mealCard" onClick={() => openUpdateModal(meal)}>
+                            <div className="mealTitle" id="mealtitle"><strong>{meal.recipeTitle}</strong></div>
+                            <div className="mealImage">
+                                <img src= {`http://localhost:8080/uploads/${meal.mealImage}` }/>
+                            </div>
+                            <div id="mealinformation">
+                                <div className="mealdate"><b>日付</b>：{meal.recordDate}</div>
+                                <div className="url"><b>URL</b>：{meal.url}</div>
+                                <div className="recipe"><b>レシピ</b>：{meal.recipeMemo}</div>
+                            </div>
+                        </div>
+                    ))}
+
+                {/* ページング */}
+                    <div className='paging'>
+                        <button onClick={() => setPage(page-1)} disabled={page ===0 }>
+                            <img src={page === 0 ? "/img/left_gray.png" :"/img/leftBtn.png"}/>
+                        </button>
+                        <span>{page +1}</span>
+                        <button onClick={() => setPage(page+1)} disabled={meals.length<5}>
+                            <img src={meals.length<5 ?"/img/right_gray.png" :"/img/rightBtn.png"}/>
+                        </button>                 
+                    </div>
+                    </>
+            )}
 
              {/* 新規作成モーダル */}
             {showRegistModal &&
