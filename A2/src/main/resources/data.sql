@@ -12,15 +12,24 @@ VALUES
 ('kato', 'kato2026', 35),
 ('yoshida', 'yoshida99', 55);
 
--- 家事
-INSERT INTO chores
-(chores_name, priority, estimated_time, point, status, created_at, category, user_id)
+-- 家事マスタ
+INSERT INTO chore_master
+(chores_name, priority, estimated_time, point, category)
 VALUES
-('掃除機をかける', '高', 30, 30, FALSE, '2026-07-14 09:00:00', '掃除', 1),
-('食器洗い', '中', 15, 15, TRUE, '2026-07-14 09:10:00', '洗い物', 1),
-('洗濯をする', '高', 60, 50, FALSE, '2026-07-14 09:20:00', '洗濯', 1),
-('ゴミ出し', '低', 10, 10, TRUE, '2026-07-14 09:30:00', '掃除', 1),
-('お風呂掃除', '中', 20, 20, FALSE, '2026-07-14 09:40:00', '掃除', 1);
+('掃除機をかける', '高', 30, 30, '掃除'),
+('食器洗い', '中', 15, 15, '洗い物'),
+('洗濯をする', '高', 60, 50, '洗濯'),
+('ゴミ出し', '低', 10, 10, '掃除'),
+('お風呂掃除', '中', 20, 20, '掃除');
+--ユーザー家事設定
+INSERT INTO user_chore
+(user_id, chore_master_id, status, frequency, day)
+VALUES
+(1, 1, TRUE, '週1回', '0'),
+(1, 2, FALSE, '毎日', NULL),
+(1, 3, TRUE, '週2回', '1,4'),
+(1, 4, TRUE, '毎日', NULL),
+(1, 5, FALSE, '週1回', '2');
 
 -- 食事
 INSERT INTO Meals
@@ -34,22 +43,23 @@ VALUES
 
 -- 食材マスター
 INSERT INTO Food_Master
-(food_name, category, expiration_date, food_img)
+(food_name, expiration_date, category, food_img)
 VALUES
-('卵',       '冷蔵',   14, 'egg.png'),
-('牛乳',     '冷蔵',    7, 'milk.png'),
-('食パン',   '常温',    5, 'bread.png'),
-('にんじん', '野菜',   14, 'carrot.png'),
-('鶏むね肉', '肉',      3, 'chicken.png'),
-('鮭',       '魚',      4, 'salmon.png'),
-('冷凍うどん','冷凍', 180, 'udon.png'),
-('醤油',     '調味料',365, 'soy_sauce.png'),
-('オレンジジュース','飲料',30,'juice.png'),
-('缶詰',     'その他',365, 'can.png');
+('卵', 14, '冷蔵', 'egg.png'),
+('牛乳', 7, '冷蔵', 'milk.png'),
+('食パン', 5, '常温', 'bread.png'),
+('にんじん', 14, '野菜', 'carrot.png'),
+('鶏むね肉', 3, '肉', 'chicken.png'),
+('鮭', 4, '魚', 'salmon.png'),
+('冷凍うどん', 180, '冷凍', 'udon.png'),
+('醤油', 365, '調味料', 'soy_sauce.png'),
+('オレンジジュース', 30, '飲料', 'juice.png'),
+('缶詰', 365, 'その他', 'can.png');
 
 -- 食材在庫
 INSERT INTO Food_Stock
-(food_stock_name, category, add_day, expiration_date, status, notice_read, user_id, food_master_id)
+(food_stock_name, category, add_day, expiration_date,
+ status, notice_read, user_id, food_master_id)
 VALUES
 ('卵', '冷蔵', '2026-07-14', '2026-07-28', FALSE, FALSE, 1, 1),
 ('牛乳', '冷蔵', '2026-07-15', '2026-07-22', FALSE, FALSE, 1, 2),

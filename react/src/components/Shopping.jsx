@@ -5,6 +5,9 @@ import "../css/Shopping.css";
 
 function Shopping() {
 
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
+
     const [items, setItems] = useState([
         {
             itemName: "",
@@ -45,17 +48,45 @@ useEffect(() => {
     };
 
     const deleteItem = (index) => {
+
+        if (items.length === 1) {
+            return;
+        }
+        
         const newItems = [...items];
         newItems.splice(index, 1);
         setItems(newItems);
     }
 
     const saveShopping = () => {
+
+        for (let i = 0; i < items.length; i++) {
+
+        if (items[i].itemName.trim().length < 1) {
+        setAlertMessage("商品名を入力してください");
+        setShowAlert(true);
+
+        setTimeout(() => {
+            setShowAlert(false);
+         }, 2000);
+         
+        return;
+        }
+    
+    }
          axios.post("/api/shopping",items
          )
          .then(() => {
-            alert("買い物リストを作成しました");
+          setAlertMessage("買い物リストを作成しました");
+          setShowAlert(true);
+
+           setTimeout(() => {
+            setShowAlert(false);
+         }, 2000);
+         
+
          })
+
          .catch((error) => {
             console.log(error);
          });
@@ -101,6 +132,14 @@ useEffect(() => {
         </div>
 
         <button className="save-button" onClick={saveShopping}>作成</button>
+
+    {showAlert && (
+        <div className="alert">
+
+            <p><span className="dot">●</span>   {alertMessage}</p>
+
+        </div>
+    )}
 
     </div>
     );

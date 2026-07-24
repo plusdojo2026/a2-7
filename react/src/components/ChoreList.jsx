@@ -22,7 +22,16 @@ const getPatternDays = (frequency, days) => {
     // 週2回・週1回は、選択された曜日をそのまま使う
     return days ? days : [];
 };
+const isDoneToday = (chore) => {
 
+    if (!chore.lastDoneDate) {
+        return false;
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+
+    return chore.lastDoneDate === today;
+};
 function ChoreList() {
 
     // どのモーダルが開いているか
@@ -73,7 +82,9 @@ function ChoreList() {
 
     // 家事データ(APIから取得する)
     const [chores, setChores] = useState([]);
-
+    // 今日の家事(APIから取得)
+    const [todayChores, setTodayChores] = useState([]);
+    const [myChore, setMyChore] = useState("する");
     // 画面を開いたときに、ログインユーザーの家事をAPIから取得する
     useEffect(() => {
         axios.get("/api/chore/", { withCredentials: true })
@@ -87,7 +98,58 @@ function ChoreList() {
                 setChores([]);   // エラー時も空配列にしておく
             });
     }, []);
+    // 今日の家事取得
+    useEffect(() => {
 
+        axios.get("/api/chore/today", {
+            withCredentials: true
+        })
+            .then((res) => {
+
+                console.log("今日の家事", res.data);
+
+                setTodayChores(res.data);
+
+            })
+            .catch((err) => {
+
+                console.error("今日の家事取得失敗", err);
+
+            });
+
+    }, []);
+    // ログインユーザーの家事設定を取得
+    useEffect(() => {
+        axios.get("/api/chore/my", { withCredentials: true })
+            .then((res) => {
+
+                console.log("マイ家事", res.data);
+
+                const settingData = {};
+
+                res.data.forEach((item) => {
+
+                    settingData[item.choreMaster.choresName] = {
+
+                        frequency: item.frequency,
+
+                        days: item.day
+                            ? item.day.split(",").map(Number)
+                            : [],
+
+                        status: item.status
+
+                    };
+
+                });
+
+                setSettings(settingData);
+
+            })
+            .catch((err) => {
+                console.error("マイ家事取得失敗", err);
+            });
+    }, []);
     // 今日の家事の一覧を作る
     // 「家事提案で追加した家事(最優先)」と「家事リストで今日が実施日の家事」を合流させる
     const getTodayChores = () => {
@@ -133,25 +195,91 @@ function ChoreList() {
 
     // 今日の家事モーダルを開く
     const openToday = () => {
+
+        axios.get("/api/chore/today", {
+            withCredentials: true
+        })
+            .then((res) => {
+
+                console.log("最新の今日の家事", res.data);
+
+                setTodayChores(res.data);
+
+            })
+            .catch((err) => {
+
+                console.error("今日の家事取得失敗", err);
+
+            });
+
+
         setTodayStep("list");
         setOpenModal("today");
     };
 
-    // 今日の家事の確定(完了画面へ + ポイントをDBに加算)
-    const handleTodayConfirm = () => {
-        const point = doneChores.length;   // 完了した家事の数(1家事=1pt)
+
+    // 今日の家事の確定(完了画面へ + ポイントをDBに加算 + 完了日更新)
+    const handleTodayConfirm = async () => {
+
+        // 完了した家事のポイント合計
+        const point = todayChores.reduce((total, chore) => {
+
+            if (doneChores.includes(chore.choreMaster.choresName)) {
+                return total + chore.choreMaster.point;
+            }
+
+            return total;
+
+        }, 0);
+
         setEarnedPoint(point);
+
+
+        // 完了した家事のlastDoneDateを更新
+        if (doneChores.length > 0) {
+
+            try {
+
+                await axios.post(
+                    "/api/chore/done",
+                    doneChores,
+                    {
+                        withCredentials: true
+                    }
+                );
+
+                console.log("家事完了日を更新しました");
+
+            } catch (err) {
+
+                console.error("家事完了日の更新に失敗:", err);
+
+            }
+        }
+
 
         // ポイントが1以上のときだけ、DBに加算する
         if (point > 0) {
-            axios.post(`/api/chore/point/${point}`, {}, { withCredentials: true })
-                .then((res) => {
-                    console.log("加算後のポイント:", res.data.point);
-                })
-                .catch((err) => {
-                    console.error("ポイント加算に失敗:", err);
-                });
+
+            try {
+
+                const res = await axios.post(
+                    `/api/chore/point/${point}`,
+                    {},
+                    {
+                        withCredentials: true
+                    }
+                );
+
+                console.log("加算後のポイント:", res.data.point);
+
+            } catch (err) {
+
+                console.error("ポイント加算に失敗:", err);
+
+            }
         }
+
 
         setTodayStep("finish");
     };
@@ -171,33 +299,107 @@ function ChoreList() {
     };
 
     // 設定画面を開く(保存済みの設定があれば読み込む)
-    const openSetting = (name) => {
-        const saved = settings[name];
+    const openSetting = (chore) => {
+
+        const saved = settings[chore.choresName];
+
         setFrequency(saved ? saved.frequency : "毎日");
-        setDays(saved && saved.days ? saved.days : []);
-        setSettingChore(name);
+
+        setDays(saved ? saved.days : []);
+
+        // マイ家事登録状態
+        if (saved && saved.status) {
+            setMyChore("する");
+        } else {
+            setMyChore("しない");
+        }
+
+        setSettingChore(chore);
     };
 
     // 設定を確定する
     const handleSaveSetting = () => {
+
         // 必要な数の曜日が選ばれているかチェック
         if (frequency === "週1回" && days.length !== 1) {
             setAlert("● 曜日を1つ選択してください。");
             setTimeout(() => setAlert(""), 2000);
             return;
         }
+
         if (frequency === "週2回" && days.length !== 2) {
             setAlert("● 曜日を2つ選択してください。");
             setTimeout(() => setAlert(""), 2000);
             return;
         }
-        setSettings({
-            ...settings,
-            [settingChore]: { frequency: frequency, days: days }
-        });
-        setAlert("● 設定が完了しました。");
-        setSettingChore(null);
-        setTimeout(() => setAlert(""), 2000);
+
+        axios.put(
+            "/api/chore/setting",
+            {
+                choreMaster: {
+                    choreMasterId: settingChore.choreMasterId
+                },
+                frequency: frequency,
+                day: frequency === "毎日" ? null : days.join(",")
+            },
+            {
+                withCredentials: true
+            }
+        )
+            .then(() => {
+
+                // マイ家事登録状態を変更
+                if (myChore === "する") {
+
+                    return axios.post(
+                        `/api/chore/register/${settingChore.choreMasterId}`,
+                        {},
+                        {
+                            withCredentials: true
+                        }
+                    );
+
+                } else {
+
+                    return axios.post(
+                        `/api/chore/unregister/${settingChore.choreMasterId}`,
+                        {},
+                        {
+                            withCredentials: true
+                        }
+                    );
+
+                }
+
+            })
+            .then(() => {
+
+                // React側の表示も更新
+                setSettings({
+                    ...settings,
+                    [settingChore.choresName]: {
+                        frequency: frequency,
+                        days: days,
+                        status: myChore === "する"
+                    }
+                });
+
+                setAlert("● 設定が完了しました。");
+                setSettingChore(null);
+
+                setTimeout(() => setAlert(""), 2000);
+
+            })
+            .catch((err) => {
+
+                console.error("設定保存失敗", err);
+
+                setAlert("● 設定の保存に失敗しました。");
+
+                setTimeout(() => setAlert(""), 2000);
+
+            });
+
     };
 
     // カテゴリの選択/解除を切り替える
@@ -277,36 +479,56 @@ function ChoreList() {
 
                         {/* 家事カード一覧 */}
                         {todayStep === "list" && (
-    <>
-        {getTodayChores().length > 0 ? (
-            <div className="todayGrid">
-                {getTodayChores().map(chore => (
-                    <div
-                        className="todayCard"
-                        key={chore.name}
-                        onClick={() => toggleDone(chore.name)}
-                    >
-                        {chore.fromSuggest && (
-                            <span className="ribbon"></span>
-                        )}
-                        <p className="todayName">{chore.name}</p>
-                        {chore.frequency !== null && (
-                            <p className="todayFreq">{chore.frequency}</p>
-                        )}
-                        <span className={doneChores.includes(chore.name) ? "check on" : "check"}>✓</span>
-                    </div>
-                ))}
-            </div>
-        ) : (
-            <p className="resultText">今日の家事は<br />まだありません。</p>
-        )}
+                            <>
+                                {todayChores.length > 0 ? (
+                                    <div className="todayGrid">
+                                        {todayChores.map(chore => (
+                                            <div
+                                                className="todayCard"
+                                                key={chore.userChoreId}
+                                                onClick={() => {
+                                                    if (!isDoneToday(chore)) {
+                                                        toggleDone(chore.choreMaster.choresName);
+                                                    }
+                                                }}
+                                            >
+                                                <p className="todayName">
+                                                    {chore.choreMaster.choresName}
+                                                </p>
 
-        <div className="btnRow">
-            <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
-            <button className="confirmBtn" onClick={handleTodayConfirm}>確定</button>
-        </div>
-    </>
-)}
+                                                {chore.frequency !== null && (
+                                                    <p className="todayFreq">
+                                                        {chore.frequency === "週2回"
+                                                            ? "週2回"
+                                                            : chore.frequency}
+                                                    </p>
+                                                )}
+
+                                                <span
+                                                    className={
+                                                        (
+                                                            doneChores.includes(chore.choreMaster.choresName)
+                                                            || isDoneToday(chore)
+                                                        )
+                                                            ? "check on"
+                                                            : "check"
+                                                    }
+                                                >
+                                                    ✓
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <p className="resultText">今日の家事は<br />まだありません。</p>
+                                )}
+
+                                <div className="btnRow">
+                                    <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
+                                    <button className="confirmBtn" onClick={handleTodayConfirm}>確定</button>
+                                </div>
+                            </>
+                        )}
 
                         {/* 完了画面 */}
                         {todayStep === "finish" && (
@@ -317,9 +539,9 @@ function ChoreList() {
                                     米粒ポイント<b>{earnedPoint}pt</b> 獲得しました🎉
                                 </p>
                                 <div className="btnRow">
-    <button className="backBtn" onClick={() => setTodayStep("list")}>戻る</button>
-    <button className="confirmBtn" onClick={() => setOpenModal(null)}>終了</button>
-</div>
+                                    <button className="backBtn" onClick={() => setTodayStep("list")}>戻る</button>
+                                    <button className="confirmBtn" onClick={() => setOpenModal(null)}>終了</button>
+                                </div>
                             </>
                         )}
                     </div>
@@ -362,9 +584,9 @@ function ChoreList() {
                                 </div>
 
                                 <div className="btnRow">
-    <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
-    <button className="confirmBtn" onClick={handleSuggest}>確定</button>
-</div>
+                                    <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
+                                    <button className="confirmBtn" onClick={handleSuggest}>確定</button>
+                                </div>
                             </>
                         )}
 
@@ -403,9 +625,9 @@ function ChoreList() {
                                 </label>
 
                                 <div className="btnRow">
-    <button className="backBtn" onClick={() => setStep("input")}>戻る</button>
-    <button className="confirmBtn" onClick={handleSuggestClose}>終了</button>
-</div>
+                                    <button className="backBtn" onClick={() => setStep("input")}>戻る</button>
+                                    <button className="confirmBtn" onClick={handleSuggestClose}>終了</button>
+                                </div>
                             </>
                         )}
                     </div>
@@ -420,31 +642,33 @@ function ChoreList() {
                         <h2 className="modalTitle">家事リスト</h2>
 
                         {/* 一覧 */}
-        {settingChore === null && (
-    <>
-        <div className="listArea">
-            {chores.map((chore) => (
-                <div
-                    className="listRow"
-                    key={chore.choresId}
-                    onClick={() => openSetting(chore.choresName)}
-                >
-                    <span>{chore.choresName}</span>
-                    <span className="arrow">›</span>
-                </div>
-            ))}
-        </div>
-        <div className="btnRow">
-            <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
-            <button className="confirmBtn" onClick={() => setOpenModal(null)}>確定</button>
-        </div>
-    </>
-)}
+                        {settingChore === null && (
+                            <>
+                                <div className="listArea">
+                                    {chores.map((chore) => (
+                                        <div
+                                            className="listRow"
+                                            key={chore.choresId}
+                                            onClick={() => openSetting(chore)}
+                                        >
+                                            <span>{chore.choresName}</span>
+                                            <span className="arrow">›</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="btnRow">
+                                    <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
+                                    <button className="confirmBtn" onClick={() => setOpenModal(null)}>確定</button>
+                                </div>
+                            </>
+                        )}
 
                         {/* 設定画面 */}
                         {settingChore !== null && (
                             <>
-                                <h3 className="settingTitle">{settingChore} -設定-</h3>
+                                <h3 className="settingTitle">
+                                    {settingChore.choresName} -設定-
+                                </h3>
 
                                 {/* 頻度の選択 */}
                                 <div className="settingItem">
@@ -493,16 +717,20 @@ function ChoreList() {
 
                                 <div className="settingItem">
                                     <p className="label">マイ家事登録</p>
-                                    <select className="select">
+                                    <select
+                                        className="select"
+                                        value={myChore}
+                                        onChange={(e) => setMyChore(e.target.value)}
+                                    >
                                         <option>する</option>
                                         <option>しない</option>
                                     </select>
                                 </div>
 
                                 <div className="btnRow">
-    <button className="backBtn" onClick={() => setSettingChore(null)}>戻る</button>
-    <button className="confirmBtn" onClick={handleSaveSetting}>確定</button>
-</div>
+                                    <button className="backBtn" onClick={() => setSettingChore(null)}>戻る</button>
+                                    <button className="confirmBtn" onClick={handleSaveSetting}>確定</button>
+                                </div>
                             </>
                         )}
                     </div>

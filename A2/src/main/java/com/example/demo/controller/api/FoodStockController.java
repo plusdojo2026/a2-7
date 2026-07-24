@@ -13,15 +13,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.entity.FoodMaster;
 import com.example.demo.entity.FoodStock;
+import com.example.demo.entity.User;
 import com.example.demo.repository.FoodMasterRepository;
 import com.example.demo.repository.FoodStockRepository;
+import com.example.demo.repository.UserRepository;
 
 @RestController
 @CrossOrigin
@@ -35,35 +36,25 @@ public class FoodStockController {
     @Autowired
     private FoodMasterRepository foodMasterRepository;
 
-    // 在庫一覧を取得
-    @GetMapping("/api/food_stock/")
-    public List<FoodStock> get() {
-        return repository.findAll();
+    // ユーザーRepository
+    @Autowired
+    private UserRepository userRepository;
+
+    // 指定したユーザーの食材在庫を取得
+    @GetMapping("/api/food_stock/user/{userId}")
+    public List<FoodStock> getByUserId(
+            @PathVariable Integer userId
+    ) {
+        return repository.findByUserUserId(userId);
     }
 
-    // 通常の在庫追加
-    @PostMapping("/api/food_stock/add/")
-    public FoodStock add(@RequestBody FoodStock foodStock) {
-        return repository.save(foodStock);
-    }
-
-    // 在庫更新
-    @PostMapping("/api/food_stock/mod/")
-    public FoodStock mod(@RequestBody FoodStock foodStock) {
-        return repository.save(foodStock);
-    }
-
-    // 在庫削除
-    @PostMapping("/api/food_stock/del/")
-    public FoodStock del(@RequestBody FoodStock foodStock) {
-        repository.delete(foodStock);
-        return foodStock;
-    }
-
-    // 食材マスターから在庫へ追加
-    @PostMapping("/api/food_stock/add-master/{foodMasterId}")
+    // 食材マスターから指定ユーザーの在庫へ追加
+    @PostMapping(
+        "/api/food_stock/add-master/{foodMasterId}/user/{userId}"
+    )
     public FoodStock addFromMaster(
-            @PathVariable Integer foodMasterId
+            @PathVariable Integer foodMasterId,
+            @PathVariable Integer userId
     ) {
 
         FoodMaster master = foodMasterRepository
@@ -71,6 +62,14 @@ public class FoodStockController {
                 .orElseThrow(() ->
                         new RuntimeException(
                                 "食材マスターが見つかりません"
+                        )
+                );
+
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "ユーザーが見つかりません"
                         )
                 );
 
@@ -94,14 +93,22 @@ public class FoodStockController {
 
         stock.setStatus(true);
         stock.setNoticeRead(false);
+
+        // 食材マスターと紐付ける
         stock.setFoodMaster(master);
+
+        // ユーザーと紐付ける
+        stock.setUser(user);
 
         return repository.save(stock);
     }
 
     // 画像付きで食材在庫を更新
-    @PostMapping("/api/food_stock/mod-image")
+    @PostMapping(
+        "/api/food_stock/mod-image/user/{userId}"
+    )
     public FoodStock modImage(
+            @PathVariable Integer userId,
             @RequestPart("food") FoodStock foodStock,
             @RequestPart(
                     value = "image",
@@ -109,22 +116,98 @@ public class FoodStockController {
             ) MultipartFile image
     ) throws IOException {
 
+        // 更新対象をDBから取得
+        FoodStock savedFood = repository
+                .findById(foodStock.getFoodStockId())
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "食材在庫が見つかりません"
+                        )
+                );
+
+        // 指定ユーザーのデータか確認
+        if (
+            savedFood.getUser() == null ||
+            !savedFood.getUser()
+                    .getUserId()
+                    .equals(userId)
+        ) {
+            throw new RuntimeException(
+                    "この食材在庫を更新する権限がありません"
+            );
+        }
+
+        // 編集可能な項目だけ更新
+        savedFood.setFoodStockName(
+                foodStock.getFoodStockName()
+        );
+        savedFood.setCategory(
+                foodStock.getCategory()
+        );
+        savedFood.setAddDay(
+                foodStock.getAddDay()
+        );
+        savedFood.setExpirationDate(
+                foodStock.getExpirationDate()
+        );
+        savedFood.setStatus(
+                foodStock.getStatus()
+        );
+        savedFood.setNoticeRead(
+                foodStock.getNoticeRead()
+        );
+
         // 新しい画像が選択された場合だけ保存
         if (image != null && !image.isEmpty()) {
 
             String fileName = saveImage(image);
 
-            foodStock.setFoodImage(fileName);
+            savedFood.setFoodImage(fileName);
         }
 
-        return repository.save(foodStock);
+        return repository.save(savedFood);
+    }
+
+    // 指定ユーザーの食材在庫を削除
+    @PostMapping(
+        "/api/food_stock/del/{foodStockId}/user/{userId}"
+    )
+    public FoodStock delete(
+            @PathVariable Integer foodStockId,
+            @PathVariable Integer userId
+    ) {
+
+        FoodStock foodStock = repository
+                .findById(foodStockId)
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "食材在庫が見つかりません"
+                        )
+                );
+
+        // 別ユーザーのデータを削除できないように確認
+        if (
+            foodStock.getUser() == null ||
+            !foodStock.getUser()
+                    .getUserId()
+                    .equals(userId)
+        ) {
+            throw new RuntimeException(
+                    "この食材在庫を削除する権限がありません"
+            );
+        }
+
+        repository.delete(foodStock);
+
+        return foodStock;
     }
 
     /**
-     * 画像をuploads/imagesに保存する
+     * 画像をuploadsフォルダへ保存する
      */
-    private String saveImage(MultipartFile image)
-            throws IOException {
+    private String saveImage(
+            MultipartFile image
+    ) throws IOException {
 
         String originalName =
                 image.getOriginalFilename();
