@@ -253,7 +253,7 @@ const MealComponent = () =>{
             </div>
 
             {/* 食事一覧の表示 */}
-            {meals.length === 0 && page === 0?(
+            {meals.length === 0 && page === 0 && filterMealType === "" ?(
                     <div className="emptyMessage">
                         食事記録がありません。<br/>
                         新規作成から登録してみましょう！
@@ -276,6 +276,7 @@ const MealComponent = () =>{
                     ))}
 
                 {/* ページング */}
+                {meals.length > 0 &&(
                     <div className='paging'>
                         <button onClick={() => setPage(page-1)} disabled={page ===0 }>
                             <img src={page === 0 ? "/img/left_gray.png" :"/img/leftBtn.png"}/>
@@ -285,7 +286,9 @@ const MealComponent = () =>{
                             <img src={meals.length<5 ?"/img/right_gray.png" :"/img/rightBtn.png"}/>
                         </button>                 
                     </div>
+                )}
                     </>
+                    
             )}
 
              {/* 新規作成モーダル */}
