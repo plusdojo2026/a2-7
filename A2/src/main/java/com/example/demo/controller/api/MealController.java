@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.demo.entity.Meal;
 import com.example.demo.entity.User;
@@ -40,7 +42,7 @@ public class MealController {
 			//セッションから」ユーザー情報を取得
 			User loginUser = (User) session.getAttribute("loginUser");
 			if (loginUser == null) {
-			    throw new RuntimeException("ログインしてください");
+			    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインしてください");
 			}
 			Integer userId = loginUser.getUserId();
 
@@ -79,7 +81,7 @@ public class MealController {
 
 		User loginUser = (User) session.getAttribute("loginUser");
 		if (loginUser == null) {
-		    throw new RuntimeException("ログインしてください");
+		    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインしてください");
 		}
 		Integer userId = loginUser.getUserId();
 
@@ -118,7 +120,7 @@ public class MealController {
 			HttpSession session) {
 		User loginUser = (User) session.getAttribute("loginUser");
 		if (loginUser == null) {
-		    throw new RuntimeException("ログインしてください");
+		    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインしてください");
 		}
 		Integer userId = loginUser.getUserId();
 		Sort sortOrder;
@@ -130,7 +132,7 @@ public class MealController {
 
 		// ページング情報
 		Pageable pageable = PageRequest.of(page, // 何ページ目を取得するか
-				5, // 一ページ当たり３０件
+				5, // 一ページ当たり5件
 				sortOrder // 並び順
 		);
 		return repository.findByUserId(userId, pageable) // userIdが一致する食事記録の取得、ページングの条件
@@ -143,7 +145,7 @@ public class MealController {
 			@RequestParam(defaultValue = "desc") String sort, HttpSession session) {
 		User loginUser = (User) session.getAttribute("loginUser");
 		if (loginUser == null) {
-		    throw new RuntimeException("ログインしてください");
+		    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "ログインしてください");
 		}
 		Integer userId = loginUser.getUserId();
 		Sort sortOrder;
@@ -155,7 +157,7 @@ public class MealController {
 
 		// ページング情報
 		Pageable pageable = PageRequest.of(page, // 何ページ目を取得するか
-				5, // 一ページ当たり３０件
+				5, // 一ページ当たり5件
 				sortOrder // 並び順
 		);
 		return repository.findByUserIdAndMealType(userId, mealType, pageable).getContent(); // Page<mear>をList<meal>に変換

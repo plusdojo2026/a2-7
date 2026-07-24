@@ -1000,3 +1000,201 @@
         font-size: 17px;
     }
 }
+
+/* =========================================================
+   最終調整
+   ・ホーム画面と同じ雰囲気のタブ切り替え
+   ・下部ナビゲーション直前の余白をなくす
+   ========================================================= */
+
+/* ページ全体 */
+.stock-page {
+    width: 100%;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+}
+
+/* アプリ本体 */
+.stock-app {
+    overflow: hidden;
+}
+
+/* 上部タブ */
+.stock-tabs {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    width: 100%;
+    height: 58px;
+    flex-shrink: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #eeeeee;
+}
+
+/* タブボタン */
+.tab-button {
+    position: relative;
+    flex: 1;
+    height: 58px;
+    padding: 0 8px;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #222222;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+
+    transition:
+        color 0.25s ease,
+        background-color 0.25s ease,
+        transform 0.18s ease;
+}
+
+/* 以前の下線指定を上書き */
+.tab-button::after {
+    content: "";
+    position: absolute;
+    right: auto;
+    bottom: 0;
+    left: 50%;
+
+    width: 0;
+    height: 4px;
+
+    border-radius: 4px 4px 0 0;
+    background: #84fab0;
+
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+/* 選択中 */
+.tab-button.active {
+    color: #111111;
+}
+
+/* 選択中の下線を中央から伸ばす */
+.tab-button.active::after {
+    width: 62%;
+    background: #84fab0;
+}
+
+/* タップ時の変化 */
+.tab-button:active {
+    transform: scale(0.97);
+    background: #f7fffb;
+}
+
+/* キーボード操作時 */
+.tab-button:focus-visible {
+    outline: 3px solid rgba(132, 250, 176, 0.45);
+    outline-offset: -3px;
+}
+
+/* ゴミ箱・候補一覧は縮ませない */
+.trash-area,
+.candidate-area {
+    flex-shrink: 0;
+}
+
+/* スマートフォン */
+@media (max-width: 600px) {
+    /*
+     * 下部ナビゲーションの高さを約72pxとして、
+     * その直前まで冷蔵庫画面を広げる。
+     */
+    .stock-page {
+        width: 100%;
+        min-height: calc(100dvh - 72px);
+        height: calc(100dvh - 72px);
+        padding: 0;
+        overflow: hidden;
+        background: #ffffff;
+    }
+
+    .stock-app {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+        flex-direction: column;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .stock-tabs {
+        height: 58px;
+    }
+
+    .tab-button {
+        height: 58px;
+        padding: 0 8px;
+        font-size: 18px;
+    }
+
+    /*
+     * タブ・削除欄・候補欄以外の残りの高さを、
+     * 冷蔵庫または日用品倉庫に割り当てる。
+     */
+    .storage-area {
+        height: auto;
+        min-height: 320px;
+        flex: 1 1 auto;
+    }
+
+    .trash-area {
+        min-height: 58px;
+        height: 58px;
+    }
+
+    .candidate-area {
+        min-height: 98px;
+        height: 98px;
+    }
+
+    .candidate-list {
+        min-height: 98px;
+        height: 98px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    .candidate-scroll-button {
+        height: 98px;
+    }
+}
+
+/* 高さが小さいスマートフォンでは少し圧縮 */
+@media (max-width: 600px) and (max-height: 700px) {
+    .stock-page {
+        min-height: calc(100dvh - 64px);
+        height: calc(100dvh - 64px);
+    }
+
+    .stock-tabs,
+    .tab-button {
+        height: 52px;
+    }
+
+    .storage-area {
+        min-height: 285px;
+    }
+
+    .trash-area {
+        min-height: 52px;
+        height: 52px;
+    }
+
+    .candidate-area,
+    .candidate-list,
+    .candidate-scroll-button {
+        min-height: 90px;
+        height: 90px;
+    }
+}
