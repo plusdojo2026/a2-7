@@ -84,6 +84,7 @@ function ChoreList() {
     const [chores, setChores] = useState([]);
     // 今日の家事(APIから取得)
     const [todayChores, setTodayChores] = useState([]);
+    const [choreNotice, setChoreNotice] = useState([]);
     const [myChore, setMyChore] = useState("する");
     // 画面を開いたときに、ログインユーザーの家事をAPIから取得する
     useEffect(() => {
@@ -149,6 +150,26 @@ function ChoreList() {
             .catch((err) => {
                 console.error("マイ家事取得失敗", err);
             });
+    }, []);
+    // 家事忘れ防止通知取得
+    useEffect(() => {
+
+        axios.get("/api/notice/chore", {
+            withCredentials: true
+        })
+            .then((res) => {
+
+                console.log("家事通知", res.data);
+
+                setChoreNotice(res.data);
+
+            })
+            .catch((err) => {
+
+                console.error("家事通知取得失敗", err);
+
+            });
+
     }, []);
     // 今日の家事の一覧を作る
     // 「家事提案で追加した家事(最優先)」と「家事リストで今日が実施日の家事」を合流させる
@@ -222,10 +243,12 @@ function ChoreList() {
     const handleTodayConfirm = async () => {
 
         // 完了した家事のポイント合計
-        const point = todayChores.reduce((total, chore) => {
+        const point = chores.reduce((total, chore) => {
 
-            if (doneChores.includes(chore.choreMaster.choresName)) {
-                return total + chore.choreMaster.point;
+            if (doneChores.includes(chore.choresName)) {
+
+                return total + chore.point;
+
             }
 
             return total;
@@ -454,13 +477,64 @@ function ChoreList() {
         }
         setOpenModal(null);
     };
+    const displayTodayChores = [
+        ...todayChores.map(chore => ({
 
+            ...chore,
+
+            // 提案に含まれている家事ならリボン表示
+            fromSuggest: addedChores.includes(
+                chore.choreMaster.choresName
+            )
+
+        })),
+
+
+        ...addedChores
+            .filter(name =>
+                !todayChores.some(
+                    chore =>
+                        chore.choreMaster.choresName === name
+                )
+            )
+            .map(name => {
+
+                const chore = chores.find(
+                    item => item.choresName === name
+                );
+
+                return {
+                    userChoreId: "add-" + name,
+                    choreMaster: chore,
+                    frequency: null,
+                    lastDoneDate: null,
+                    fromSuggest: true
+                };
+
+            })
+    ];
     return (
         <div className="chore">
 
             {/* 家事忘れ防止通知 */}
             <div className="notice">
-                <p>トイレ掃除を行ってから1週間<br />以上経過しています。</p>
+
+                {choreNotice.length > 0 ? (
+
+                    choreNotice.map((notice, index) => (
+                        <p key={index}>
+                            {notice}
+                        </p>
+                    ))
+
+                ) : (
+
+                    <p>
+                        現在、忘れている家事はありません。
+                    </p>
+
+                )}
+
             </div>
 
             {/* メニューボタン */}
@@ -480,9 +554,10 @@ function ChoreList() {
                         {/* 家事カード一覧 */}
                         {todayStep === "list" && (
                             <>
-                                {todayChores.length > 0 ? (
+                                {displayTodayChores.length > 0 ? (
                                     <div className="todayGrid">
-                                        {todayChores.map(chore => (
+
+                                        {displayTodayChores.map(chore => (
                                             <div
                                                 className="todayCard"
                                                 key={chore.userChoreId}
@@ -492,6 +567,12 @@ function ChoreList() {
                                                     }
                                                 }}
                                             >
+
+                                                {/* 家事提案から追加された家事にリボン表示 */}
+                                                {chore.fromSuggest && (
+                                                    <span className="ribbon"></span>
+                                                )}
+
                                                 <p className="todayName">
                                                     {chore.choreMaster.choresName}
                                                 </p>
@@ -516,17 +597,34 @@ function ChoreList() {
                                                 >
                                                     ✓
                                                 </span>
+
                                             </div>
                                         ))}
+
                                     </div>
                                 ) : (
-                                    <p className="resultText">今日の家事は<br />まだありません。</p>
+                                    <p className="resultText">
+                                        今日の家事は<br />
+                                        まだありません。
+                                    </p>
                                 )}
 
                                 <div className="btnRow">
-                                    <button className="backBtn" onClick={() => setOpenModal(null)}>戻る</button>
-                                    <button className="confirmBtn" onClick={handleTodayConfirm}>確定</button>
+                                    <button
+                                        className="backBtn"
+                                        onClick={() => setOpenModal(null)}
+                                    >
+                                        戻る
+                                    </button>
+
+                                    <button
+                                        className="confirmBtn"
+                                        onClick={handleTodayConfirm}
+                                    >
+                                        確定
+                                    </button>
                                 </div>
+
                             </>
                         )}
 
@@ -707,13 +805,13 @@ function ChoreList() {
                                     </div>
                                 )}
 
-                                <div className="settingItem">
+                                {/* <div className="settingItem">
                                     <p className="label">家事忘れ防止通知</p>
                                     <select className="select">
                                         <option>ON</option>
                                         <option>OFF</option>
                                     </select>
-                                </div>
+                                </div> */}
 
                                 <div className="settingItem">
                                     <p className="label">マイ家事登録</p>

@@ -17,19 +17,34 @@ INSERT INTO chore_master
 (chores_name, priority, estimated_time, point, category)
 VALUES
 ('掃除機をかける', '高', 30, 30, '掃除'),
+('お風呂掃除', '中', 20, 20, '掃除'),
+('トイレ掃除', '中', 15, 15, '掃除'),
+('床を拭く', '低', 20, 20, '掃除'),
+
 ('食器洗い', '中', 15, 15, '洗い物'),
+('シンクを掃除する', '中', 15, 15, '洗い物'),
+('食器を片付ける', '低', 10, 10, '洗い物'),
+
 ('洗濯をする', '高', 60, 50, '洗濯'),
-('ゴミ出し', '低', 10, 10, '掃除'),
-('お風呂掃除', '中', 20, 20, '掃除');
---ユーザー家事設定
+('洗濯物をたたむ', '中', 20, 20, '洗濯'),
+('布団を干す', '低', 30, 30, '洗濯');
+
+-- ユーザー家事設定
 INSERT INTO user_chore
-(user_id, chore_master_id, status, frequency, day)
+(user_id, chore_master_id, status, frequency, day, last_done_date)
 VALUES
-(1, 1, TRUE, '週1回', '0'),
-(1, 2, FALSE, '毎日', NULL),
-(1, 3, TRUE, '週2回', '1,4'),
-(1, 4, TRUE, '毎日', NULL),
-(1, 5, FALSE, '週1回', '2');
+(1, 1, TRUE,  '毎日', NULL, '2026-06-24'),
+(1, 2, TRUE,  '週1回', '2', NULL),
+(1, 3, TRUE,  '週1回', '5', NULL),
+(1, 4, FALSE, '毎日', NULL, NULL),
+
+(1, 5, TRUE,  '毎日', NULL, NULL),
+(1, 6, FALSE, '週2回', '1,4', NULL),
+(1, 7, FALSE, '週1回', '3', NULL),
+
+(1, 8, TRUE,  '週2回', '1,4', NULL),
+(1, 9, FALSE, '週1回', '6', NULL),
+(1, 10, TRUE, '週1回', '0', NULL);
 
 -- 食事
 INSERT INTO Meals
