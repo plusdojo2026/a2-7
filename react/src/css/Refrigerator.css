@@ -1,26 +1,27 @@
+/* ==============================
+   基本設定
+============================== */
+
 .stock-page,
 .stock-page * {
     box-sizing: border-box;
 }
 
 .stock-page {
-    min-height: 100vh;
-    padding: 24px;
-    background: #f4f6f8;
-    font-family: sans-serif;
-}
-
-.page-title {
+    width: 100%;
+    min-height: 0;
+    height: auto;
     margin: 0;
-    text-align: center;
-    font-size: 24px;
+    padding: 0;
+    background: #ffffff;
+    font-family: sans-serif;
 }
 
 .stock-app {
     width: 380px;
     margin: 20px auto;
     overflow: hidden;
-    border: 8px solid #111;
+    border: 8px solid #111111;
     border-radius: 42px;
     background: #ffffff;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
@@ -32,37 +33,51 @@
 
 .stock-tabs {
     display: flex;
+    width: 100%;
+    height: 58px;
+    flex-shrink: 0;
     background: #ffffff;
     border-bottom: 1px solid #dddddd;
 }
 
 .tab-button {
-    position: relative;
     flex: 1;
-    padding: 20px 12px;
+    height: 58px;
+    padding: 0 8px;
     border: none;
-    background: transparent;
-    font-size: 20px;
+    border-bottom: 4px solid transparent;
+    outline: none;
+    background: #ffffff;
+    color: #222222;
+    font-size: 18px;
     font-weight: 700;
     cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.18s ease;
 }
 
-.tab-button::after {
-    position: absolute;
-    right: 20%;
-    bottom: 0;
-    left: 20%;
-    height: 6px;
-    background: transparent;
-    content: "";
+.tab-button:hover {
+    background: #f8f8f8;
 }
 
-.tab-button.active::after {
-    background: #62efa9;
+.tab-button.active {
+    border-bottom-color: #73efb4;
+    color: #111111;
+}
+
+.tab-button:active {
+    transform: scale(0.97);
+    background: #f7fffb;
+}
+
+.tab-button:focus-visible {
+    outline: 3px solid rgba(132, 250, 176, 0.45);
+    outline-offset: -3px;
 }
 
 /* ==============================
-   冷蔵庫・倉庫
+   冷蔵庫・日用品倉庫
 ============================== */
 
 .storage-area {
@@ -86,7 +101,7 @@
     background: #f0f2f6;
 }
 
-/* 棚 */
+/* 棚線 */
 
 .shelf {
     position: absolute;
@@ -115,169 +130,170 @@
 .stored-items {
     position: absolute;
     inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
 }
 
 .stored-item {
-    position: absolute;
-    width: 92px;
+    position: relative;
+    width: 82px;
+    min-width: 82px;
+    margin: 0;
     text-align: center;
     cursor: pointer;
     user-select: none;
     z-index: 2;
+    pointer-events: auto;
 }
 
-/* 選択中 */
-
 .stored-item.selected {
-    padding: 4px;
+    padding: 3px;
     border: 3px solid #ff9800;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.75);
 }
 
-/* 画像と数量を囲む */
-
 .stored-image-wrapper {
     position: relative;
-    width: 65px;
-    height: 65px;
+    width: 58px;
+    height: 58px;
     margin: 0 auto;
 }
 
-.stored-image-wrapper img {
+.stored-main-image {
     display: block;
-    width: 100%;
-    height: 100%;
+    width: 58px;
+    height: 58px;
     object-fit: contain;
 }
 
-/* 数量バッジ */
-
 .stock-count {
     position: absolute;
-    top: -7px;
-    right: -9px;
-    z-index: 5;
-
-    display: flex !important;
-    min-width: 24px;
-    height: 24px;
-    margin: 0 !important;
+    top: -6px;
+    right: -8px;
+    display: flex;
+    width: auto;
+    min-width: 23px;
+    height: 23px;
     padding: 0 5px;
-
+    margin: 0;
     align-items: center;
     justify-content: center;
-
     border-radius: 12px;
-    background-color: #e53935;
+    background: #ff6666;
     color: #ffffff;
-
-    font-size: 12px !important;
-    font-weight: bold;
-    line-height: 24px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 23px;
     white-space: nowrap;
 }
-
-/* 商品名 */
 
 .stored-item-name {
     display: block;
-    margin-top: 4px;
+    width: 82px;
+    margin-top: 3px;
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
-    font-size: 12px;
-    line-height: 16px;
     white-space: nowrap;
+    font-size: 11px;
+    line-height: 15px;
 }
 
 /* ==============================
-   食材の棚ごとの配置
+   棚ごとの横スクロール
 ============================== */
 
-/* 上段 */
-
-.food-top-0 {
-    top: 3%;
-    left: 7%;
+.shelf-scroll-controls {
+    position: absolute;
+    right: 1%;
+    left: 1%;
+    z-index: 20;
+    display: flex;
+    height: 96px;
+    min-width: 0;
+    align-items: center;
+    pointer-events: auto;
 }
 
-.food-top-1 {
-    top: 3%;
-    left: 37%;
+.shelf-controls-top {
+    top: 1%;
 }
 
-.food-top-2 {
-    top: 3%;
-    right: 7%;
+.shelf-controls-middle {
+    top: 29%;
 }
 
-/* 中段 */
-
-.food-middle-0 {
-    top: 31%;
-    left: 7%;
+.shelf-controls-bottom {
+    top: 56%;
 }
 
-.food-middle-1 {
-    top: 31%;
-    left: 37%;
+.refrigerator-shelf-scroll {
+    position: relative;
+    width: auto;
+    height: 96px;
+    min-width: 0;
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    pointer-events: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
 }
 
-.food-middle-2 {
-    top: 31%;
-    right: 7%;
+.refrigerator-shelf-scroll::-webkit-scrollbar {
+    display: none;
 }
 
-/* 下段 */
-
-.food-bottom-0 {
-    top: 58%;
-    left: 7%;
+.refrigerator-shelf-items {
+    display: flex;
+    width: max-content;
+    min-width: 100%;
+    height: 100%;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 3px 6px 10px;
 }
 
-.food-bottom-1 {
-    top: 58%;
-    left: 37%;
+.refrigerator-shelf-slot {
+    display: flex;
+    width: 82px;
+    min-width: 82px;
+    height: 88px;
+    flex: 0 0 82px;
+    align-items: flex-start;
+    justify-content: center;
 }
 
-.food-bottom-2 {
-    top: 58%;
-    right: 7%;
+.shelf-scroll-button {
+    position: relative;
+    z-index: 30;
+    width: 28px;
+    height: 72px;
+    flex: 0 0 28px;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.88);
+    color: #111111;
+    font-size: 19px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    pointer-events: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
 }
 
-/* ==============================
-   日用品の配置
-============================== */
-
-.position-0 {
-    top: 4%;
-    left: 8%;
-}
-
-.position-1 {
-    top: 4%;
-    left: 38%;
-}
-
-.position-2 {
-    top: 4%;
-    right: 7%;
-}
-
-.position-3 {
-    top: 32%;
-    left: 8%;
-}
-
-.position-4 {
-    top: 32%;
-    left: 38%;
-}
-
-.position-5 {
-    top: 32%;
-    right: 7%;
+.shelf-scroll-button:active {
+    transform: scale(0.94);
+    background: #dff9ed;
 }
 
 /* ==============================
@@ -287,6 +303,7 @@
 .trash-area {
     display: flex;
     min-height: 64px;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     gap: 10px;
@@ -312,6 +329,7 @@
 
 .candidate-area {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     background: #d6d5c9;
 }
@@ -324,14 +342,10 @@
     align-items: center;
     flex-wrap: nowrap;
     gap: 10px;
-
     padding: 8px 12px 14px;
-
     overflow-x: auto;
     overflow-y: hidden;
-
     background: #d6d5c9;
-
     scroll-behavior: smooth;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
@@ -352,9 +366,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
     padding: 6px;
-
     border: 2px solid #1b6f97;
     background: #f8fcff;
     text-align: center;
@@ -376,7 +388,6 @@
     display: block;
     width: 100%;
     margin-top: 4px;
-
     overflow: hidden;
     font-size: 11px;
     line-height: 14px;
@@ -384,16 +395,12 @@
     white-space: nowrap;
 }
 
-/* スクロールボタン */
-
 .candidate-scroll-button {
     width: 36px;
     height: 105px;
     flex: 0 0 36px;
-
     border: none;
     background: #ffffff;
-
     font-size: 22px;
     cursor: pointer;
 }
@@ -401,8 +408,6 @@
 .candidate-scroll-button:hover {
     background: #eeeeee;
 }
-
-/* スクロールバー */
 
 .candidate-list::-webkit-scrollbar {
     height: 6px;
@@ -423,33 +428,30 @@
 
 @media (max-width: 600px) {
     .stock-page {
-        min-height: 100dvh;
+        width: 100%;
+        min-height: calc(100dvh - 72px);
+        height: calc(100dvh - 72px);
         padding: 0;
+        overflow: hidden;
         background: #ffffff;
     }
 
-    .page-title {
-        padding: 12px 16px;
-        margin: 0;
-        font-size: 22px;
-    }
-
     .stock-app {
+        display: flex;
         width: 100%;
-        max-width: none;
+        height: 100%;
+        min-height: 0;
         margin: 0;
+        flex-direction: column;
         border: none;
         border-radius: 0;
         box-shadow: none;
     }
 
-    .tab-button {
-        padding: 14px 8px;
-        font-size: 18px;
-    }
-
     .storage-area {
-        height: 320px;
+        height: auto;
+        min-height: 320px;
+        flex: 1 1 auto;
     }
 
     .shelf {
@@ -458,406 +460,14 @@
         height: 7px;
     }
 
-    .stored-item {
-        width: 82px;
-    }
-
-    .stored-image-wrapper {
-        width: 58px;
-        height: 58px;
-    }
-
-    .stored-item-name {
-        font-size: 11px;
-    }
-
-    .stock-count {
-        top: -6px;
-        right: -8px;
-        min-width: 22px;
-        height: 22px;
-        font-size: 11px !important;
-        line-height: 22px;
-    }
-
-    .trash-area {
-        min-height: 58px;
-    }
-
-    .candidate-list {
-        min-height: 98px;
-        padding: 6px 10px 12px;
-    }
-
-    .candidate-item {
-        width: 78px;
-        height: 86px;
-        flex-basis: 78px;
-    }
-
-    .candidate-item img {
-        width: 48px;
-        height: 48px;
-    }
-
-    .candidate-scroll-button {
-        width: 36px;
-        height: 98px;
-        flex-basis: 36px;
-    }
-
-    /* スマホでの食材配置 */
-
-    .food-top-0 {
-        top: 3%;
-        left: 5%;
-    }
-
-    .food-top-1 {
-        top: 3%;
-        left: 36%;
-    }
-
-    .food-top-2 {
-        top: 3%;
-        right: 4%;
-    }
-
-    .food-middle-0 {
-        top: 31%;
-        left: 5%;
-    }
-
-    .food-middle-1 {
-        top: 31%;
-        left: 36%;
-    }
-
-    .food-middle-2 {
-        top: 31%;
-        right: 4%;
-    }
-
-    .food-bottom-0 {
-        top: 58%;
-        left: 5%;
-    }
-
-    .food-bottom-1 {
-        top: 58%;
-        left: 36%;
-    }
-
-    .food-bottom-2 {
-        top: 58%;
-        right: 4%;
-    }
-}
-
-.category-icon {
-    position: absolute;
-    top: -8px;
-    left: -8px;
-
-    width: 22px;
-    height: 22px;
-
-    border-radius: 50%;
-    background: white;
-    object-fit: contain;
-
-    z-index: 10;
-}
-
-.stored-main-image{
-    width:70px;
-    height:70px;
-    object-fit:contain;
-}
-
-.stored-image-wrapper{
-    position:relative;
-}
-
-.stock-count{
-    position:absolute;
-    right:-5px;
-    bottom:-5px;
-    background:#ff6666;
-    color:white;
-    border-radius:50%;
-    width:24px;
-    height:24px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    font-weight:bold;
-}
-
-/* 各段のスクロール領域 */
-.refrigerator-shelf-scroll {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    /* スマホで滑らかにスクロール */
-    -webkit-overflow-scrolling: touch;
-
-    /* 縦方向のレイアウトを崩さない */
-    box-sizing: border-box;
-}
-
-
-/* 商品を横一列に並べる */
-.refrigerator-shelf-items {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-
-    gap: 10px;
-
-    /* 中身の幅を商品数に合わせる */
-    width: max-content;
-    min-width: 100%;
-
-    padding: 4px 6px 8px;
-    box-sizing: border-box;
-}
-
-
-/* 商品1種類分の枠 */
-.refrigerator-shelf-slot {
-    flex: 0 0 90px;
-
-    width: 90px;
-    min-width: 90px;
-    height: 100px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* =========================================================
-   完成版：冷蔵庫・日用品倉庫の棚を横スクロールにする
-   ========================================================= */
-
-/*
- * 登録済み商品は、棚ごとに絶対配置したスクロール領域の中へ並べる。
- * 商品自身は absolute にしない。
- */
-.stored-items {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-    pointer-events: none;
-}
-
-/* 商品本体 */
-.stored-item {
-    position: relative;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-
-    width: 82px;
-    min-width: 82px;
-    margin: 0;
-
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    z-index: 2;
-    pointer-events: auto;
-}
-
-/* 選択時も枠の大きさが急に変わりにくいようにする */
-.stored-item.selected {
-    padding: 3px;
-}
-
-/* 棚1段分の横スクロール領域 */
-.refrigerator-shelf-scroll {
-    position: absolute;
-    left: 6%;
-    right: 6%;
-    z-index: 3;
-
-    width: auto;
-    height: 96px;
-    min-width: 0;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    box-sizing: border-box;
-    pointer-events: auto;
-
-    scroll-behavior: smooth;
-    scrollbar-width: thin;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
-    overscroll-behavior-x: contain;
-}
-
-/* 棚線より少し上へ商品を配置 */
-.shelf-scroll-top {
-    top: 1%;
-}
-
-.shelf-scroll-middle {
-    top: 29%;
-}
-
-.shelf-scroll-bottom {
-    top: 56%;
-}
-
-/* 商品を横一列に並べる */
-.refrigerator-shelf-items {
-    display: flex;
-    width: max-content;
-    min-width: 100%;
-    height: 100%;
-
-    flex-wrap: nowrap;
-    align-items: flex-start;
-    gap: 10px;
-
-    padding: 3px 4px 10px;
-    box-sizing: border-box;
-}
-
-/* 商品1種類分の固定幅 */
-.refrigerator-shelf-slot {
-    display: flex;
-    width: 82px;
-    min-width: 82px;
-    height: 88px;
-    flex: 0 0 82px;
-
-    align-items: flex-start;
-    justify-content: center;
-}
-
-/* 登録済み商品の画像 */
-.stored-image-wrapper {
-    position: relative;
-    width: 58px;
-    height: 58px;
-    margin: 0 auto;
-}
-
-.stored-main-image {
-    display: block;
-    width: 58px;
-    height: 58px;
-    object-fit: contain;
-}
-
-/* 個数表示 */
-.stock-count {
-    position: absolute;
-    top: -6px;
-    right: -8px;
-    bottom: auto;
-
-    display: flex !important;
-    width: auto;
-    min-width: 23px;
-    height: 23px;
-    padding: 0 5px;
-    margin: 0 !important;
-
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-    background: #ff6666;
-    color: #ffffff;
-
-    font-size: 12px !important;
-    font-weight: 700;
-    line-height: 23px;
-    white-space: nowrap;
-}
-
-/* 商品名 */
-.stored-item-name {
-    display: block;
-    width: 82px;
-    margin-top: 3px;
-
-    overflow: hidden;
-    text-align: center;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    font-size: 11px;
-    line-height: 15px;
-}
-
-/* 棚のスクロールバー */
-.refrigerator-shelf-scroll::-webkit-scrollbar {
-    height: 5px;
-}
-
-.refrigerator-shelf-scroll::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.45);
-}
-
-.refrigerator-shelf-scroll::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: #8b8b8b;
-}
-
-/*
- * 以前の位置指定クラスが残っていても、
- * スクロール配置を邪魔しないように無効化する。
- */
-.food-top-0,
-.food-top-1,
-.food-top-2,
-.food-middle-0,
-.food-middle-1,
-.food-middle-2,
-.food-bottom-0,
-.food-bottom-1,
-.food-bottom-2,
-.position-0,
-.position-1,
-.position-2,
-.position-3,
-.position-4,
-.position-5 {
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-}
-
-/* スマートフォン */
-@media (max-width: 600px) {
-    .refrigerator-shelf-scroll {
-        left: 7%;
-        right: 7%;
+    .shelf-scroll-controls {
+        right: 0;
+        left: 0;
         height: 88px;
     }
 
-    .shelf-scroll-top {
-        top: 1%;
-    }
-
-    .shelf-scroll-middle {
-        top: 29%;
-    }
-
-    .shelf-scroll-bottom {
-        top: 56%;
+    .refrigerator-shelf-scroll {
+        height: 88px;
     }
 
     .refrigerator-shelf-items {
@@ -887,116 +497,78 @@
         width: 78px;
         font-size: 11px;
     }
-}
 
-
-/* =========================================================
-   棚の左右ボタンによるスクロール
-   ========================================================= */
-
-.shelf-scroll-controls {
-    position: absolute;
-    left: 1%;
-    right: 1%;
-    z-index: 20;
-
-    display: flex;
-    height: 96px;
-    min-width: 0;
-    align-items: center;
-
-    pointer-events: auto;
-}
-
-.shelf-controls-top {
-    top: 1%;
-}
-
-.shelf-controls-middle {
-    top: 29%;
-}
-
-.shelf-controls-bottom {
-    top: 56%;
-}
-
-.shelf-scroll-controls .refrigerator-shelf-scroll {
-    position: relative;
-    top: auto;
-    right: auto;
-    bottom: auto;
-    left: auto;
-
-    width: auto;
-    height: 96px;
-    min-width: 0;
-    flex: 1;
-
-    overflow-x: auto;
-    overflow-y: hidden;
-
-    pointer-events: auto;
-    scroll-behavior: smooth;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-}
-
-.shelf-scroll-controls .refrigerator-shelf-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.shelf-scroll-button {
-    position: relative;
-    z-index: 30;
-
-    width: 28px;
-    height: 72px;
-    flex: 0 0 28px;
-
-    padding: 0;
-    border: none;
-    border-radius: 6px;
-
-    background: rgba(255, 255, 255, 0.88);
-    color: #111111;
-
-    font-size: 19px;
-    font-weight: 700;
-    line-height: 1;
-
-    cursor: pointer;
-    pointer-events: auto;
-
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.16);
-}
-
-.shelf-scroll-button:active {
-    transform: scale(0.94);
-    background: #dff9ed;
-}
-
-.shelf-scroll-controls .refrigerator-shelf-items {
-    padding-right: 6px;
-    padding-left: 6px;
-}
-
-@media (max-width: 600px) {
-    .shelf-scroll-controls {
-        left: 0;
-        right: 0;
-        height: 88px;
-    }
-
-    .shelf-scroll-controls .refrigerator-shelf-scroll {
-        height: 88px;
+    .stock-count {
+        top: -6px;
+        right: -8px;
+        min-width: 22px;
+        height: 22px;
+        font-size: 11px;
+        line-height: 22px;
     }
 
     .shelf-scroll-button {
         width: 24px;
         height: 66px;
         flex-basis: 24px;
-
         border-radius: 5px;
         font-size: 17px;
+    }
+
+    .trash-area {
+        min-height: 58px;
+        height: 58px;
+    }
+
+    .candidate-area,
+    .candidate-list,
+    .candidate-scroll-button {
+        height: 98px;
+    }
+
+    .candidate-list {
+        min-height: 98px;
+        padding: 6px 10px;
+    }
+
+    .candidate-item {
+        width: 78px;
+        height: 86px;
+        flex-basis: 78px;
+    }
+
+    .candidate-item img {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* 高さが小さいスマートフォン */
+
+@media (max-width: 600px) and (max-height: 700px) {
+    .stock-page {
+        min-height: calc(100dvh - 64px);
+        height: calc(100dvh - 64px);
+    }
+
+    .stock-tabs,
+    .tab-button {
+        height: 52px;
+    }
+
+    .storage-area {
+        min-height: 285px;
+    }
+
+    .trash-area {
+        min-height: 52px;
+        height: 52px;
+    }
+
+    .candidate-area,
+    .candidate-list,
+    .candidate-scroll-button {
+        min-height: 90px;
+        height: 90px;
     }
 }

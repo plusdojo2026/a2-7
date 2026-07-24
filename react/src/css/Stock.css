@@ -3,7 +3,7 @@
 ============================== */
 .stock-list-page {
     min-height: 100vh;
-    padding: 24px;
+    padding: 0px;
     background: #f4f6f8;
     color: #202124;
     font-family:
@@ -63,8 +63,8 @@
     content: "";
 
     position: absolute;
-    left: 22%;
-    right: 22%;
+    left: 0%;
+    right: 0%;
     bottom: 0;
 
     height: 5px;
@@ -76,7 +76,7 @@
    一覧部分
 ============================== */
 .stock-list-content {
-    padding: 0 14px 24px;
+    padding:0 14px 8px;
 }
 
 

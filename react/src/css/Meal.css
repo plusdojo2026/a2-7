@@ -107,7 +107,7 @@ body{
     background-color: white;
 }
 #mealtitle{
-    font-size: 18px;
+    font-size: 25px;
 }
 .mealCard img{
     margin-top: 10px;
@@ -239,18 +239,45 @@ textarea{
     border-radius: 20px;
     resize: none; /* ユーザーによるサイズ変更を禁止 */
 }
+/* 文字数カウント */
 .charCount{
     text-align: right;
     margin:0 30px 0 auto;
 }
+/* 必須を赤文字 */
 .red{
     color: red;
 }
+/* モーダル文字の背景色 */
 .backcolor{
     background-color: #cfcfcf6f;
 }
+/* ページングボタン */
+.paging img{
+    height: 35px;
+    width: 35px;
+
+    border: 2px solid #F8FAFC;
+    border-radius: 50%;
+
+}
+.paging button{
+    background-color:#F8FAFC;
+    border:none;
+}
+.paging{
+    padding-top: 10px;
+    font-size: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
 
 
+
+
+/*アラート*/
 .message {
     position: fixed;
     top: 20px;
