@@ -445,6 +445,12 @@ function ChoreList() {
 
     // 確定 → 提案を作る → 読み込み → 結果
     const handleSuggest = () => {
+         // カテゴリ未選択チェック
+    if (selected.length === 0) {
+        setAlert("● カテゴリを選択してください。");
+        setTimeout(() => setAlert(""), 2000);
+        return;
+    }
         // 選択したカテゴリの家事だけに絞る
         const filtered = chores.filter(chore =>
             selected.includes(chore.category)
@@ -610,6 +616,7 @@ function ChoreList() {
                                 )}
 
                                 <div className="btnRow">
+
                                     <button
                                         className="backBtn"
                                         onClick={() => setOpenModal(null)}
@@ -617,12 +624,15 @@ function ChoreList() {
                                         戻る
                                     </button>
 
-                                    <button
-                                        className="confirmBtn"
-                                        onClick={handleTodayConfirm}
-                                    >
-                                        確定
-                                    </button>
+                                    {displayTodayChores.length > 0 && (
+                                        <button
+                                            className="confirmBtn"
+                                            onClick={handleTodayConfirm}
+                                        >
+                                            確定
+                                        </button>
+                                    )}
+
                                 </div>
 
                             </>
