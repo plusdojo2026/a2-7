@@ -50,9 +50,9 @@ VALUES
 INSERT INTO Meals
 (record_date, meal_type, meal_image, url, recipe_memo, recipe_title, user_id)
 VALUES
-('2026-07-14', '朝', ハムエッグトースト.png, 'https://example.com/recipe1', 'トーストはこんがり焼く', 'ハムエッグトースト', 1),
-('2026-07-14', '昼', チキンサラダ.png, 'https://example.com/recipe2', '野菜を多めに入れる', 'チキンサラダ', 1),
-('2026-07-14', '夕', ビーフシチュー.png, 'https://example.com/recipe3', '弱火で20分煮込む', 'ビーフシチュー', 1),
+('2026-07-14', '朝', NULL, 'https://example.com/recipe1', 'トーストはこんがり焼く', 'ハムエッグトースト', 1),
+('2026-07-14', '昼', NULL, 'https://example.com/recipe2', '野菜を多めに入れる', 'チキンサラダ', 1),
+('2026-07-14', '夕', NULL, 'https://example.com/recipe3', '弱火で20分煮込む', 'ビーフシチュー', 1),
 ('2026-07-15', '朝', NULL, 'https://example.com/recipe4', 'バナナは最後に盛り付ける', 'フルーツヨーグルト', 2),
 ('2026-07-15', '昼', NULL, 'https://example.com/recipe5', 'パスタはアルデンテに', 'ナポリタン', 2);
 

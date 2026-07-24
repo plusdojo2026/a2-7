@@ -179,16 +179,18 @@ function Home() {
                     {alertMessage}
                 </div>
             )}
-            <div className="buttonArea3">
-                <button onClick={logout}>
-                    <FiLogOut />
-                </button>
-            </div>
+
             {/* ポイント */}
             <div className="point">
                 <h2>現在の米粒ポイント</h2>
                 <h1>{point}</h1>
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
+            </div>
+
+         <div className="buttonArea3">
+            <button onClick={logout}>
+             <FiLogOut />
+            </button>
             </div>
 
             {/* 買い物リスト */}

@@ -3,11 +3,12 @@
     min-height: 100vh;
     padding: 10px;
     text-align: center;
+    position: relative;
 }
 
 /* ポイント */
 .point {
-    margin-top: 5px;
+    text-align: center;
 }
 
 .point p {
@@ -17,7 +18,8 @@
 }
 
 .point h1 {
-    margin: 25px;
+    margin: 10px 15px 5px;
+    margin-top: 20px;
     font-size: 56px;
     color: #1E293B;
 }
@@ -35,6 +37,7 @@
     cursor: pointer;
     margin-bottom: 15px;
     transition: 0.2s;
+    margin-top: 30px;
 }
 
 .shoppingBtn:hover {
@@ -68,10 +71,9 @@
 }
 
 .buttonArea3 {
-    display: flex;
-    justify-content: flex-start;
-    margin-top: 0;
-    margin-left: 0;
+    position: absolute;
+    top: 15px;
+    left: 15px;
 }
 .buttonArea3 button {
     width: 45px;
@@ -92,6 +94,10 @@
 }
 .buttonArea3 button svg {
     font-size: 24px;
+}
+.topArea{
+    display: flex;
+    align-items: center;
 }
 /* Tips */
 .tips {
