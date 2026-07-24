@@ -59,3 +59,41 @@
     color:#ddd;
     font-size: 22px;
 }
+.alert{
+    width: 300px;
+    background: white;
+    padding: 20px 25px;
+    border-radius: 60px;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    position: fixed;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    animation: slideDown 0.3s ease; 
+}
+
+.dot{
+    color: #72F2AE;
+    font-size: 10px;
+}
+
+.alert p{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+@keyframes slideDown{
+    from{
+        transform: translateX(-50%)　translateY(-100%);
+        opacity: 0;
+    }
+
+    to{
+        transform: translateX(-50%)　translateY(0);
+        opacity: 1;
+    }
+}
