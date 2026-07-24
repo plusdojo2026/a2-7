@@ -2,6 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "../css/Refrigerator.css";
 function Refrigerator() {
+
+
+    // 仮ログインユーザー
+    const LOGIN_USER_ID = 1;
+
     //候補一覧のスクロール
     const foodCandidateListRef = useRef(null);
     const dailyCandidateListRef = useRef(null);
@@ -34,7 +39,7 @@ function Refrigerator() {
     // 食材一覧を取得する
     const refreshFoods = () => {
         axios
-            .get("http://localhost:8080/api/food_stock/")
+            .get(`http://localhost:8080/api/food_stock/user/${LOGIN_USER_ID}`)
             .then((res) => {
                 setFoods(res.data);
             })
@@ -53,7 +58,7 @@ function Refrigerator() {
     // 日用品一覧を取得する
     const refreshDailyItems = () => {
         axios
-            .get("http://localhost:8080/api/daily-item-stock")
+            .get(`http://localhost:8080/api/daily-item-stock/user/${LOGIN_USER_ID}`)
             .then((res) => {
                 setItems(res.data);
             })
@@ -186,7 +191,7 @@ function Refrigerator() {
     const addFoodByClick = (food) => {
         axios
             .post(
-                `http://localhost:8080/api/food_stock/add-master/${food.foodMasterId}`
+                 `http://localhost:8080/api/food_stock/add-master/${food.foodMasterId}/user/${LOGIN_USER_ID}`
             )
             .then(() => {
                 refreshFoods();
@@ -199,7 +204,7 @@ function Refrigerator() {
     const addDailyItemByClick = (item) => {
         axios
             .post(
-                `http://localhost:8080/api/daily-item-stock/add-master/${item.dailyItemMasterId}`
+                `http://localhost:8080/api/daily-item-stock/add-master/${item.dailyItemMasterId}/user/${LOGIN_USER_ID}`
             )
             .then(() => {
                 refreshDailyItems();
@@ -243,8 +248,7 @@ function Refrigerator() {
 
             axios
                 .post(
-                    "http://localhost:8080/api/food_stock/del/",
-                    deleteTarget
+                   `http://localhost:8080/api/food_stock/del/${deleteTarget.foodStockId}/user/${LOGIN_USER_ID}`
                 )
                 .then(() => {
                     setSelectedItem(null);
@@ -283,7 +287,7 @@ function Refrigerator() {
 
             axios
                 .delete(
-                    `http://localhost:8080/api/daily-item-stock/${deleteTarget.dailyItemStockId}`
+                   `http://localhost:8080/api/daily-item-stock/${deleteTarget.dailyItemStockId}/user/${LOGIN_USER_ID}`
                 )
                 .then(() => {
                     setSelectedItem(null);

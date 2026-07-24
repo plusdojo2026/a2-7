@@ -4,6 +4,8 @@ import axios from "axios";
 
 const Stock = () => {
 
+    const LOGIN_USER_ID = 1;
+
     // Spring Bootから取得した食材在庫を保存する配列
     let [foods, setFoods] = useState([]);
 
@@ -50,7 +52,7 @@ const Stock = () => {
 
     //取得したJSONデータをfoodsへ保存する関数
     let refreshFoodStockList = () => {
-        axios.get("http://localhost:8080/api/food_stock/")
+        axios.get(`http://localhost:8080/api/food_stock/user/${LOGIN_USER_ID}`)
             .then(response => {
                 // APIから受け取った食材配列をStateへ保存
                 setFoods(response.data);
@@ -64,7 +66,7 @@ const Stock = () => {
 
     //日用品在庫をAPIから取得する関数
     let refreshDailyItemStockList = () => {
-        axios.get("http://localhost:8080/api/daily-item-stock")
+        axios.get(`http://localhost:8080/api/daily-item-stock/user/${LOGIN_USER_ID}`)
             .then(response => {
                 // APIから受け取った日用品配列をStateへ保存
                 setDailyItems(response.data);
@@ -357,7 +359,7 @@ const Stock = () => {
             }
 
             axios.post(
-                "http://localhost:8080/api/food_stock/mod-image",
+                `http://localhost:8080/api/food_stock/mod-image/user/${LOGIN_USER_ID}`,
                 formData
             )
                 .then(() => {
@@ -391,7 +393,7 @@ const Stock = () => {
             }
 
             axios.post(
-                "http://localhost:8080/api/daily-item-stock/mod-image",
+                `http://localhost:8080/api/daily-item-stock/mod-image/user/${LOGIN_USER_ID}`,
                 formData
             )
                 .then(() => {
