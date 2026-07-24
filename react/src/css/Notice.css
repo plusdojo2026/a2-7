@@ -104,7 +104,7 @@
     margin: 0;
     color: #666;
 }
-.expired {
+/* .expired {
     color: red;
     font-weight: bold;
 }
@@ -127,5 +127,5 @@
 }
 
 .foodCard.safe {
-    border-left: 6px solid green;
-}
+    border-left: 6px solid green; 
+}*/

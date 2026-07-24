@@ -5,9 +5,8 @@ import "../css/Notice.css";
 function Notice() {
 
     const [garbageMessage, setGarbageMessage] = useState("");
-    const [nearFoodMessage, setNearFoodMessage] = useState("");
+    const [expiredFoods, setExpiredFoods] = useState([]);
     const [foodList, setFoodList] = useState([]);
-    const [nearestFood, setNearestFood] = useState(null);
     const week = [
         "日曜日",
         "月曜日",
@@ -60,23 +59,21 @@ function Notice() {
                     return;
                 }
                 setFoodList(foods);
-                const nearestFood = foods[0];
-                setNearestFood(nearestFood);
                 const today = new Date();
-                const expiration = new Date(nearestFood.expirationDate);
-                const diff = Math.ceil(
-                    (expiration - today) / (1000 * 60 * 60 * 24)
-                );
 
-                if (diff >= 0) {
-                    setNearFoodMessage(
-                        `${nearestFood.foodStockName}は賞味期限まで残り${diff}日です`
+                const expired = foods.filter(food => {
+
+                    const expiration = new Date(food.expirationDate);
+
+                    const diff = Math.ceil(
+                        (expiration - today) / (1000 * 60 * 60 * 24)
                     );
-                } else {
-                    setNearFoodMessage(
-                        `${nearestFood.foodStockName}は賞味期限が切れています`
-                    );
-                }
+
+                    return diff < 0;
+                });
+
+
+                setExpiredFoods(expired);
             });
     }, []);
 
@@ -116,14 +113,33 @@ function Notice() {
                 </div>
             </div>
             <div className="nearestCard">
-                <h3>{nearFoodMessage}</h3>
+
+                {expiredFoods.length === 0 ? (
+                    <h3>賞味期限切れの商品はありません</h3>
+                )
+                    :
+                    (
+                        <>
+                            <h3>賞味期限切れの商品</h3>
+
+                            {expiredFoods.map(food => (
+                                <p key={food.foodStockId}>
+                                    {food.foodStockName}
+                                </p>
+                            ))}
+
+                        </>
+                    )}
+
             </div>
 
             <hr />
 
             <div className="foodList">
                 {foodList
-                    .filter(food => food.foodStockId !== nearestFood?.foodStockId)
+                    .filter(food => !expiredFoods.some(
+                        expired => expired.foodStockId === food.foodStockId
+                    ))
                     .map(food => {
 
                         const today = new Date();

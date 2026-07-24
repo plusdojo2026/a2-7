@@ -12,7 +12,7 @@ import KitchenIcon from "@mui/icons-material/Kitchen";
 
 function BottomMenu() {
 
-    const [value, setValue] = useState(0);
+    const [value, setValue] = useState(2);
 
     return (
         <BottomNavigation
@@ -24,7 +24,17 @@ function BottomMenu() {
             sx={{
                 position: "fixed",
                 bottom: 0,
+                left: 0,
                 width: "100%",
+                zIndex: 1000,
+
+                paddingBottom: 0,
+
+                "& .MuiBottomNavigationAction-root": {
+                    minWidth: 0,
+                    padding: "5px 0",
+                },
+
                 "& .Mui-selected": {
                     color: "#84FAB0",
                 },

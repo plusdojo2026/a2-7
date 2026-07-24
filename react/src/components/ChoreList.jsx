@@ -345,13 +345,13 @@ function ChoreList() {
 
         // 必要な数の曜日が選ばれているかチェック
         if (frequency === "週1回" && days.length !== 1) {
-            setAlert("● 曜日を1つ選択してください。");
+            setAlert("曜日を1つ選択してください。");
             setTimeout(() => setAlert(""), 2000);
             return;
         }
 
         if (frequency === "週2回" && days.length !== 2) {
-            setAlert("● 曜日を2つ選択してください。");
+            setAlert("曜日を2つ選択してください。");
             setTimeout(() => setAlert(""), 2000);
             return;
         }
@@ -407,7 +407,7 @@ function ChoreList() {
                     }
                 });
 
-                setAlert("● 設定が完了しました。");
+                setAlert("設定が完了しました。");
                 setSettingChore(null);
 
                 setTimeout(() => setAlert(""), 2000);
@@ -417,7 +417,7 @@ function ChoreList() {
 
                 console.error("設定保存失敗", err);
 
-                setAlert("● 設定の保存に失敗しました。");
+                setAlert("設定の保存に失敗しました。");
 
                 setTimeout(() => setAlert(""), 2000);
 
@@ -445,12 +445,12 @@ function ChoreList() {
 
     // 確定 → 提案を作る → 読み込み → 結果
     const handleSuggest = () => {
-         // カテゴリ未選択チェック
-    if (selected.length === 0) {
-        setAlert("● カテゴリを選択してください。");
-        setTimeout(() => setAlert(""), 2000);
-        return;
-    }
+        // カテゴリ未選択チェック
+        if (selected.length === 0) {
+            setAlert("カテゴリを選択してください。");
+            setTimeout(() => setAlert(""), 2000);
+            return;
+        }
         // 選択したカテゴリの家事だけに絞る
         const filtered = chores.filter(chore =>
             selected.includes(chore.category)
@@ -846,8 +846,11 @@ function ChoreList() {
             )}
 
             {/* アラート */}
+            {/* アラート */}
             {alert !== "" && (
-                <div className="alertBox">{alert}</div>
+                <div className="alertBox">
+                    <p>{alert}</p>
+                </div>
             )}
 
         </div>
