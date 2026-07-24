@@ -51,6 +51,15 @@ useEffect(() => {
     }
 
     const saveShopping = () => {
+
+        for (let i = 0; i < items.length; i++) {
+
+        if (items[i].itemName.trim() === "") {
+        alert("商品名を入力してください");
+        return;
+        }
+    
+    }
          axios.post("/api/shopping",items
          )
          .then(() => {
