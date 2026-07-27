@@ -188,7 +188,7 @@ const Stock = () => {
 
                 if (
                     remainingDays !== null &&
-                    remainingDays <= 3
+                    remainingDays <= 7
                 ) {
                     if (remainingDays < 0) {
                         alerts.push(
@@ -214,7 +214,7 @@ const Stock = () => {
 
                 if (
                     remainingDays !== null &&
-                    remainingDays <= 3
+                    remainingDays <= 7
                 ) {
                     if (remainingDays < 0) {
                         alerts.push(
