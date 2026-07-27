@@ -476,17 +476,11 @@ const Stock = () => {
                                                 <div className="stock-list-image food">
                                                     <img
                                                         src={
-                                                            foodCategoryImages[
-                                                            food.category
-                                                            ] ??
-                                                            foodCategoryImages[
-                                                            "その他"
-                                                            ]
+                                                            food.foodImg
+                                                                ? `/img/${food.foodImg}`
+                                                                : foodCategoryImages[food.category]
                                                         }
-                                                        alt={
-                                                            food.foodStockName
-                                                        }
-                                                        className="stock-icon"
+                                                        alt={food.foodStockName}
                                                     />
                                                 </div>
 
