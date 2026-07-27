@@ -373,12 +373,12 @@ function Home() {
                             </label>
                         </p>
                         <button
-                            className="button"
+                            className="closebtn"
                             onClick={() => setModalType("")}>
                             閉じる
                         </button>
                         <button
-                            className="closebtm"
+                            className="button"
                             onClick={saveGarbageRule}>
                             登録
                         </button>

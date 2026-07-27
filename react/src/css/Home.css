@@ -240,11 +240,11 @@
     
 }
 
-.closebtm{
+.closebtn{
     width: 40%;
     height: 45px;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-right: 10px;
     border: none;
     border-radius: 25px;
     background: white;
