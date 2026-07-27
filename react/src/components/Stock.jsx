@@ -876,7 +876,7 @@ const Stock = () => {
                                 )}
 
                                 <div className="stock-modal-actions">
-                                    
+
 
                                     <button
                                         type="button"
