@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import garbageImage from "../assets/garbage.png";
+import garbageImage from "../assets/trush.png";
 import "../css/Notice.css";
 function Notice() {
 
@@ -122,8 +122,9 @@ function Notice() {
                         <>
                             <h3>賞味期限切れの商品</h3>
 
+
                             {expiredFoods.map(food => (
-                                <p key={food.foodStockId}>
+                                <p key={food.foodStockId}><span>・</span>
                                     {food.foodStockName}
                                 </p>
                             ))}
@@ -133,7 +134,7 @@ function Notice() {
 
             </div>
 
-            <hr />
+            <hr className="hr"/>
 
             <div className="foodList">
                 {foodList
