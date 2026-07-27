@@ -278,42 +278,44 @@ textarea{
 
 
 /*アラート*/
-.message {
+.alert{
+    z-index: 9999;
+    display:flex;
+    width: 300px;
+    background: white;
+    padding: 20px 25px;
+    border-radius: 60px;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     position: fixed;
-    top: 20px;
+    top: 0px;
     left: 50%;
     transform: translateX(-50%);
 
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-
-    background: #ffffff;
-
-    border: 2px solid #d6d6d6;
-    border-radius: 40px;
-
-    padding: 14px 28px;
-
-
-    color: #333333;
-    font-size: 18px;
-    font-weight: bold;
-
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-
-    z-index: 1000;
-
-    width: 260px;
-    height: 40px;
+    animation: slideDown 0.3s ease;
 }
 
-.message::before {
-    content: "";
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #7ee5a2;
-    display: block;
+.dot{
+    padding: 2px 4px;
+    color: #72F2AE;
+    font-size: 10px;
+}
+
+.alert p{
+    font-size: 16px;
+    font-weight: bold;
+}
+
+@keyframes slideDown{
+    from{
+        transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
+    }
+
+    to{
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
 }
