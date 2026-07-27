@@ -428,14 +428,14 @@
 
 
 /* 更新ボタン */
-.stock-modal-actions button:first-child {
+.stock-modal-actions button:last-child {
     background: #65dca6;
     color: #ffffff;
 }
 
 
 /* 閉じるボタン */
-.stock-modal-actions button:last-child {
+.stock-modal-actions button:first-child {
     background: #e8e8e8;
     color: #333333;
 }

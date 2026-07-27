@@ -476,17 +476,11 @@ const Stock = () => {
                                                 <div className="stock-list-image food">
                                                     <img
                                                         src={
-                                                            foodCategoryImages[
-                                                            food.category
-                                                            ] ??
-                                                            foodCategoryImages[
-                                                            "その他"
-                                                            ]
+                                                            food.foodImg
+                                                                ? `/img/${food.foodImg}`
+                                                                : foodCategoryImages[food.category]
                                                         }
-                                                        alt={
-                                                            food.foodStockName
-                                                        }
-                                                        className="stock-icon"
+                                                        alt={food.foodStockName}
                                                     />
                                                 </div>
 
@@ -876,18 +870,19 @@ const Stock = () => {
                                 )}
 
                                 <div className="stock-modal-actions">
-                                    <button
-                                        type="button"
-                                        onClick={updateStock}
-                                    >
-                                        更新
-                                    </button>
+
 
                                     <button
                                         type="button"
                                         onClick={closeModal}
                                     >
-                                        キャンセル
+                                        閉じる
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={updateStock}
+                                    >
+                                        更新
                                     </button>
                                 </div>
                             </div>
