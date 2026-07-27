@@ -165,9 +165,11 @@
 
 .modal2Content {
     width: 260px;
+    max-height: 80vh;   /* 画面の80%まで */
+    overflow-y: auto;   /* 縦スクロール */
+    padding: 30px;
     background: white;
     border-radius: 30px;
-    padding: 30px;
     box-shadow: 0 0 15px gray;
 }
 
@@ -225,14 +227,30 @@
     box-shadow: 0 0 0 4px rgba(132,250,176,.25);
 }
 
-.modal2Content button {
-    width: 100%;
+.button {
+    width: 40%;
     height: 45px;
-    margin-top: 15px;
+    margin-right: 10px;
     border: none;
     border-radius: 25px;
     background: linear-gradient(135deg, #84FAB0, #8FD3F4);
     color: white;
+    font-size: 18px;
+    cursor: pointer;
+    
+}
+
+.closebtn{
+    width: 40%;
+    height: 45px;
+    margin-top: 10px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 25px;
+    background: white;
+    color: #ddd;
+    border: 2px solid #ddd;
+    font-weight: bold;
     font-size: 18px;
     cursor: pointer;
 }
