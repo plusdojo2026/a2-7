@@ -175,7 +175,7 @@ function Home() {
 
             {alertMessage && (
                 <div className="customAlert">
-                    <span className="dot"></span>
+                    <span className="dot">●</span>
                     {alertMessage}
                 </div>
             )}
