@@ -845,10 +845,11 @@ function ChoreList() {
                 </>
             )}
 
+
             {/* アラート */}
-            {/* アラート */}
-            {alert !== "" && (
-                <div className="alertBox">
+            {alert && (
+                <div className="alert">
+                    <span className="dot"></span>
                     <p>{alert}</p>
                 </div>
             )}
