@@ -876,18 +876,19 @@ const Stock = () => {
                                 )}
 
                                 <div className="stock-modal-actions">
-                                    <button
-                                        type="button"
-                                        onClick={updateStock}
-                                    >
-                                        更新
-                                    </button>
+                                    
 
                                     <button
                                         type="button"
                                         onClick={closeModal}
                                     >
-                                        キャンセル
+                                        閉じる
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={updateStock}
+                                    >
+                                        更新
                                     </button>
                                 </div>
                             </div>

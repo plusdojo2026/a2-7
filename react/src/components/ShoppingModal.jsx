@@ -13,15 +13,15 @@ function ShoppingModal({ items, closeModal, reload }) {
     }, [items]);
 
     const changeBought = (index) => {
-         const newItems = [...shoppingItems];
+        const newItems = [...shoppingItems];
 
-         if(newItems[index].isBought === 0) {
+        if (newItems[index].isBought === 0) {
             newItems[index].isBought = 1;
-         }else{
+        } else {
             newItems[index].isBought = 0;
-         }
+        }
 
-         setShoppingItems(newItems);
+        setShoppingItems(newItems);
     }
 
     const updateItems = () => {
@@ -41,44 +41,45 @@ function ShoppingModal({ items, closeModal, reload }) {
         closeModal();
     };
 
-     return (
+    return (
         <div className="modal-overlay">
 
             <div className="modal">
 
-            <h2>購入状況確認</h2>
+                <h2>購入状況確認</h2>
 
-            {shoppingItems.map((item, index) => (
-                <div 
-                className="item-row"
-                key={item.shoppingItemId}>
+                {shoppingItems.map((item, index) => (
+                    <div
+                        className="item-row"
+                        key={item.shoppingItemId}>
 
-                    <span className="item-name">
-                        {item.itemName}
-                    </span>
+                        <span className="item-name">
+                            {item.itemName}
+                        </span>
 
-                    <input
-                    type="checkbox"
-                    className="checkbox"
-                    checked={item.isBought === 1}
-                    onChange={() => changeBought(index)}
-                    />
+                        <input
+                            type="checkbox"
+                            className="checkbox"
+                            checked={item.isBought === 1}
+                            onChange={() => changeBought(index)}
+                        />
+                    </div>
+                ))}
+
+                <div className="button-area">
+                    <button onClick={closeModal} className="close-button">
+                        閉じる
+                    </button>
+                    <button onClick={updateItems} className="update-button">
+                        更新
+                    </button>
+
+
                 </div>
-            ))}
 
-            <div className="button-area">
-            <button onClick={updateItems} className="update-button">
-                更新
-            </button>
-
-            <button onClick={closeModal} className="close-button">
-                閉じる
-            </button>
             </div>
 
         </div>
-    
-    </div>
 
     );
 }
