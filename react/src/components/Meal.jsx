@@ -16,6 +16,8 @@ const MealComponent = () =>{
     let [selectedMeal, setSelectedMeal] = useState({recipeTitle:'', mealImage:'', recordDate:'', url:'', recipeMemo:'',mealType:''});
     //記録アラート
     let[message, setMessage] = useState("");
+    //並び替え
+    let [sortType, setSortType] =useState("desc");
     //絞り込み(朝昼夜ボタン)
     let [filterMealType, setFilterMealType] = useState("");
     //ページ切り替え
@@ -35,16 +37,16 @@ const MealComponent = () =>{
     //初回表示時に食事一覧を取得
     useEffect(() => {
         refreshMealList();
-    }, [page, filterMealType]);
+    }, [page, filterMealType, sortType]);
     let refreshMealList = () =>{
         console.log("refreshMealList");
 
         let url;
 
         if(filterMealType === ""){
-            url = `/api/meal/?page=${page}`;
+            url = `/api/meal/?page=${page}&sort=${sortType}`;
         }else{
-            url = `/api/meal/type/?mealType=${filterMealType}&page=${page}`;
+            url = `/api/meal/type/?mealType=${filterMealType}&page=${page}&sort=${sortType}`;
         }
 
         fetch(url)
@@ -196,24 +198,6 @@ const MealComponent = () =>{
         setSelectedMeal({ ...selectedMeal, mealType:mealType });
     }
 
-    //並び替え(新しい順と古い順)
-    let sortMeal = (sortType) =>{
-        let sortedMeals = [...meals];
-
-        if(sortType === "new"){
-            sortedMeals.sort(
-                (a,b) => new Date(b.recordDate)- new Date(a.recordDate)
-            );
-        }
-
-        if(sortType === "old"){
-            sortedMeals.sort(
-                (a,b) => new Date(a.recordDate)- new Date(b.recordDate)
-            );
-        }
-        
-        setMeals(sortedMeals);
-    }
 
     //朝昼夜ボタンでの絞り込み状態をstateに保存
     let toggleMealType = (mealType) =>{
@@ -237,12 +221,17 @@ const MealComponent = () =>{
                 </div>
             )}
 
-            {/* 絞り込み */}
+            {/* 並び替え・絞り込み */}
             <div className="filter">
-                <select onChange={(e) => sortMeal(e.target.value)}>
-                        <option value="" disabled>並び替え</option>
-                        <option value="new">新しい順</option>
-                        <option value="old">古い順</option>
+                <select
+                    value={sortType}
+                    onChange={(e) => {
+                        setPage(0);
+                        setSortType(e.target.value)}}
+                    >
+                    <option value="" disabled>並び替え</option>
+                    <option value="desc">新しい順</option>
+                    <option value="asc">古い順</option>
                 </select>
                     <button className="cloudyBtn" onClick={() => toggleMealType("朝")}>
                         <img src={filterMealType ==="朝" ?"/img/cloudy_active.png" :"/img/cloudy.png"}/>

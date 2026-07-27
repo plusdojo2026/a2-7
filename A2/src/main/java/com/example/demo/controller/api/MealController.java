@@ -126,8 +126,10 @@ public class MealController {
 		Sort sortOrder;
 		if (sort.equals("asc")) {
 			sortOrder = Sort.by("recordDate").ascending();
+			Sort.Order.asc("mealId");
 		} else {
 			sortOrder = Sort.by("recordDate").descending();
+			Sort.Order.asc("mealId");
 		}
 
 		// ページング情報
@@ -151,8 +153,10 @@ public class MealController {
 		Sort sortOrder;
 		if (sort.equals("asc")) {
 			sortOrder = Sort.by("recordDate").ascending();
+			Sort.Order.asc("mealId");
 		} else {
 			sortOrder = Sort.by("recordDate").descending();
+			Sort.Order.asc("mealId");
 		}
 
 		// ページング情報
