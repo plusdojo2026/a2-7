@@ -292,10 +292,14 @@ function Home() {
                                 <span className="slider2"></span>
                             </label>
                         </p>
-                        <button onClick={saveGarbageRule}>
+                        <button 
+                        className="button"
+                        onClick={saveGarbageRule}>
                             登録
                         </button>
-                        <button onClick={() => setModalType("")}>
+                        <button 
+                        className="closebtn"
+                        onClick={() => setModalType("")}>
                             閉じる
                         </button>
                     </div>
@@ -309,7 +313,9 @@ function Home() {
 
                         <p>ここにアプリの説明画面を作ります。</p>
 
-                        <button onClick={() => setModalType("")}>
+                        <button 
+                        className="closebtn"
+                        onClick={() => setModalType("")}>
                             閉じる
                         </button>
                     </div>
@@ -323,7 +329,9 @@ function Home() {
 
                         <h3>{tips?.music}</h3>
 
-                        <button onClick={() => setModalType("")}>
+                        <button 
+                        className="closebtn"
+                        onClick={() => setModalType("")}>
                             閉じる
                         </button>
                     </div>
