@@ -138,19 +138,19 @@ function Home() {
     }, []);
     let riceImage = riceImage0;
 
-    if (point >= 70) {
+    if (point >= 60) {
         riceImage = riceImage7;
-    } else if (point >= 60) {
-        riceImage = riceImage6;
-    } else if (point >= 50) {
-        riceImage = riceImage5;
     } else if (point >= 40) {
-        riceImage = riceImage4;
+        riceImage = riceImage6;
     } else if (point >= 30) {
-        riceImage = riceImage3;
+        riceImage = riceImage5;
     } else if (point >= 20) {
-        riceImage = riceImage2;
+        riceImage = riceImage4;
     } else if (point >= 10) {
+        riceImage = riceImage3;
+    } else if (point >= 5) {
+        riceImage = riceImage2;
+    } else if (point >= 1) {
         riceImage = riceImage1;
     }
     function shoppingClick() {
@@ -374,14 +374,15 @@ function Home() {
                         </p>
                         <button
                             className="button"
-                            onClick={saveGarbageRule}>
-                            登録
-                        </button>
-                        <button
-                            className="closebtn"
                             onClick={() => setModalType("")}>
                             閉じる
                         </button>
+                        <button
+                            className="closebtm"
+                            onClick={saveGarbageRule}>
+                            登録
+                        </button>
+                        
                     </div>
                 </div>
             )}
