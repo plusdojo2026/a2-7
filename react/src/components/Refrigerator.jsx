@@ -42,6 +42,7 @@ function Refrigerator() {
                 }
             )
             .then((res) => {
+                console.log(res.data);
                 setFoods(res.data);
             })
             .catch((error) => {
@@ -106,15 +107,16 @@ function Refrigerator() {
             const key = `${food.foodStockName}_${food.category}`;
 
             if (!groups[key]) {
+                const master = foodMasters.find(
+                    (master) => master.foodName === food.foodStockName
+                );
+
                 groups[key] = {
                     foodStockName: food.foodStockName,
                     category: food.category,
 
-                    // 在庫データにマスター情報が含まれている場合は画像名を取得
-                    foodImg:
-                        food.foodMaster?.foodImg ??
-                        food.foodImg ??
-                        `${food.foodStockName}.png`,
+                    // 食材マスターから画像名を取得
+                    foodImg: master?.foodImg ?? null,
 
                     stocks: []
                 };
@@ -132,15 +134,19 @@ function Refrigerator() {
             const key = `${item.dailyItemStockName}_${item.category}`;
 
             if (!groups[key]) {
+                const master = dailyItemMasters.find(
+                    (master) =>
+                        master.dailyItemMasterName ===
+                        item.dailyItemStockName
+                );
+
                 groups[key] = {
                     dailyItemStockName: item.dailyItemStockName,
                     category: item.category,
 
-                    // 日用品マスターの画像名を取得
+                    // 日用品マスターから画像名を取得
                     dailyItemImage:
-                        item.dailyItemMaster?.dailyItemImage ??
-                        item.dailyItemImage ??
-                        `${item.dailyItemStockName}.png`,
+                        master?.dailyItemImage ?? null,
 
                     stocks: []
                 };
@@ -151,6 +157,7 @@ function Refrigerator() {
             return groups;
         }, {})
     );
+
     // 上段：冷蔵・飲料
     const topFoods = groupedFoods.filter((food) =>
         ["冷蔵", "飲料"].includes(food.category)
@@ -371,8 +378,12 @@ function Refrigerator() {
                     {/* カテゴリ画像を表示 */}
                     <img
                         className="stored-main-image"
-                        src={foodCategoryImages[food.category]}
-                        alt={food.category}
+                        src={
+                            food.foodImg
+                                ? `/img/${food.foodImg}`
+                                : foodCategoryImages[food.category]
+                        }
+                        alt={food.foodStockName}
                     />
 
                     <span className="stock-count">
@@ -412,11 +423,15 @@ function Refrigerator() {
             >
                 <div className="stored-image-wrapper">
 
-                    {/* カテゴリ画像を表示 */}
+                    {/* 日用品マスター画像を表示 */}
                     <img
                         className="stored-main-image"
-                        src={dailyCategoryImages[item.category]}
-                        alt={item.category}
+                        src={
+                            item.dailyItemImage
+                                ? `/img/${item.dailyItemImage}`
+                                : dailyCategoryImages[item.category]
+                        }
+                        alt={item.dailyItemStockName}
                     />
 
                     <span className="stock-count">
@@ -658,7 +673,11 @@ function Refrigerator() {
                                     >
                                         <img
                                             className="candidate-image"
-                                            src={foodCategoryImages[food.category]}
+                                            src={
+                                                food.foodImg
+                                                    ? `/img/${food.foodImg}`
+                                                    : foodCategoryImages[food.category]
+                                            }
                                             alt={food.foodName}
                                         />
 
@@ -860,9 +879,13 @@ function Refrigerator() {
                                         onClick={() => addDailyItemByClick(item)}
                                     >
                                         <img
-                                            className="candidate-image"
-                                            src={dailyCategoryImages[item.category]}
-                                            alt={item.dailyItemMasterName}
+                                            className="stored-main-image"
+                                            src={
+                                                item.dailyItemImage
+                                                    ? `/img/${item.dailyItemImage}`
+                                                    : dailyCategoryImages[item.category]
+                                            }
+                                            alt={item.dailyItemStockName}
                                         />
 
                                         <span>{item.dailyItemMasterName}</span>
