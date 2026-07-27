@@ -1,6 +1,6 @@
 .notice2 {
-    padding: 20px;
-    background: #f5f5f5;
+    padding: 30px;
+    background: #F8FAFC;
     min-height: 100vh;
 }
 
@@ -14,17 +14,7 @@
     justify-content: space-between;
     align-items: center;
 
-    background: linear-gradient(90deg, #9becc8, #baf8d8);
-    border-radius: 20px;
-    padding: 20px;
-}
-
-.garbageCard {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    background: linear-gradient(90deg, #9becc8, #baf8d8);
+    background: linear-gradient(283deg, #84fab0, #8fd3f4);
     border-radius: 20px;
     padding: 20px;
     margin-bottom: 20px;
@@ -37,11 +27,16 @@
     /* 文字と画像の間隔 */
 }
 
-.garbageText p,
+.garbageText p {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
 .garbageContent p {
     margin: 0;
     font-size: 22px;
     font-weight: bold;
+    color: #fff;
 }
 
 .garbageImage {
@@ -53,7 +48,7 @@
 /* 一番近い賞味期限 */
 .nearestCard {
     background: #fff;
-    border: 4px solid #0d4d73;
+    border: 4px solid #4F46E5;
     border-radius: 18px;
     padding: 18px;
     text-align: center;
@@ -63,6 +58,10 @@
 .nearestCard h3 {
     margin: 0;
     font-size: 18px;
+}
+
+.hr {
+    margin-bottom: 30px;
 }
 
 /* その他 */
@@ -91,7 +90,7 @@
     width: 12px;
     height: 12px;
 
-    background: #34C759;
+    background: #84FAB0;
     border-radius: 50%;
 }
 
@@ -104,7 +103,7 @@
     margin: 0;
     color: #666;
 }
-.expired {
+/* .expired {
     color: red;
     font-weight: bold;
 }
@@ -127,5 +126,5 @@
 }
 
 .foodCard.safe {
-    border-left: 6px solid green;
-}
+    border-left: 6px solid green; 
+}*/
