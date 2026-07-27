@@ -37,6 +37,7 @@ const MealComponent = () =>{
         refreshMealList();
     }, [page, filterMealType]);
     let refreshMealList = () =>{
+        console.log("refreshMealList");
 
         let url;
 
@@ -51,7 +52,7 @@ const MealComponent = () =>{
         .then(response => {
             if(response.status === 401){
                 sessionError();
-                return;
+                throw new Error("session expired");
             }
             if(!response.ok){
                 throw new Error();
@@ -61,6 +62,9 @@ const MealComponent = () =>{
         .then(json => setMeals(json))
         .catch(error =>{
             console.log(error);
+            if(error.message === "session expired"){
+                return;
+            }
             alert("一覧の取得に失敗しました。")
         });
     }
@@ -227,7 +231,11 @@ const MealComponent = () =>{
 
     return(
         <div className="mealContents">
-            {message && <div className='message'>{message}</div>}
+            {message && (
+                <div className="alert">
+                    <p><span className="dot">●</span>{message}</p>
+                </div>
+            )}
 
             {/* 絞り込み */}
             <div className="filter">
@@ -276,7 +284,7 @@ const MealComponent = () =>{
                     ))}
 
                 {/* ページング */}
-                {meals.length > 0 &&(
+                {(meals.length > 0 || page > 0) &&(
                     <div className='paging'>
                         <button onClick={() => setPage(page-1)} disabled={page ===0 }>
                             <img src={page === 0 ? "/img/left_gray.png" :"/img/leftBtn.png"}/>
