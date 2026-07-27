@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "../api/axios";
 import riceImage0 from "../assets/rice0.png";
 import riceImage1 from "../assets/rice1.png";
 import riceImage2 from "../assets/rice2.png";

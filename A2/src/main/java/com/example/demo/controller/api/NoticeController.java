@@ -3,7 +3,6 @@ package com.example.demo.controller.api;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,21 +42,13 @@ public class NoticeController {
 
 	@GetMapping("/food")
 	public List<FoodStock> getFoodNotice(HttpSession session) {
-		User user = (User) session.getAttribute("loginUser");
-		List<FoodStock> foods = foodStockRepository.findByUserUserId(user.getUserId());
 
-		for (FoodStock food : foods) {
+	    User user = (User) session.getAttribute("loginUser");
 
-			LocalDate expiration = food.getAddDay().plusDays(food.getFoodMaster().getExpirationDate());
+	    List<FoodStock> foods =
+	        foodStockRepository.findByUserUserId(user.getUserId());
 
-			// FoodStockのexpirationDateにセット
-			food.setExpirationDate(expiration);
-		}
-
-		// 賞味期限が近い順に並び替え
-		foods.sort(Comparator.comparing(FoodStock::getExpirationDate));
-
-		return foods;
+	    return foods;
 	}
 
 	@PutMapping("/food/read/{id}")
