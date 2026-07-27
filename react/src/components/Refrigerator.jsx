@@ -3,10 +3,6 @@ import axios from "axios";
 import "../css/Refrigerator.css";
 function Refrigerator() {
 
-
-    // 仮ログインユーザー
-    const LOGIN_USER_ID = 1;
-
     //候補一覧のスクロール
     const foodCandidateListRef = useRef(null);
     const dailyCandidateListRef = useRef(null);
@@ -39,7 +35,12 @@ function Refrigerator() {
     // 食材一覧を取得する
     const refreshFoods = () => {
         axios
-            .get(`http://localhost:8080/api/food_stock/user/${LOGIN_USER_ID}`)
+            .get(
+                "http://localhost:8080/api/food_stock",
+                {
+                    withCredentials: true
+                }
+            )
             .then((res) => {
                 setFoods(res.data);
             })
@@ -52,13 +53,24 @@ function Refrigerator() {
             .get("http://localhost:8080/api/food-master")
             .then((res) => {
                 setFoodMasters(res.data);
+            })
+            .catch((error) => {
+                console.error(
+                    "食材マスターの取得に失敗しました",
+                    error
+                );
             });
     };
 
     // 日用品一覧を取得する
     const refreshDailyItems = () => {
         axios
-            .get(`http://localhost:8080/api/daily-item-stock/user/${LOGIN_USER_ID}`)
+            .get(
+                "http://localhost:8080/api/daily-item-stock",
+                {
+                    withCredentials: true
+                }
+            )
             .then((res) => {
                 setItems(res.data);
             })
@@ -68,9 +80,14 @@ function Refrigerator() {
     };
     const refreshDailyItemMasters = () => {
         axios
-            .get("http://localhost:8080/api/daily-item-master")
+            .get(
+                "http://localhost:8080/api/daily-item-master",
+            )
             .then((res) => {
                 setDailyItemMasters(res.data);
+            })
+            .catch((error) => {
+                console.error("日用品マスターの取得に失敗しました", error);
             });
     };
 
@@ -191,7 +208,11 @@ function Refrigerator() {
     const addFoodByClick = (food) => {
         axios
             .post(
-                 `http://localhost:8080/api/food_stock/add-master/${food.foodMasterId}/user/${LOGIN_USER_ID}`
+                `http://localhost:8080/api/food_stock/add-master/${food.foodMasterId}`,
+                null,
+                {
+                    withCredentials: true
+                }
             )
             .then(() => {
                 refreshFoods();
@@ -204,7 +225,11 @@ function Refrigerator() {
     const addDailyItemByClick = (item) => {
         axios
             .post(
-                `http://localhost:8080/api/daily-item-stock/add-master/${item.dailyItemMasterId}/user/${LOGIN_USER_ID}`
+                `http://localhost:8080/api/daily-item-stock/add-master/${item.dailyItemMasterId}`,
+                null,
+                {
+                    withCredentials: true
+                }
             )
             .then(() => {
                 refreshDailyItems();
@@ -248,7 +273,11 @@ function Refrigerator() {
 
             axios
                 .post(
-                   `http://localhost:8080/api/food_stock/del/${deleteTarget.foodStockId}/user/${LOGIN_USER_ID}`
+                    `http://localhost:8080/api/food_stock/del/${deleteTarget.foodStockId}`,
+                    null,
+                    {
+                        withCredentials: true
+                    }
                 )
                 .then(() => {
                     setSelectedItem(null);
@@ -287,7 +316,10 @@ function Refrigerator() {
 
             axios
                 .delete(
-                   `http://localhost:8080/api/daily-item-stock/${deleteTarget.dailyItemStockId}/user/${LOGIN_USER_ID}`
+                    `http://localhost:8080/api/daily-item-stock/${deleteTarget.dailyItemStockId}`,
+                    {
+                        withCredentials: true
+                    }
                 )
                 .then(() => {
                     setSelectedItem(null);
@@ -424,7 +456,7 @@ function Refrigerator() {
 
     return (
         <div className="stock-page">
-          
+
             <div className="stock-app">
                 {/* タブ */}
                 <div className="stock-tabs">
