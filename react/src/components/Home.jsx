@@ -48,6 +48,69 @@ function Home() {
         "土曜日",
         "日曜日"
     ];
+    const dayMap = {
+        1: "月曜日",
+        2: "火曜日",
+        3: "水曜日",
+        4: "木曜日",
+        5: "金曜日",
+        6: "土曜日",
+        7: "日曜日"
+    };
+
+    async function openGarbageModal() {
+
+        try {
+
+            const res = await axios.get("/api/garbage", {
+                withCredentials: true
+            });
+
+            // 一旦リセット
+            setBurnableDay("");
+            setNonBurnableDay("");
+            setPetBottleDay("");
+            setCanBottleDay("");
+            setNotification(false);
+
+            res.data.forEach((garbage) => {
+
+                switch (garbage.garbageType) {
+
+                    case "燃えるゴミ":
+                        setBurnableDay(dayMap[garbage.garbageDay]);
+                        break;
+
+                    case "燃えないゴミ":
+                        setNonBurnableDay(dayMap[garbage.garbageDay]);
+                        break;
+
+                    case "ペットボトル":
+                        setPetBottleDay(dayMap[garbage.garbageDay]);
+                        break;
+
+                    case "缶・びん":
+                        setCanBottleDay(dayMap[garbage.garbageDay]);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (garbage.notification != null) {
+                    setNotification(garbage.notification);
+                }
+
+            });
+
+        } catch (err) {
+
+            console.error("ゴミルール取得失敗", err);
+
+        }
+
+        setModalType("garbage");
+    }
     const [burnableDay, setBurnableDay] = useState("");
     const [nonBurnableDay, setNonBurnableDay] = useState("");
     const [petBottleDay, setPetBottleDay] = useState("");
@@ -125,12 +188,17 @@ function Home() {
 
 
             if (burnableDay !== "") {
-                await axios.post("/api/garbage/save", {
-                    garbageType: "燃えるゴミ",
-                    garbageDay: weekNumber[burnableDay],
-
-                    notification: notification
-                });
+                await axios.post(
+                    "/api/garbage/save",
+                    {
+                        garbageType: "燃えるゴミ",
+                        garbageDay: weekNumber[burnableDay],
+                        notification: notification
+                    },
+                    {
+                        withCredentials: true
+                    }
+                );
             }
 
             if (nonBurnableDay !== "") {
@@ -139,7 +207,11 @@ function Home() {
                     garbageDay: weekNumber[nonBurnableDay],
 
                     notification: notification
-                });
+                },
+                    {
+                        withCredentials: true
+                    }
+                );
             }
 
             if (petBottleDay !== "") {
@@ -148,7 +220,11 @@ function Home() {
                     garbageDay: weekNumber[petBottleDay],
 
                     notification: notification
-                });
+                },
+                    {
+                        withCredentials: true
+                    }
+                );
             }
 
             if (canBottleDay !== "") {
@@ -157,7 +233,11 @@ function Home() {
                     garbageDay: weekNumber[canBottleDay],
 
                     notification: notification
-                });
+                },
+                    {
+                        withCredentials: true
+                    }
+                );
             }
 
             showAlert("ゴミルールの設定を更新しました。");
@@ -187,10 +267,10 @@ function Home() {
                 {/* <h1>const[point,setPoint]=useState(0)</h1> */}
             </div>
 
-         <div className="buttonArea3">
-            <button onClick={logout}>
-             <FiLogOut />
-            </button>
+            <div className="buttonArea3">
+                <button onClick={logout}>
+                    <FiLogOut />
+                </button>
             </div>
 
             {/* 買い物リスト */}
@@ -200,7 +280,7 @@ function Home() {
 
             {/* ボタン */}
             <div className="buttonArea2">
-                <button onClick={() => setModalType("garbage")}>
+                <button onClick={openGarbageModal}>
                     ゴミルール設定
                 </button>
 
@@ -292,14 +372,14 @@ function Home() {
                                 <span className="slider2"></span>
                             </label>
                         </p>
-                        <button 
-                        className="button"
-                        onClick={saveGarbageRule}>
+                        <button
+                            className="button"
+                            onClick={saveGarbageRule}>
                             登録
                         </button>
-                        <button 
-                        className="closebtn"
-                        onClick={() => setModalType("")}>
+                        <button
+                            className="closebtn"
+                            onClick={() => setModalType("")}>
                             閉じる
                         </button>
                     </div>
@@ -313,9 +393,9 @@ function Home() {
 
                         <p>ここにアプリの説明画面を作ります。</p>
 
-                        <button 
-                        className="closebtn"
-                        onClick={() => setModalType("")}>
+                        <button
+                            className="closebtn"
+                            onClick={() => setModalType("")}>
                             閉じる
                         </button>
                     </div>
@@ -329,9 +409,9 @@ function Home() {
 
                         <h3>{tips?.music}</h3>
 
-                        <button 
-                        className="closebtn"
-                        onClick={() => setModalType("")}>
+                        <button
+                            className="closebtn"
+                            onClick={() => setModalType("")}>
                             閉じる
                         </button>
                     </div>

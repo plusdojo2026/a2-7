@@ -12,6 +12,6 @@ public interface GarbageRepository extends JpaRepository<Garbage, Integer> {
 	List<Garbage> findByUserIdAndGarbageDay(Integer userId, Integer garbageDay);
 
 	List<Garbage> findByUserIdAndNotificationTrue(Integer userId);
-
+	List<Garbage> findByUserId(Integer userId);
 	Optional<Garbage> findByUserIdAndGarbageType(Integer userId, String garbageType);
 }

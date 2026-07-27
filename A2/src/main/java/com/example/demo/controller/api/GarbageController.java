@@ -28,8 +28,16 @@ public class GarbageController {
 //	}
 
 	@GetMapping
-	public List<Garbage> getGarbage() {
-		return garbageRepository.findAll();
+	
+	public List<Garbage> getGarbage(HttpSession session) {
+
+		User user = (User) session.getAttribute("loginUser");
+
+		if (user == null) {
+			throw new RuntimeException("ログインしてください");
+		}
+
+		return garbageRepository.findByUserId(user.getUserId());
 	}
 
 	@PostMapping("/save")
