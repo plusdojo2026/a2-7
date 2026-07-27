@@ -3,8 +3,6 @@ import axios from "axios";
 import "../css/Stock.css";
 
 const Stock = () => {
-    // 仮ログインユーザー
-    const LOGIN_USER_ID = 1;
 
     // Spring Bootから取得した在庫
     const [foods, setFoods] = useState([]);
@@ -67,7 +65,10 @@ const Stock = () => {
     const refreshFoodStockList = () => {
         axios
             .get(
-                `http://localhost:8080/api/food_stock/user/${LOGIN_USER_ID}`
+                "http://localhost:8080/api/food_stock",
+                {
+                    withCredentials: true
+                }
             )
             .then((response) => {
                 setFoods(response.data);
@@ -80,10 +81,12 @@ const Stock = () => {
 
     // 日用品在庫を取得
     const refreshDailyItemStockList = () => {
-        axios
-            .get(
-                `http://localhost:8080/api/daily-item-stock/user/${LOGIN_USER_ID}`
-            )
+        axios.get(
+            "http://localhost:8080/api/daily-item-stock",
+            {
+                withCredentials: true
+            }
+        )
             .then((response) => {
                 setDailyItems(response.data);
             })
@@ -314,12 +317,15 @@ const Stock = () => {
     const updateStock = () => {
         setErrorMessage("");
 
+        //食材
         if (editType === "food") {
-            axios
-                .post(
-                    `http://localhost:8080/api/food_stock/mod/user/${LOGIN_USER_ID}`,
-                    modFood
-                )
+            axios.post(
+                "http://localhost:8080/api/food_stock/mod",
+                modFood,
+                {
+                    withCredentials: true
+                }
+            )
                 .then(() => {
                     refreshFoodStockList();
                     closeModal();
@@ -337,13 +343,15 @@ const Stock = () => {
 
             return;
         }
-
+        //日用品
         if (editType === "daily") {
-            axios
-                .post(
-                    `http://localhost:8080/api/daily-item-stock/mod/user/${LOGIN_USER_ID}`,
-                    modDailyItem
-                )
+            axios.post(
+                "http://localhost:8080/api/daily-item-stock/mod",
+                modDailyItem,
+                {
+                    withCredentials: true
+                }
+            )
                 .then(() => {
                     refreshDailyItemStockList();
                     closeModal();
@@ -469,10 +477,10 @@ const Stock = () => {
                                                     <img
                                                         src={
                                                             foodCategoryImages[
-                                                                food.category
+                                                            food.category
                                                             ] ??
                                                             foodCategoryImages[
-                                                                "その他"
+                                                            "その他"
                                                             ]
                                                         }
                                                         alt={
@@ -573,10 +581,10 @@ const Stock = () => {
                                                     <img
                                                         src={
                                                             dailyCategoryImages[
-                                                                item.category
+                                                            item.category
                                                             ] ??
                                                             dailyCategoryImages[
-                                                                "その他"
+                                                            "その他"
                                                             ]
                                                         }
                                                         alt={
