@@ -161,6 +161,7 @@
 .stock-list-items {
     margin: 0;
     padding: 0;
+    padding-bottom: 100px;
     list-style: none;
 }
 
