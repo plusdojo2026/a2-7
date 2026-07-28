@@ -51,8 +51,14 @@ function Refrigerator() {
     };
     const refreshFoodMasters = () => {
         axios
-            .get("http://localhost:8080/api/food-master")
+            .get(
+                "http://localhost:8080/api/food-master",
+                {
+                    withCredentials: true
+                }
+            )
             .then((res) => {
+                console.log("食材マスター", res.data);
                 setFoodMasters(res.data);
             })
             .catch((error) => {
@@ -83,12 +89,19 @@ function Refrigerator() {
         axios
             .get(
                 "http://localhost:8080/api/daily-item-master",
+                {
+                    withCredentials: true
+                }
             )
             .then((res) => {
+                console.log("日用品マスター", res.data);
                 setDailyItemMasters(res.data);
             })
             .catch((error) => {
-                console.error("日用品マスターの取得に失敗しました", error);
+                console.error(
+                    "日用品マスターの取得に失敗しました",
+                    error
+                );
             });
     };
 
