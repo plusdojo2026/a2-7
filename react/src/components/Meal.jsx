@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import '../css/Meal.css'
-import axios from "axios";
+import axios from "../api/axios";
 
 
 const MealComponent = () =>{

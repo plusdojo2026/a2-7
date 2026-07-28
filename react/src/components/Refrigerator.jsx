@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import "../css/Refrigerator.css";
 function Refrigerator() {
 
