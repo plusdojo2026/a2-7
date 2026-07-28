@@ -11,13 +11,89 @@ import riceImage6 from "../assets/rice6.png";
 import riceImage7 from "../assets/rice7.png";
 import { FiLogOut } from "react-icons/fi";
 import "../css/Home.css";
-
-
+import shopping1 from "../assets/shopping.png";
+import shopping2 from "../assets/shopping2.png";
+import shopping3 from "../assets/shopping3.png";
+import shopping4 from "../assets/shopping4.png";
+import meal1 from "../assets/meal.png";
+import meal2 from "../assets/meal2.png";
+import meal3 from "../assets/meal3.png";
+import meal4 from "../assets/meal4.png";
+import home1 from "../assets/home.png";
+import home2 from "../assets/home2.png";
+import home3 from "../assets/home3.png";
+import notice1 from "../assets/notice.png";
+import fridge1 from "../assets/fridge.png";
+import fridge2 from "../assets/fridge2.png";
+import stock1 from "../assets/stock.png";
+import stock2 from "../assets/stock2.png";
+import chore1 from "../assets/chore.png";
+import chore2 from "../assets/chore2.png";
+import chore3 from "../assets/chore3.png";
+import chore4 from "../assets/chore4.png";
+import chore5 from "../assets/chore5.png";
+import chore6 from "../assets/chore6.png";
+import chore7 from "../assets/chore7.png";
 function Home() {
     const navigate = useNavigate();
     const [modalType, setModalType] = useState("");
+    const [aboutPage, setAboutPage] = useState("menu");
+    const [shoppingPage, setShoppingPage] = useState(0);
     const [alertMessage, setAlertMessage] = useState("");
 
+    const shoppingImages = [
+        shopping1,
+        shopping2,
+        shopping3,
+        shopping4
+    ];
+    const [homePage, setHomePage] = useState(0);
+
+    const homeImages = [
+        home1,
+        home2,
+        home3
+
+    ];
+    const [noticePage, setNoticePage] = useState(0);
+
+    const noticeImages = [
+        notice1
+
+    ];
+
+    const [mealPage, setMealPage] = useState(0);
+
+    const mealImages = [
+        meal1,
+        meal2,
+        meal3,
+        meal4,
+
+    ];
+    const [fridgePage, setFridgePage] = useState(0);
+
+    const fridgeImages = [
+        fridge1,
+        fridge2
+    ];
+    const [stockPage, setStockPage] = useState(0);
+
+    const stockImages = [
+        stock1,
+        stock2
+    ];
+    const [chorePage, setChorePage] = useState(0);
+
+    const choreImages = [
+        chore1,
+        chore2,
+        chore3,
+        chore4,
+        chore5,
+        chore6,
+        chore7
+    ];
     function showAlert(message) {
         setAlertMessage(message);
 
@@ -382,7 +458,7 @@ function Home() {
                             onClick={saveGarbageRule}>
                             登録
                         </button>
-                        
+
                     </div>
                 </div>
             )}
@@ -390,15 +466,313 @@ function Home() {
             {modalType === "about" && (
                 <div className="modal2">
                     <div className="modal2Content">
-                        <h2>アプリについて</h2>
 
-                        <p>ここにアプリの説明画面を作ります。</p>
+                        {aboutPage === "menu" && (
+                            <>
+                                <h2>このアプリの説明</h2>
 
+                                <div className="aboutMenu">
+                                    <button onClick={() => setAboutPage("home")}>ホーム</button>
+                                    <button onClick={() => setAboutPage("notice")}>お知らせ</button>
+                                    <button onClick={() => setAboutPage("chore")}>家事</button>
+
+                                    <button onClick={() => setAboutPage("shopping")}>
+                                        買い物<br />リスト
+                                    </button>
+
+                                    <button onClick={() => setAboutPage("meal")}>食事記録</button>
+                                    <button onClick={() => setAboutPage("fridge")}>
+                                        冷蔵庫<br />日用品
+                                    </button>
+
+                                    <button onClick={() => setAboutPage("stock")}>在庫一覧</button>
+                                </div>
+                            </>
+                        )}
+
+                        {aboutPage === "shopping" && (
+                            <>
+                                <h2>買い物リストの説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setShoppingPage(shoppingPage - 1)}
+                                        disabled={shoppingPage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={shoppingImages[shoppingPage]}
+                                        alt="買い物リスト説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setShoppingPage(shoppingPage + 1)}
+                                        disabled={shoppingPage === shoppingImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setShoppingPage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
+                        {aboutPage === "home" && (
+                            <>
+                                <h2>ホームの説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setHomePage(homePage - 1)}
+                                        disabled={homePage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={homeImages[homePage]}
+                                        alt="ホーム説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setHomePage(homePage + 1)}
+                                        disabled={homePage === homeImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setHomePage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
+                        {aboutPage === "notice" && (
+                            <>
+                                <h2>お知らせの説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setNoticePage(noticePage - 1)}
+                                        disabled={noticePage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={noticeImages[noticePage]}
+                                        alt="お知らせ説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setNoticePage(noticePage + 1)}
+                                        disabled={noticePage === noticeImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setNoticePage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
+                        {aboutPage === "meal" && (
+                            <>
+                                <h2>食事記録の説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setMealPage(mealPage - 1)}
+                                        disabled={mealPage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={mealImages[mealPage]}
+                                        alt="食事記録説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setMealPage(mealPage + 1)}
+                                        disabled={mealPage === mealImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setMealPage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
+                        {aboutPage === "fridge" && (
+                            <>
+                                <h2>冷蔵庫・日用品の説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setFridgePage(fridgePage - 1)}
+                                        disabled={fridgePage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={fridgeImages[fridgePage]}
+                                        alt="冷蔵庫説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setFridgePage(fridgePage + 1)}
+                                        disabled={fridgePage === fridgeImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setFridgePage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
+                        {aboutPage === "stock" && (
+                            <>
+                                <h2>在庫一覧の説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setStockPage(stockPage - 1)}
+                                        disabled={stockPage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={stockImages[stockPage]}
+                                        alt="在庫一覧説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setStockPage(stockPage + 1)}
+                                        disabled={stockPage === stockImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setStockPage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
+                        {aboutPage === "chore" && (
+                            <>
+                                <h2>家事の説明</h2>
+
+                                <div className="imageArea">
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setChorePage(chorePage - 1)}
+                                        disabled={chorePage === 0}
+                                    >
+                                        ◀
+                                    </button>
+
+                                    <img
+                                        src={choreImages[chorePage]}
+                                        alt="家事説明"
+                                        className="helpImage"
+                                    />
+
+                                    <button
+                                        className="arrowBtn"
+                                        onClick={() => setChorePage(chorePage + 1)}
+                                        disabled={chorePage === choreImages.length - 1}
+                                    >
+                                        ▶
+                                    </button>
+                                </div>
+
+                                <button
+                                    className="closebtn"
+                                    onClick={() => {
+                                        setChorePage(0);
+                                        setAboutPage("menu");
+                                    }}
+                                >
+                                    戻る
+                                </button>
+                            </>
+                        )}
                         <button
                             className="closebtn"
-                            onClick={() => setModalType("")}>
+                            onClick={() => {
+                                setModalType("");
+                                setAboutPage("menu");
+                            }}
+                        >
                             閉じる
                         </button>
+
                     </div>
                 </div>
             )}

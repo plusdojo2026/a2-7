@@ -75,6 +75,7 @@
     top: 15px;
     left: 15px;
 }
+
 .buttonArea3 button {
     width: 45px;
     height: 45px;
@@ -92,13 +93,16 @@
 .buttonArea3 button:hover {
     transform: translateY(-3px);
 }
+
 .buttonArea3 button svg {
     font-size: 24px;
 }
-.topArea{
+
+.topArea {
     display: flex;
     align-items: center;
 }
+
 /* Tips */
 .tips {
     position: relative;
@@ -112,7 +116,7 @@
     background: white;
     border-radius: 20px;
 
-    box-shadow: 0 4px 10px rgba(0,0,0,.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
 
     display: flex;
     align-items: center;
@@ -121,6 +125,7 @@
     font-size: 18px;
     color: #444;
 }
+
 .tips::after {
     content: "";
 
@@ -144,6 +149,7 @@
 .rice img {
     width: 400px;
 }
+
 .riceArea {
     display: flex;
     flex-direction: column;
@@ -154,7 +160,7 @@
 .modal2 {
     position: fixed;
     inset: 0;
-    background:  rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
 
     display: flex;
     justify-content: center;
@@ -165,8 +171,10 @@
 
 .modal2Content {
     width: 260px;
-    max-height: 80vh;   /* 画面の80%まで */
-    overflow-y: auto;   /* 縦スクロール */
+    max-height: 80vh;
+    /* 画面の80%まで */
+    overflow-y: auto;
+    /* 縦スクロール */
     padding: 30px;
     background: white;
     border-radius: 30px;
@@ -176,7 +184,7 @@
 .modal2Content h2 {
     text-align: center;
     margin-bottom: 25px;
-    font-size: 30px;
+    font-size: 20px;
 }
 
 .modal2Content p {
@@ -224,7 +232,7 @@
 
 .modal2Content select:focus {
     border-color: #84FAB0;
-    box-shadow: 0 0 0 4px rgba(132,250,176,.25);
+    box-shadow: 0 0 0 4px rgba(132, 250, 176, .25);
 }
 
 .button {
@@ -237,10 +245,10 @@
     color: white;
     font-size: 18px;
     cursor: pointer;
-    
+
 }
 
-.closebtn{
+.closebtn {
     width: 40%;
     height: 45px;
     margin-top: 10px;
@@ -258,6 +266,74 @@
 .modal2Content input[type="checkbox"] {
     transform: scale(1.5);
     margin-left: 10px;
+}
+
+/* アプリ説明 */
+.aboutMenu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.aboutMenu button {
+    width: 120%;
+    height: 95px;
+
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+
+    background: white;
+    color: #333;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.aboutMenu {
+    gap: 20px;
+}
+
+.aboutMenu button:hover {
+    background: #f8f8f8;
+    border-color: #84FAB0;
+}
+
+/* 最後の在庫一覧だけ左寄せ */
+.aboutMenu button:last-child {
+    grid-column: 1;
+}
+
+.imageArea {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.helpImage {
+    width: 220px;
+    /* 280px → 220px */
+    border-radius: 10px;
+}
+
+.arrowBtn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 100%;
+    background: #84FAB0;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.arrowBtn:disabled {
+    background: #ccc;
+    cursor: default;
 }
 
 .switch2 {
@@ -309,9 +385,9 @@
     align-items: center;
     justify-content: space-between;
 
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     position: fixed;
-    z-index: 9999;  
+    z-index: 9999;
     top: 0px;
     left: 50%;
     transform: translateX(-50%);
@@ -320,7 +396,7 @@
 }
 
 .dot {
-padding: 2px 4px;
+    padding: 2px 4px;
     color: #72F2AE;
     font-size: 10px;
 }
@@ -336,4 +412,3 @@ padding: 2px 4px;
         transform: translateY(0);
     }
 }
-
