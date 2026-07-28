@@ -1,7 +1,7 @@
 //買い物リスト一覧表示画面
 
 import { useEffect,useState } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import ShoppingModal from "./ShoppingModal";
 import "../css/ShoppingList.css";
 

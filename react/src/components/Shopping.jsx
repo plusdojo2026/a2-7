@@ -1,6 +1,6 @@
 {/*商品入力画面*/}
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../api/axios";
 import "../css/Shopping.css";
 
 function Shopping() {
