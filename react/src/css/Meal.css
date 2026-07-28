@@ -83,6 +83,7 @@ body{
     height: 50px;
     border-radius: 30px;
     border: none;
+    transition: .2s;
 
     background: linear-gradient(
         90deg,
@@ -93,6 +94,9 @@ body{
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
+}
+#createBtn:hover{
+    transform: translateY(-3px);
 }
 
 /* 一覧表示 */
@@ -105,7 +109,13 @@ body{
     margin: 0 auto 20px;
     color: #104862;
     background-color: white;
+    transition: .2s;
 }
+.mealCard:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
 #mealtitle{
     font-size: 25px;
 }
@@ -228,7 +238,11 @@ body{
     line-height: 26px;
     text-align: center;
 
-    cursor: pointer;
+    transition: .2s;
+}
+#registButton:hover,
+#updateButton:hover{
+    transform: translateY(-3px);
 }
     /* 複数適用*/
 textarea{
