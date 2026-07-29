@@ -33,27 +33,27 @@ VALUES
 INSERT INTO user_chore
 (user_id, chore_master_id, status, frequency, day, last_done_date)
 VALUES
-(1, 1, TRUE,  '毎日', NULL, '2026-06-24'),
-(1, 2, TRUE,  '週1回', '2', NULL),
-(1, 3, TRUE,  '週1回', '5', NULL),
+(1, 1, FALSE,  '毎日', NULL, NULL),
+(1, 2, FALSE,  '週1回', '2', NULL),
+(1, 3, TRUE,  '週1回', '5', '2026-07-15'),
 (1, 4, FALSE, '毎日', NULL, NULL),
 
-(1, 5, TRUE,  '毎日', NULL, NULL),
+(1, 5, FALSE,  '毎日', NULL, NULL),
 (1, 6, FALSE, '週2回', '1,4', NULL),
 (1, 7, FALSE, '週1回', '3', NULL),
 
-(1, 8, TRUE,  '週2回', '1,4', NULL),
+(1, 8, FALSE,  '週2回', '1,4', NULL),
 (1, 9, FALSE, '週1回', '6', NULL),
-(1, 10, TRUE, '週1回', '0', NULL);
+(1, 10, FALSE, '週1回', '0', NULL);
 
 -- 食事
 INSERT INTO Meals
 (record_date, meal_type, meal_image, url, recipe_memo, recipe_title, user_id)
 VALUES
-('2026-07-14', '朝', 'ハムエッグトースト.png', 'https://example.com/recipe1', 'トーストはこんがり焼く', 'ハムエッグトースト', 1),
-('2026-07-14', '昼', 'チキンサラダ.png', 'https://example.com/recipe2', '野菜を多めに入れる', 'チキンサラダ', 1),
-('2026-07-14', '夜', 'ビーフシチュー.png', 'https://example.com/recipe3', '弱火で20分煮込む', 'ビーフシチュー', 1),
-('2026-07-15', '朝', NULL, 'https://example.com/recipe4', 'バナナは最後に盛り付ける', 'フルーツヨーグルト', 2),
+('2026-07-13', '朝', 'ハムエッグトースト.png', 'https://example.com/recipe1', 'トーストはこんがり焼く', 'ハムエッグトースト', 1),
+('2026-07-17', '昼', 'チキンサラダ.png', 'https://example.com/recipe2', '野菜を多めに入れる', 'チキンサラダ', 1),
+('2026-07-10', '夜', 'ビーフシチュー.png', 'https://example.com/recipe3', '弱火で20分煮込む', 'ビーフシチュー', 1),
+('2026-07-12', '朝', NULL, 'https://example.com/recipe4', 'バナナは最後に盛り付ける', 'フルーツヨーグルト', 2),
 ('2026-07-15', '昼', NULL, 'https://example.com/recipe5', 'パスタはアルデンテに', 'ナポリタン', 2);
 
 -- 食材マスター
